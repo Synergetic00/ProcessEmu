@@ -10,7 +10,9 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import java.util.*;
 
+import utils.PVector;
 import static utils.FXUtils.*;
 
 @SuppressWarnings("unused")
@@ -28,9 +30,10 @@ public class App extends Application {
         Scene scene = new Scene(root, 1280, 720, Color.LIGHTGRAY);
         Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
         root.getChildren().add(canvas);
-        GraphicsContext g = canvas.getGraphicsContext2D();
-
-        System.out.println(log(12));
+		GraphicsContext g = canvas.getGraphicsContext2D();
+		
+		PVector p = new PVector(30,10);
+		System.out.print(Arrays.toString(p.array()));
 
 		scene.setOnKeyTyped(event -> {
 			char keyPressed = event.getCharacter().charAt(0);
