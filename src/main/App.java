@@ -1,34 +1,63 @@
 package main;
 
+import javafx.animation.AnimationTimer;
 import javafx.application.Application;
-import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.scene.Group;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
-import javafx.scene.layout.StackPane;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.Stage;
- 
+
+import static utils.FXUtils.*;
+
+@SuppressWarnings("unused")
 public class App extends Application {
-    public static void main(String[] args) {
-        launch(args);
-    }
-    
-    @Override
-    public void start(Stage primaryStage) {
-        primaryStage.setTitle("Hello World!");
-        Button btn = new Button();
-        btn.setText("Say 'Hello World'");
-        btn.setOnAction(new EventHandler<ActionEvent>() {
- 
-            @Override
-            public void handle(ActionEvent event) {
-                System.out.println("Hello World!");
-            }
-        });
-        
-        StackPane root = new StackPane();
-        root.getChildren().add(btn);
-        primaryStage.setScene(new Scene(root, 300, 250));
-        primaryStage.show();
+
+	public static void main(String[] args) {
+		launch(args);
+	}
+
+	@Override
+	public void start(Stage stage) throws Exception {
+
+		stage.setTitle("RaspberryPiFX");
+        Group root = new Group();
+        Scene scene = new Scene(root, 1280, 720, Color.LIGHTGRAY);
+        Canvas canvas = new Canvas(scene.getWidth(), scene.getHeight());
+        root.getChildren().add(canvas);
+        GraphicsContext g = canvas.getGraphicsContext2D();
+
+        System.out.println(log(12));
+
+		scene.setOnKeyTyped(event -> {
+			char keyPressed = event.getCharacter().charAt(0);
+		});
+
+		scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+
+			}
+		});
+
+		scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+			@Override
+			public void handle(MouseEvent event) {
+				
+			}
+		});
+
+		new AnimationTimer(){
+			public void handle(long now) {
+
+			}
+		}.start();
+
+		stage.setScene(scene);
+		stage.show();
+
     }
 }
