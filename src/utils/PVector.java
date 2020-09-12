@@ -152,23 +152,57 @@ public class PVector {
     }
 
     public double dot(double x, double y, double z) {
-        
+        double dotProd = 0;
+        dotProd += x * this.x;
+        dotProd += y * this.y;
+        dotProd += z * this.z;
+        return dotProd;
     }
 
     public double dot(PVector v1, PVector v2) {
-
+        double dotProd = 0;
+        dotProd += v1.x * v2.x;
+        dotProd += v1.y * v2.y;
+        dotProd += v1.z * v2.z;
+        return dotProd;
     }
 
     public PVector cross(PVector v) {
-
+        double crossX = y * v.z - z * v.y; 
+        double crossY = z * v.x - x * v.z; 
+        double crossZ = x * v.y - y * v.x; 
+        return new PVector(crossX, crossY, crossZ);
     }
 
-    public static PVector cross(PVector v, PVector target) {
-        
+    public PVector cross(PVector v, PVector target) {
+        target.x = y * v.z - z * v.y; 
+        target.y = z * v.x - x * v.z; 
+        target.z = x * v.y - y * v.x; 
+        return target;
     }
 
     public static void cross(PVector v1, PVector v2, PVector target) {
-        
+        target.x = v1.y * v2.z - v1.z * v2.y; 
+        target.y = v1.z * v2.x - v1.x * v2.z; 
+        target.z = v1.x * v2.y - v1.y * v2.x;  
+    }
+
+    public void normalize() {
+        double length = FXUtils.dist(0, 0, 0, x, y, z);
+        if (length != 0) {
+            x /= length;
+            y /= length;
+            z /= length;
+        }
+    }
+
+    public void normalize(PVector target) {
+        double length = FXUtils.dist(0, 0, 0, x, y, z);
+        if (length != 0) {
+            target.x = x /= length;
+            target.y = y /= length;
+            target.z = z /= length;
+        }
     }
 
     public double[] array() {
@@ -182,15 +216,15 @@ public class PVector {
         fromAngle()	    Make a new 2D unit vector from an angle
         copy()	        Get a copy of the vector
     ✔    mag()	        Calculate the magnitude of the vector
-    ✔    magSq()	        Calculate the magnitude of the vector, squared
+    ✔    magSq()	    Calculate the magnitude of the vector, squared
     ✔    add()	        Adds x, y, and z components to a vector, one vector to another, or two independent vectors
     ✔    sub()	        Subtract x, y, and z components from a vector, one vector from another, or two independent vectors
     ✔    mult()	        Multiply a vector by a scalar
     ✔    div()	        Divide a vector by a scalar
     ✔    dist()	        Calculate the distance between two points
-        dot()	        Calculate the dot product of two vectors
-        cross()	        Calculate and return the cross product
-        normalize()	    Normalize the vector to a length of 1
+    ✔    dot()	        Calculate the dot product of two vectors
+    ✔    cross()	    Calculate and return the cross product
+    ✔    normalize()	Normalize the vector to a length of 1
         limit()	        Limit the magnitude of the vector
         setMag()	    Set the magnitude of the vector
         heading()	    Calculate the angle of rotation for this vector

@@ -2,9 +2,13 @@ package utils;
 
 import java.util.Random;
 
+import javafx.scene.canvas.GraphicsContext;
+import main.Main;
+
 public class FXUtils {
 
-    public static Random r = new Random();
+    static GraphicsContext g = Main.g;
+    static Random r = new Random();
 
     // Math --> Calculation
 
