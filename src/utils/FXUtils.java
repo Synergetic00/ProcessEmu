@@ -2,15 +2,25 @@ package utils;
 
 import java.util.Random;
 
-import javafx.scene.canvas.GraphicsContext;
-import main.Main;
-
 public class FXUtils {
 
-    static GraphicsContext g = Main.g;
-    static Random r = new Random();
+    /////////////////////////
+    // Output // Text Area //
+    /////////////////////////
 
-    // Math --> Calculation
+    public static void print(byte data) {
+        System.out.print(data);
+        System.out.flush();
+    }
+
+    public static void print(boolean data) {
+        System.out.print(data);
+        System.out.flush();
+    }
+
+    //////////////////////////
+    // Maths // Calculation //
+    //////////////////////////
 
     public static int abs(int a) {
         return (a < 0) ? -a : a;
@@ -144,6 +154,10 @@ public class FXUtils {
     public static double sqrt(double a) {
         return Math.sqrt(a);
     }
+    
+    ///////////////////////////
+    // Maths // Trigonometry //
+    ///////////////////////////
 
     public static double acos(double a) {
         return Math.acos(a);
@@ -180,29 +194,50 @@ public class FXUtils {
     public static double tan(double a) {
         return Math.tan(a);
     }
+    
+    /////////////////////
+    // Maths // Random //
+    /////////////////////
+    
+    static Random defaultRandom;
 
     public static double random(double high) {
         return random(0, high);
     }
 
     public static double random(double low, double high) {
-        return (low + (high - low) * r.nextDouble());
+        if (defaultRandom == null) defaultRandom = new Random();
+        return (low + (high - low) * defaultRandom.nextDouble());
     }
 
     public static double randomGaussian() {
-        return r.nextGaussian();
+        if (defaultRandom == null) defaultRandom = new Random();
+        return defaultRandom.nextGaussian();
     }
 
     public static void randomSeed(int seed) {
-        r = new Random(seed);
+        if (defaultRandom == null) defaultRandom = new Random();
+        defaultRandom.setSeed(seed);
+    }
+
+    static Random perlinRandom = new Random();
+
+    // noise()
+    // noiseDetail()
+
+    public static void noiseSeed(int seed) {
+        if (perlinRandom == null) perlinRandom = new Random();
+        perlinRandom.setSeed(seed);
     }
     
-    // Constants
+    ////////////////////////
+    // Maths // Constants //
+    ////////////////////////
 
     public static final double HALF_PI = 1.5707964f;
     public static final double PI = 3.1415927f;
     public static final double QUARTER_PI = 0.7853982f;
     public static final double TAU = 6.2831855f;
     public static final double TWO_PI = 6.2831855f;
-    
+
 }

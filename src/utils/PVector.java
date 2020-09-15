@@ -1,7 +1,5 @@
 package utils;
 
-import static utils.FXUtils.*;
-
 public class PVector {
 
     double x, y, z;
@@ -9,6 +7,7 @@ public class PVector {
     public PVector(double x, double y) {
         this.x = x;
         this.y = y;
+        this.z = 0;
     }
 
     public PVector(double x, double y, double z) {
@@ -41,8 +40,49 @@ public class PVector {
         if (arr.length == 3) this.z = arr[2];
     }
 
+    public static PVector random2D() {
+        PVector output = fromAngle(FXUtils.random(FXUtils.TAU));
+        output.normalize();
+        return output;
+    }
+
+    public static PVector random2D(PVector target) {
+        PVector output = fromAngle(FXUtils.random(FXUtils.TAU), target);
+        output.normalize();
+        return output;
+    }
+
+    public static PVector random3D() {
+        double angle = FXUtils.random(FXUtils.TAU);
+        double vz = FXUtils.random(-1,1);
+        double vy = FXUtils.sqrt(1-vz*vz) * FXUtils.sin(angle);
+        double vx = FXUtils.sqrt(1-vz*vz) * FXUtils.cos(angle);
+        PVector output = new PVector(vx, vy, vz);
+        output.normalize();
+        return output;
+    }
+
+    public static PVector random3D(PVector target) {
+        target.set(random3D());
+        target.normalize();
+        return target;
+    }
+
+    public static PVector fromAngle(double angle) {
+        return new PVector(FXUtils.cos(angle), FXUtils.sin(angle));
+    }
+
+    public static PVector fromAngle(double angle, PVector target) {
+        target.set(FXUtils.cos(angle), FXUtils.sin(angle));
+        return target;
+    }
+
+    public PVector copy() {
+        return new PVector(x, y, z);
+    }
+
     public double mag() {
-        return sqrt(x*x + y*y + z*z);
+        return FXUtils.sqrt(x*x + y*y + z*z);
     }
 
     public double magSq() {
@@ -70,10 +110,11 @@ public class PVector {
         return new PVector(v1.x + v2.x, v1.y + v2.y, v1.z + v2.z);
     }
 
-    public static void add(PVector v1, PVector v2, PVector target) {
+    public static PVector add(PVector v1, PVector v2, PVector target) {
         target.x = v1.x + v2.x;
         target.y = v1.y + v2.y;
         target.z = v1.z + v2.z;
+        return target;
     }
 
     public void sub(PVector v) {
@@ -97,10 +138,11 @@ public class PVector {
         return new PVector(v1.x - v2.x, v1.y - v2.y, v1.z - v2.z);
     }
 
-    public static void sub(PVector v1, PVector v2, PVector target) {
+    public static PVector sub(PVector v1, PVector v2, PVector target) {
         target.x = v1.x - v2.x;
         target.y = v1.y - v2.y;
         target.z = v1.z - v2.z;
+        return target;
     }
 
     public void mult(double n) {
@@ -113,10 +155,11 @@ public class PVector {
         return new PVector(v.x * n, v.y * n, v.z * n);
     }
 
-    public static void mult(PVector v, double n, PVector target) {
+    public static PVector mult(PVector v, double n, PVector target) {
         target.x = v.x * n;
         target.y = v.y * n;
         target.z = v.z * n;
+        return target;
     }
 
     public void div(double n) {
@@ -129,10 +172,11 @@ public class PVector {
         return new PVector(v.x / n, v.y / n, v.z / n);
     }
 
-    public static void div(PVector v, double n, PVector target) {
+    public static PVector div(PVector v, double n, PVector target) {
         target.x = v.x / n;
         target.y = v.y / n;
         target.z = v.z / n;
+        return target;
     }
 
     public double dist(PVector v) {
@@ -159,7 +203,7 @@ public class PVector {
         return dotProd;
     }
 
-    public double dot(PVector v1, PVector v2) {
+    public static double dot(PVector v1, PVector v2) {
         double dotProd = 0;
         dotProd += v1.x * v2.x;
         dotProd += v1.y * v2.y;
@@ -181,10 +225,11 @@ public class PVector {
         return target;
     }
 
-    public static void cross(PVector v1, PVector v2, PVector target) {
+    public static PVector cross(PVector v1, PVector v2, PVector target) {
         target.x = v1.y * v2.z - v1.z * v2.y; 
         target.y = v1.z * v2.x - v1.x * v2.z; 
-        target.z = v1.x * v2.y - v1.y * v2.x;  
+        target.z = v1.x * v2.y - v1.y * v2.x;
+        return target;
     }
 
     public void normalize() {
@@ -205,33 +250,70 @@ public class PVector {
         }
     }
 
+    public void limit(double max) {
+        if (this.mag() > max) {
+            this.normalize();
+            this.mult(max);
+        }
+    }
+
+    public void setMag(double len) {
+        this.normalize();
+        this.mult(len);
+    }
+
+    public void setMag(PVector target, double len) {
+        target = this.copy();
+        target.normalize();
+        target.mult(len);
+    }
+
+    public double heading() {
+        return FXUtils.atan2(y, x);
+    }
+
+    public void rotate(double theta) {
+        double tmp = x;
+        x = x * FXUtils.cos(theta) - y * FXUtils.sin(theta);
+        y = tmp * FXUtils.sin(theta) + y * FXUtils.cos(theta);
+    }
+
+    public void lerp(PVector v, float amt) {
+        x = FXUtils.lerp(x, v.x, amt);
+        y = FXUtils.lerp(y, v.y, amt);
+        z = FXUtils.lerp(z, v.z, amt);
+    }
+
+    public static PVector lerp(PVector v1, PVector v2, float amt) {
+        PVector v = v1.copy();
+        v.lerp(v2, amt);
+        return v;
+    }
+
+    public void lerp(float x, float y, float z, float amt) {
+        this.x = FXUtils.lerp(this.x, x, amt);
+        this.y = FXUtils.lerp(this.y, y, amt);
+        this.z = FXUtils.lerp(this.z, z, amt);
+    }
+
     public double[] array() {
         return new double[] {x, y, z};
     }
 
-    /*	
-    ✔    set()	        Set the components of the vector
-        random2D()	    Make a new 2D unit vector with a random direction.
-        random3D()	    Make a new 3D unit vector with a random direction.
-        fromAngle()	    Make a new 2D unit vector from an angle
-        copy()	        Get a copy of the vector
-    ✔    mag()	        Calculate the magnitude of the vector
-    ✔    magSq()	    Calculate the magnitude of the vector, squared
-    ✔    add()	        Adds x, y, and z components to a vector, one vector to another, or two independent vectors
-    ✔    sub()	        Subtract x, y, and z components from a vector, one vector from another, or two independent vectors
-    ✔    mult()	        Multiply a vector by a scalar
-    ✔    div()	        Divide a vector by a scalar
-    ✔    dist()	        Calculate the distance between two points
-    ✔    dot()	        Calculate the dot product of two vectors
-    ✔    cross()	    Calculate and return the cross product
-    ✔    normalize()	Normalize the vector to a length of 1
-        limit()	        Limit the magnitude of the vector
-        setMag()	    Set the magnitude of the vector
-        heading()	    Calculate the angle of rotation for this vector
-        rotate()	    Rotate the vector by an angle (2D only)
-        lerp()	        Linear interpolate the vector to another vector
-        angleBetween()	Calculate and return the angle between two vectors
-    ✔    array()	        Return a representation of the vector as a double array
-    */
+    public static void print(PVector v) {
+        System.out.println("["+v.x+", "+v.y+", "+v.z+"]");
+    }
+
+    public static double angleBetween(PVector v1, PVector v2) {
+        if (v1.x == 0 && v1.y == 0 && v1.z == 0) return 0;
+        if (v2.x == 0 && v2.y == 0 && v2.z == 0) return 0;
+
+        double dot = dot(v1, v2);
+        double amt = dot / (v1.mag() * v2.mag());
+        
+        if (amt <= -1) return FXUtils.PI;
+        else if (amt >= 1) return 0;
+        return (float) Math.acos(amt);
+    }
 
 }
