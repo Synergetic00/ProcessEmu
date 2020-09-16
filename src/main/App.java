@@ -15,12 +15,11 @@ public class App extends FXApp {
     int[] angles = { 30, 10, 45, 35, 60, 38, 75, 67 };
 
     public void setup() {
-        size(1920, 1080);
-        arc(50, 55, 50, 50, 0, HALF_PI);
-        noFill();
-        arc(50, 55, 60, 60, HALF_PI, PI);
-        arc(50, 55, 70, 70, PI, PI+QUARTER_PI);
-        arc(50, 55, 80, 80, PI+QUARTER_PI, TWO_PI);
+        //size(640, 360);
+        point(30, 20);
+point(85, 20);
+point(85, 75);
+point(30, 75);
         //pieChart(300, angles);
     }
 

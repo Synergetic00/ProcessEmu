@@ -31,12 +31,20 @@ public class FXApp {
 
     GraphicsContext gc;
 
-    int width, height;
+    int width = 100, height = 100;
     double mouseX, mouseY, pmouseX, pmouseY;
     
     protected FXApp(GraphicsContext gc){
         this.gc = gc;
+
+        //Default colour objects
         gc.setFill(Color.WHITE);
+
+        //Default background
+        gc.save();
+        gc.setFill(Color.rgb(204, 204, 204));
+        gc.fillRect(0,0,width,height);
+        gc.restore();
     }
 
     protected void size(int w, int h){
@@ -90,41 +98,65 @@ public class FXApp {
         gc.setFill(Color.rgb(r,g,b));
     }
 
-    public void square(double x, double y, double size) {
-        rect(x, y, size, size);
+    public final int OPEN = 0;
+    public final int CHORD = 1;
+    public final int PIE = 2;
+
+    ///////////////////////////////////
+    // Shape // 2D Primitives // Arc //
+    ///////////////////////////////////
+
+    public void arc(double x, double y, double width, double height, double start, double stop) {
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
+
+        double nx = x - width/2;
+        double ny = y - height/2;
+
+        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
+        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
     }
 
-    public void rect(double x, double y, double width, double height) {
-        double nx = x, ny = y, nwidth = width, nheight = height;
-        switch (rectMode) {
-            case CORNER: {
-                nwidth *= 2;
-                nheight *= 2;
+    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
+        clamp(mode, OPEN, PIE);
+        ArcType arcMode = ArcType.OPEN;
+        switch (mode) {
+            case OPEN: {
+                arcMode = ArcType.OPEN;
                 break;
             }
-            case CORNERS: {
+            case CHORD: {
+                arcMode = ArcType.CHORD;
                 break;
             }
-            case RADIUS: {
-                nwidth *= 2;
-                nheight *= 2;
-                nx -= nwidth / 2;
-                ny -= nheight / 2;
-                break;
-            }
-            case CENTER: {
-                nx -= nwidth / 2;
-                ny -= nheight / 2;
+            case PIE: {
+                arcMode = ArcType.ROUND;
                 break;
             }
         }
-        if (hasFill) gc.fillRect(nx, ny, nwidth, nheight);
-        if (hasStroke) gc.strokeRect(nx, ny, nwidth, nheight);
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
+
+        double nx = x - width/2;
+        double ny = y - height/2;
+
+        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
+        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
     }
+
+    //////////////////////////////////////
+    // Shape // 2D Primitives // Circle //
+    //////////////////////////////////////
 
     public void circle(double x, double y, double size) {
         ellipse(x, y, size, size);
     }
+
+    ///////////////////////////////////////
+    // Shape // 2D Primitives // Ellipse //
+    ///////////////////////////////////////
 
     public void ellipse(double x, double y, double width, double height) {
         double nx = x, ny = y, nwidth = width, nheight = height;
@@ -154,38 +186,83 @@ public class FXApp {
         if (hasStroke) gc.strokeOval(nx, ny, nwidth, nheight);
     }
 
-    public final int OPEN = 0;
-    public final int CHORD = 1;
-    public final int PIE = 2;
+    ////////////////////////////////////
+    // Shape // 2D Primitives // Line //
+    ////////////////////////////////////
 
-    public void arc(double x, double y, double width, double height, double start, double stop) {
-        double nstart = degrees(start);
-        double nstop = degrees(stop);
-        if (hasFill) gc.fillArc(x, y, width, height, nstart, nstop, ArcType.ROUND);
-        if (hasStroke) gc.strokeArc(x, y, width, height, nstart, nstop, ArcType.OPEN);
+    public void line(double x1, double y1, double x2, double y2) {
+        gc.strokeLine(x1, y1, x2, y2);
     }
 
-    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
-        clamp(mode, OPEN, PIE);
-        ArcType arcMode = ArcType.OPEN;
-        switch (mode) {
-            case OPEN: {
-                arcMode = ArcType.OPEN;
+    /////////////////////////////////////
+    // Shape // 2D Primitives // Point //
+    /////////////////////////////////////
+
+    // maybe drawing the point using either circle() or square()
+    public void point(double x, double y) {
+        line(x, y, x, y);
+    }
+
+    ////////////////////////////////////
+    // Shape // 2D Primitives // Quad //
+    ////////////////////////////////////
+
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        double[] xPoints = {x1, x2, x3, x4};
+        double[] yPoints = {y1, y2, y3, y4};
+        if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
+        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
+    }
+
+    ////////////////////////////////////
+    // Shape // 2D Primitives // Rect //
+    ////////////////////////////////////
+
+    public void rect(double x, double y, double width, double height) {
+        double nx = x, ny = y, nwidth = width, nheight = height;
+        switch (rectMode) {
+            case CORNER: {
+                nwidth *= 2;
+                nheight *= 2;
                 break;
             }
-            case CHORD: {
-                arcMode = ArcType.CHORD;
+            case CORNERS: {
                 break;
             }
-            case PIE: {
-                arcMode = ArcType.ROUND;
+            case RADIUS: {
+                nwidth *= 2;
+                nheight *= 2;
+                nx -= nwidth / 2;
+                ny -= nheight / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nwidth / 2;
+                ny -= nheight / 2;
                 break;
             }
         }
-        double nstart = degrees(start)/2;
-        double nstop = degrees(stop)/2;
-        if (hasFill) gc.fillArc(x, y, width, height, nstart, nstop, arcMode);
-        if (hasStroke) gc.strokeArc(x, y, width, height, nstart, nstop, arcMode);
+        if (hasFill) gc.fillRect(nx, ny, nwidth, nheight);
+        if (hasStroke) gc.strokeRect(nx, ny, nwidth, nheight);
+    }
+
+    //////////////////////////////////////
+    // Shape // 2D Primitives // Square //
+    //////////////////////////////////////
+
+    public void square(double x, double y, double size) {
+        rect(x, y, size, size);
+    }
+
+    ////////////////////////////////////////
+    // Shape // 2D Primitives // Triangle //
+    ////////////////////////////////////////
+
+    public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+        double[] xPoints = {x1, x2, x3};
+        double[] yPoints = {y1, y2, y3};
+        if (hasFill) gc.fillPolygon(xPoints, yPoints, 3);
+        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }
 
     public void setMousePos(double x, double y) {
