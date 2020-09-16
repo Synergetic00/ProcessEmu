@@ -24,23 +24,23 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Group root = new Group();
         Scene scene = new Scene(root);
-        Canvas canvas = new Canvas(500, 500);
+        Canvas canvas = new Canvas(1920, 1080);
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        App test = new App(gc);
-        test.setup();
+        App testApp = new App(gc);
+        testApp.setup();
 
         new AnimationTimer() {
             public void handle(long now) {
-                test.draw();
+                testApp.draw();
             }
         }.start();
 
         scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent event) {
-				test.setMousePos(event.getSceneX(),event.getSceneY());
+				testApp.setMousePos(event.getSceneX(),event.getSceneY());
 			}
 		});
 

@@ -2,7 +2,7 @@ package utils;
 
 public class PVector {
 
-    double x, y, z;
+    public double x, y, z;
 
     public PVector(double x, double y) {
         this.x = x;
