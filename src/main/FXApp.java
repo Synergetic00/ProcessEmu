@@ -40,6 +40,20 @@ public class FXApp {
         gc.restore();
     }
 
+    public void noStroke() {
+        hasStroke = false;
+    }
+
+    public void stroke(int gray) {
+        stroke(gray,gray,gray);
+    }
+
+    public void stroke(int r, int g, int b) {
+        hasStroke = true;
+        gc.setStroke(Color.rgb(r,g,b));
+    }
+
+
     public void strokeWeight(int w) {
         gc.setLineWidth(w);
     }

@@ -16,6 +16,11 @@ public class App extends FXApp {
     public void draw() {
         background(0,200,200);
         rect(50,50,50,50);
+        fill(0, 0, 150);
+        stroke(0, 0, 250);
+        rect(pmouseX,pmouseY,10,10);
+        fill(150, 0, 0);
+        stroke(250, 0, 0);
         rect(mouseX,mouseY,10,10);
     }
     
