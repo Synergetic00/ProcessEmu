@@ -1,5 +1,6 @@
 package main;
 
+import java.util.Scanner;
 import java.util.Vector;
 
 import javax.tools.JavaCompiler;
@@ -18,6 +19,10 @@ import javafx.stage.Stage;
 import programs.Test;
 
 import java.io.*;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Method;
+import java.net.URL;
+import java.net.URLClassLoader;
 
 
 public class Main extends Application {
@@ -40,16 +45,14 @@ public class Main extends Application {
         try {
             BufferedReader br=new BufferedReader(new FileReader("src/programs/Test.txt"));
             PrintWriter writer=new PrintWriter("src/programs/Test.java");
+            writer.write("//Hello\n\n");
             writer.write("package programs;\n\n");
             writer.write("import javafx.scene.canvas.GraphicsContext;\n");
             writer.write("import main.FXApp;\n");
             writer.write("public class Test extends FXApp{\n");
             writer.write("public Test(GraphicsContext gc) { super(gc); }\n");
             String reader="";
-            System.out.println("start");
-            while((reader=(br.readLine()))!=null){
-                reader.replace("void setup()", "public void setup()");
-                reader.replace("void draw()", "public void draw()");
+            while((reader=(br.readLine()))!=null) {
                 writer.write(reader+"\n");
             }
             writer.write("\n}");
@@ -60,22 +63,11 @@ public class Main extends Application {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-    
-        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        //System.out.println(compiler);
-        int b = compiler.run(null, null, null,"src/programs/Test.java");
-
-        Test testme=new Test(gc);
-        testme.setup();
-        //System.out.println(compiler);
-        b = compiler.run(null, null, null,"src/programs/Test.java");
-
-        Test test2=new Test(gc);
-        test2.setup();
+        
+        
 
         new AnimationTimer() {
             public void handle(long now) {
-                test2.draw();
             }
         }.start();
 
