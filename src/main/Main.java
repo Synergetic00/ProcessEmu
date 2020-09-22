@@ -50,7 +50,7 @@ public class Main extends Application {
             writer.write("import javafx.scene.canvas.GraphicsContext;\n");
             writer.write("import main.FXApp;\n");
             writer.write("public class Test extends FXApp{\n");
-            writer.write("public Test(GraphicsContext gc) { super(gc); }\n");
+            //writer.write("public Test(GraphicsContext gc) { super(gc); }\n");
             String reader="";
             while((reader=(br.readLine()))!=null) {
                 writer.write(reader+"\n");
@@ -64,6 +64,9 @@ public class Main extends Application {
             e.printStackTrace();
         }
         
+        JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
+        compiler.run(null, null, null, "src/programs/Test.java");
+
         
 
         new AnimationTimer() {
