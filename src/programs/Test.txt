@@ -1,3 +1,0 @@
-public void setup() {
-    System.out.println("It has been loaded!");
-}

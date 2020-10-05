@@ -1,0 +1,19 @@
+package programs;
+
+import javafx.scene.canvas.*;
+import javafx.scene.paint.*;
+import javafx.scene.shape.*;
+
+public class CodeGenTest {
+
+    public static GraphicsContext gc;
+
+    public CodeGenTest(GraphicsContext gc) {
+        this.gc = gc;
+    }
+
+    public static void main(String[] args) {
+        gc.setFill(Color.RED);
+        gc.fillRect(100,100,100,100);
+    }
+}
