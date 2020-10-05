@@ -232,14 +232,24 @@ public class PVector {
         return target;
     }
 
-    public void normalize() {
+    public PVector normalize() {
         double length = FXUtils.dist(0, 0, 0, x, y, z);
         if (length != 0) {
             x /= length;
             y /= length;
             z /= length;
         }
+        return new PVector(x,y,z);
     }
+
+    /*public void normalize() {
+        double length = FXUtils.dist(0, 0, 0, x, y, z);
+        if (length != 0) {
+            x /= length;
+            y /= length;
+            z /= length;
+        }
+    }*/
 
     public void normalize(PVector target) {
         double length = FXUtils.dist(0, 0, 0, x, y, z);

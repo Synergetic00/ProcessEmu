@@ -32,10 +32,21 @@ public class FXApp {
     GraphicsContext gc;
 
     public int width = 100, height = 100;
+    double trueWidth, trueHeight;
+    double startX, startY;
     double mouseX, mouseY, pmouseX, pmouseY;
     
     protected FXApp(GraphicsContext gc){
         this.gc = gc;
+
+        startX = 0;
+        startY = 0;
+
+        trueWidth = gc.getCanvas().getWidth();
+        trueHeight = gc.getCanvas().getHeight();
+
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, trueWidth, trueHeight);
 
         //Default colour objects
         gc.setFill(Color.WHITE);
@@ -50,6 +61,8 @@ public class FXApp {
     protected void size(int w, int h){
         width = w;
         height = h;
+        startX = (trueWidth-w)/2;
+        startY = (trueHeight-h)/2;
     }
 
     public void setup() {}
@@ -64,8 +77,10 @@ public class FXApp {
 
     public void background(int r, int g, int b) {
         gc.save();
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, trueWidth, trueHeight);
         gc.setFill(Color.rgb(r, g, b));
-        gc.fillRect(0,0,width,height);
+        gc.fillRect(startX,startY,width,height);
         gc.restore();
     }
 
@@ -142,8 +157,8 @@ public class FXApp {
         double nx = x - width/2;
         double ny = y - height/2;
 
-        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
-        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
+        if (hasFill) gc.fillArc(startX+nx, startY+ny, width, height, degStart, degStop, arcMode);
+        if (hasStroke) gc.strokeArc(startX+nx, startY+ny, width, height, degStart, degStop, arcMode);
     }
 
     //////////////////////////////////////
@@ -182,8 +197,8 @@ public class FXApp {
                 break;
             }
         }
-        if (hasFill) gc.fillOval(nx, ny, nwidth, nheight);
-        if (hasStroke) gc.strokeOval(nx, ny, nwidth, nheight);
+        if (hasFill) gc.fillOval(startX+nx, startY+ny, nwidth, nheight);
+        if (hasStroke) gc.strokeOval(startX+nx, startY+ny, nwidth, nheight);
     }
 
     ////////////////////////////////////

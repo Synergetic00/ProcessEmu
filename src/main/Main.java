@@ -2,10 +2,13 @@ package main;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
 import java.io.ByteArrayOutputStream;
@@ -47,17 +50,32 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Group root = new Group();
         Scene scene = new Scene(root);
-        Canvas canvas = new Canvas(1920, 1080);
+        Canvas canvas = new Canvas(1440, 900);
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        executeProgram("Example1", gc);
-        executeProgram("Bounce", gc);
+        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+            @Override
+            public void handle(MouseEvent event) {
+                if (event.getButton() == MouseButton.PRIMARY) {
+                    try {
+                        executeProgram("Bounce", gc);
+                    } catch (Exception e) {}
+                }
+                if (event.getButton() == MouseButton.SECONDARY) {
+                    try {
+                        executeProgram("Collision", gc);
+                    } catch (Exception e) {}
+                }
+            }
+        });
 
         new AnimationTimer() {
             public void handle(long now) {
                 try {
-                    drawMethod.invoke(programObject);
+                    if (drawMethod != null) {
+                        drawMethod.invoke(programObject);
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -81,7 +99,10 @@ public class Main extends Application {
     }
 
     private static void runFile(String path, GraphicsContext gc) throws Exception {
-        String program = readFile(path, Charset.forName("UTF-8"));
+        String program = "";
+        program += readFile("src/utils/Opening.txt", Charset.forName("UTF-8"));
+        program += readFile(path, Charset.forName("UTF-8"));
+        program += " }";
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileObject compilationUnit = new StringJavaFileObject("CodeGenTest", program);
         SimpleJavaFileManager fileManager = new SimpleJavaFileManager(
