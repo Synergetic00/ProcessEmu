@@ -45,8 +45,6 @@ public class Main extends Application {
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
         runFile("src/programs/Example1.txt", gc);
-        runFile("src/programs/Example2.txt", gc);
-        runFile("src/programs/Example1.txt", gc);
 
         new AnimationTimer() {
             public void handle(long now) {
@@ -71,11 +69,11 @@ public class Main extends Application {
         compilationTask.call();
         CompiledClassLoader classLoader = new CompiledClassLoader(fileManager.getGeneratedOutputFiles());
 
-        Class <?> codeGenTest = classLoader.loadClass("programs.CodeGenTest");
+        Class<?> codeGenTest = classLoader.loadClass("programs.CodeGenTest");
         Constructor<?> constructor = codeGenTest.getConstructor(GraphicsContext.class);
-        constructor.newInstance(gc);
-        Method main = codeGenTest.getMethod("main", String[].class);
-        main.invoke(null, new Object[]{null});
+        Object o = constructor.newInstance(gc);
+        Method main = codeGenTest.getMethod("setup");
+        main.invoke(o);
     }
 
     private static class StringJavaFileObject extends SimpleJavaFileObject {
