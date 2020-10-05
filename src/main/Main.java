@@ -32,6 +32,13 @@ import javax.tools.ToolProvider;
 
 public class Main extends Application {
 
+    static Class<?> programClass;
+    static Constructor<?> programConstructor;
+    static Object programObject;
+
+    static Method setupMethod;
+    static Method drawMethod;
+
     public static void main(String[] args) {
         launch(args);
     }
@@ -44,17 +51,30 @@ public class Main extends Application {
         root.getChildren().add(canvas);
         GraphicsContext gc = canvas.getGraphicsContext2D();
 
-        runFile("src/programs/Example1.txt", gc);
+        executeProgram("Example1", gc);
+        executeProgram("Bounce", gc);
 
         new AnimationTimer() {
             public void handle(long now) {
+                try {
+                    drawMethod.invoke(programObject);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
 
         stage.setScene(scene);
-		stage.show();
+        stage.show();
     }
-    
+
+    public static void executeProgram(String name, GraphicsContext gc) throws Exception {
+        runFile("src/programs/"+name+".txt", gc);
+        setupMethod = programClass.getMethod("setup");
+        setupMethod.invoke(programObject);
+        drawMethod = programClass.getMethod("draw");
+    }
+
     private static String readFile(String path, Charset encoding) throws IOException {
         byte[] encoded = Files.readAllBytes(Paths.get(path));
         return new String(encoded, encoding);
@@ -64,16 +84,16 @@ public class Main extends Application {
         String program = readFile(path, Charset.forName("UTF-8"));
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileObject compilationUnit = new StringJavaFileObject("CodeGenTest", program);
-        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(compiler.getStandardFileManager(null, null, null));
-        JavaCompiler.CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(compilationUnit));
+        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(
+                compiler.getStandardFileManager(null, null, null));
+        JavaCompiler.CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null,
+                Arrays.asList(compilationUnit));
         compilationTask.call();
         CompiledClassLoader classLoader = new CompiledClassLoader(fileManager.getGeneratedOutputFiles());
 
-        Class<?> codeGenTest = classLoader.loadClass("programs.CodeGenTest");
-        Constructor<?> constructor = codeGenTest.getConstructor(GraphicsContext.class);
-        Object o = constructor.newInstance(gc);
-        Method main = codeGenTest.getMethod("setup");
-        main.invoke(o);
+        programClass = classLoader.loadClass("programs.CodeGenTest");
+        programConstructor = programClass.getConstructor(GraphicsContext.class);
+        programObject = programConstructor.newInstance(gc);
     }
 
     private static class StringJavaFileObject extends SimpleJavaFileObject {

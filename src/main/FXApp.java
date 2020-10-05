@@ -31,7 +31,7 @@ public class FXApp {
 
     GraphicsContext gc;
 
-    int width = 100, height = 100;
+    public int width = 100, height = 100;
     double mouseX, mouseY, pmouseX, pmouseY;
     
     protected FXApp(GraphicsContext gc){
