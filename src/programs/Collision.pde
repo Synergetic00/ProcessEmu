@@ -3,11 +3,11 @@ Ball[] balls =  {
   new Ball(700, 400, 80) 
 };
 
-public void setup() {
+void setup() {
   size(640, 360);
 }
 
-public void draw() {
+void draw() {
   background(51);
 
   for (Ball b : balls) {

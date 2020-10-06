@@ -58,6 +58,11 @@ public class FXApp {
         gc.restore();
     }
 
+    protected void fullScreen() {
+        width = (int) trueWidth;
+        height = (int) trueHeight;
+    }
+
     protected void size(int w, int h){
         width = w;
         height = h;
@@ -237,28 +242,28 @@ public class FXApp {
         double nx = x, ny = y, nwidth = width, nheight = height;
         switch (rectMode) {
             case CORNER: {
-                nwidth *= 2;
-                nheight *= 2;
                 break;
             }
             case CORNERS: {
+                nwidth /= 2;
+                nheight /= 2;
                 break;
             }
             case RADIUS: {
-                nwidth *= 2;
-                nheight *= 2;
                 nx -= nwidth / 2;
                 ny -= nheight / 2;
                 break;
             }
             case CENTER: {
+                nwidth /= 2;
+                nheight /= 2;
                 nx -= nwidth / 2;
                 ny -= nheight / 2;
                 break;
             }
         }
-        if (hasFill) gc.fillRect(nx, ny, nwidth, nheight);
-        if (hasStroke) gc.strokeRect(nx, ny, nwidth, nheight);
+        if (hasFill) gc.fillRect(startX+nx, startY+ny, nwidth, nheight);
+        if (hasStroke) gc.strokeRect(startX+nx, startY+ny, nwidth, nheight);
     }
 
     //////////////////////////////////////
@@ -274,8 +279,8 @@ public class FXApp {
     ////////////////////////////////////////
 
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
-        double[] xPoints = {x1, x2, x3};
-        double[] yPoints = {y1, y2, y3};
+        double[] xPoints = {startX+x1, startX+x2, startX+x3};
+        double[] yPoints = {startY+y1, startY+y2, startY+y3};
         if (hasFill) gc.fillPolygon(xPoints, yPoints, 3);
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }

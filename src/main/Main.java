@@ -1,16 +1,5 @@
 package main;
 
-import javafx.animation.AnimationTimer;
-import javafx.application.Application;
-import javafx.event.EventHandler;
-import javafx.scene.Group;
-import javafx.scene.Scene;
-import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
-import javafx.stage.Stage;
-
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
@@ -33,7 +22,18 @@ import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.stage.Stage;
+
 public class Main extends Application {
+
+    public static GraphicsContext gc;
 
     static Class<?> programClass;
     static Constructor<?> programConstructor;
@@ -41,6 +41,11 @@ public class Main extends Application {
 
     static Method setupMethod;
     static Method drawMethod;
+
+    static int currentAppIndex;
+    static boolean onHomeScreen = true;
+
+    static ArrayList<App> apps = new ArrayList<App>();
 
     public static void main(String[] args) {
         launch(args);
@@ -52,42 +57,137 @@ public class Main extends Application {
         Scene scene = new Scene(root);
         Canvas canvas = new Canvas(1440, 900);
         root.getChildren().add(canvas);
-        GraphicsContext gc = canvas.getGraphicsContext2D();
+        gc = canvas.getGraphicsContext2D();
 
-        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-            @Override
-            public void handle(MouseEvent event) {
-                if (event.getButton() == MouseButton.PRIMARY) {
-                    try {
-                        executeProgram("Bounce", gc);
-                    } catch (Exception e) {}
+        currentAppIndex = 0;
+
+        apps.add(new App("Bounce", "Processing"));
+        apps.add(new App("Collision", "Processing"));
+
+        drawDefaultApp(gc);
+
+        /*
+         * scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+         * 
+         * @Override public void handle(MouseEvent event) { if (event.getButton() ==
+         * MouseButton.PRIMARY) { try { apps.get(0).execute(); } catch (Exception e) {}
+         * } if (event.getButton() == MouseButton.SECONDARY) { try {
+         * apps.get(1).execute(); } catch (Exception e) {} } } });
+         */
+
+        scene.setOnKeyPressed(event -> {
+            KeyCode keyCode = event.getCode();
+            switch (keyCode) {
+                case Q: {
+                    if (!onHomeScreen) {
+                        onHomeScreen = true;
+                    }
+                    break;
                 }
-                if (event.getButton() == MouseButton.SECONDARY) {
-                    try {
-                        executeProgram("Collision", gc);
-                    } catch (Exception e) {}
+
+                case R: {
+                    if (!onHomeScreen) {
+                        try {
+                            apps.get(currentAppIndex).execute();
+                        } catch (Exception e) {}
+                    }
+                    break;
                 }
+
+                case UP: {
+                    if (onHomeScreen) {
+                        currentAppIndex--;
+                    }
+                    break;
+                }
+
+                case DOWN: {
+                    if (onHomeScreen) {
+                        currentAppIndex++;
+                    }
+                    break;
+                }
+
+                case ENTER: {
+                    if (onHomeScreen) {
+                        try {
+                            onHomeScreen = false;
+                            apps.get(currentAppIndex).execute();
+                        } catch (Exception e) {}
+                    }
+                    break;
+                }
+
+                default: {
+                    
+                    break;
+                }
+                
             }
-        });
+            
+            if (currentAppIndex < 0) {
+                currentAppIndex = apps.size() - 1;
+            }
+
+            if (currentAppIndex >= apps.size()) {
+                currentAppIndex = 0;
+            }
+            
+            /*if (keyPressed == 'q') {
+                currentAppIndex = -1;
+            } else {
+                System.out.println((int) keyPressed);
+                currentAppIndex = 0;
+                try {
+                    apps.get(0).execute();
+                } catch (Exception e) {}
+            }*/
+		});
 
         new AnimationTimer() {
             public void handle(long now) {
-                try {
-                    if (drawMethod != null) {
-                        drawMethod.invoke(programObject);
-                    }
-                } catch (Exception e) {
-                    e.printStackTrace();
+                if (onHomeScreen) {
+                    drawDefaultApp(gc);
+                } else {
+                    try {
+                        if (drawMethod != null) {
+                            drawMethod.invoke(programObject);
+                        }
+                    } catch (Exception e) {}
                 }
             }
         }.start();
 
         stage.setScene(scene);
+        stage.setFullScreen(true);
         stage.show();
     }
 
+    private void drawDefaultApp(GraphicsContext gc) {
+        int spacing = 20, toDisplay = 5;
+        int height = (int) gc.getCanvas().getHeight();
+        gc.save();
+        FXApp defaultApp = new FXApp(gc);
+        defaultApp.fullScreen();
+        defaultApp.background(20);
+        double rectH = (height - (spacing * (toDisplay+1)))/toDisplay;
+        for (int i = 0; i < apps.size(); i++) {
+            double yPos = i*(rectH+spacing)+spacing;
+            if (i == currentAppIndex) {
+                defaultApp.fill(255,0,0);
+            } else {
+                defaultApp.fill(255);
+            }
+            defaultApp.rect(100, yPos, 200, rectH);
+            defaultApp.fill(0);
+            gc.fillText(apps.get(i).appName, 150, yPos+20);
+            gc.fillText(apps.get(i).appAuthor, 150, yPos+50);
+        }
+        gc.restore();
+    }
+
     public static void executeProgram(String name, GraphicsContext gc) throws Exception {
-        runFile("src/programs/"+name+".txt", gc);
+        runFile("src/programs/"+name+".pde", gc);
         setupMethod = programClass.getMethod("setup");
         setupMethod.invoke(programObject);
         drawMethod = programClass.getMethod("draw");
@@ -102,7 +202,11 @@ public class Main extends Application {
         String program = "";
         program += readFile("src/utils/Opening.txt", Charset.forName("UTF-8"));
         program += readFile(path, Charset.forName("UTF-8"));
-        program += " }";
+        program += "}";
+
+        program = program.replace("void setup()", "public void setup()");
+        program = program.replace("void draw()", "public void draw()");
+
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileObject compilationUnit = new StringJavaFileObject("CodeGenTest", program);
         SimpleJavaFileManager fileManager = new SimpleJavaFileManager(

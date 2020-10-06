@@ -5,7 +5,7 @@ double yspeed = 2.2;
 int xdirection = 1;
 int ydirection = 1;
 
-public void setup() {
+void setup() {
     size(640, 360);
     noStroke();
     ellipseMode(RADIUS);
@@ -13,7 +13,7 @@ public void setup() {
     ypos = height/2;
 }
 
-public void draw() {
+void draw() {
     background(102);
 
     xpos = xpos + ( xspeed * xdirection );
