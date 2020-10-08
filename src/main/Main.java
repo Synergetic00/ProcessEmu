@@ -29,6 +29,7 @@ import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -67,10 +68,9 @@ public class Main extends Application {
         apps.add(new App("Bounce", "Processing"));
         apps.add(new App("Collision", "Processing"));
         apps.add(new App("BoxCarrier", "Elise"));
+        apps.add(new App("Keyboard", "Processing"));
 
         drawDefaultApp(gc);
-
-
 
         /*
          * scene.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -82,6 +82,11 @@ public class Main extends Application {
          */
 
         scene.setOnKeyPressed(event -> {
+
+            try {
+                keyPressedMethod.invoke(programObject, event);
+            } catch (Exception e) {}
+
             KeyCode keyCode = event.getCode();
             switch (keyCode) {
                 case Q: {
@@ -95,7 +100,8 @@ public class Main extends Application {
                     if (!onHomeScreen) {
                         try {
                             apps.get(currentAppIndex).execute();
-                        } catch (Exception e) {}
+                        } catch (Exception e) {
+                        }
                     }
                     break;
                 }
@@ -119,7 +125,8 @@ public class Main extends Application {
                         try {
                             onHomeScreen = false;
                             apps.get(currentAppIndex).execute();
-                        } catch (Exception e) {}
+                        } catch (Exception e) {
+                        }
                     }
                     break;
                 }
@@ -127,9 +134,9 @@ public class Main extends Application {
                 default: {
                     break;
                 }
-                
+
             }
-            
+
             if (currentAppIndex < 0) {
                 currentAppIndex = apps.size() - 1;
             }
@@ -137,14 +144,18 @@ public class Main extends Application {
             if (currentAppIndex >= apps.size()) {
                 currentAppIndex = 0;
             }
-		});
+        });
 
         scene.setOnKeyReleased(event -> {
-
+            try {
+                keyReleasedMethod.invoke(programObject, event);
+            } catch (Exception e) {}
         });
 
         scene.setOnKeyTyped(event -> {
-
+            try {
+                keyTypedMethod.invoke(programObject, event);
+            } catch (Exception e) {}
         });
 
         new AnimationTimer() {
@@ -194,9 +205,9 @@ public class Main extends Application {
         setupMethod = programClass.getMethod("setup");
         setupMethod.invoke(programObject);
         drawMethod = programClass.getMethod("draw");
-        keyPressedMethod = programClass.getMethod("keyPressed");
-        keyReleasedMethod = programClass.getMethod("keyReleased");
-        keyTypedMethod = programClass.getMethod("keyTyped");
+        keyPressedMethod = programClass.getMethod("handleKeyPressed", KeyEvent.class);
+        keyReleasedMethod = programClass.getMethod("handleKeyReleased", KeyEvent.class);
+        keyTypedMethod = programClass.getMethod("handleKeyTyped", KeyEvent.class);
     }
 
     private static String readFile(String path, Charset encoding) throws IOException {

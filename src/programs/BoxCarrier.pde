@@ -116,7 +116,7 @@
             stroke(0);
         }
     }
-    /*
+    
     public void keyTyped() {
         if (key == 'a') {
             if (pX >= 100) {
@@ -158,4 +158,4 @@
             }
         }
     }
-    */
+    

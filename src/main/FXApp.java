@@ -5,6 +5,8 @@ package main;
 import static utils.FXUtils.*;
 
 import javafx.scene.canvas.*;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
 
@@ -35,12 +37,18 @@ public class FXApp {
     double trueWidth, trueHeight;
     double startX, startY;
     double mouseX, mouseY, pmouseX, pmouseY;
+
+    public char key;
+    public KeyCode keyCode;
+    public boolean keyPressed;
     
     protected FXApp(GraphicsContext gc){
         this.gc = gc;
 
         startX = 0;
         startY = 0;
+
+        keyPressed = false;
 
         trueWidth = gc.getCanvas().getWidth();
         trueHeight = gc.getCanvas().getHeight();
@@ -51,16 +59,14 @@ public class FXApp {
         //Default colour objects
         gc.setFill(Color.WHITE);
 
-        //Default background
-        gc.save();
-        gc.setFill(Color.rgb(204, 204, 204));
-        gc.fillRect(0,0,width,height);
-        gc.restore();
+        size(100,100);
     }
 
     protected void fullScreen() {
         width = (int) trueWidth;
         height = (int) trueHeight;
+        startX = 0;
+        startY = 0;
     }
 
     protected void size(int w, int h){
@@ -68,6 +74,35 @@ public class FXApp {
         height = h;
         startX = (trueWidth-w)/2;
         startY = (trueHeight-h)/2;
+
+        gc.save();
+        gc.setFill(Color.BLACK);
+        gc.fillRect(0, 0, trueWidth, trueHeight);
+        gc.setFill(Color.rgb(204, 204, 204));
+        gc.fillRect(startX,startY,width,height);
+        gc.restore();
+    }
+
+    public void handleKeyPressed(KeyEvent event) {
+        updateKeys(event);
+        keyPressed = true;
+        keyPressed();
+    }
+
+    public void handleKeyReleased(KeyEvent event) {
+        updateKeys(event);
+        keyPressed = false;
+        keyReleased();
+    }
+
+    public void handleKeyTyped(KeyEvent event) {
+        updateKeys(event);
+        keyTyped();
+    }
+
+    void updateKeys(KeyEvent event) {
+        keyCode = event.getCode();
+        key = event.getCharacter().charAt(0);
     }
 
     public void setup() {}
@@ -85,7 +120,7 @@ public class FXApp {
 
     public void background(int r, int g, int b) {
         gc.save();
-        gc.setFill(Color.BLACK);
+        gc.setFill(Color.rgb(20,20,20));
         gc.fillRect(0, 0, trueWidth, trueHeight);
         gc.setFill(Color.rgb(r, g, b));
         gc.fillRect(startX,startY,width,height);
