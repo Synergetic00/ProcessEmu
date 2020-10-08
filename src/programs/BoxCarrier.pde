@@ -117,7 +117,7 @@
         }
     }
     
-    public void keyTyped() {
+    void keyTyped() {
         if (key == 'a') {
             if (pX >= 100) {
                 pRight = false;

@@ -24,12 +24,17 @@ import javax.tools.ToolProvider;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class Main extends Application {
@@ -42,9 +47,17 @@ public class Main extends Application {
 
     static Method setupMethod;
     static Method drawMethod;
+
     static Method keyPressedMethod;
     static Method keyReleasedMethod;
     static Method keyTypedMethod;
+
+    static Method mouseClickedMethod;
+    static Method mouseDraggedMethod;
+    static Method mouseMovedMethod;
+    static Method mousePressedMethod;
+    static Method mouseReleasedMethod;
+    static Method mouseWheelMethod;
 
     static int currentAppIndex;
     static boolean onHomeScreen = true;
@@ -59,7 +72,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         Group root = new Group();
         Scene scene = new Scene(root);
-        Canvas canvas = new Canvas(1440, 900);
+        Rectangle2D screenBounds = Screen.getPrimary().getBounds();
+        Canvas canvas = new Canvas(screenBounds.getWidth()+1, screenBounds.getHeight()+1);
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
 
@@ -69,17 +83,57 @@ public class Main extends Application {
         apps.add(new App("Collision", "Processing", "A physics simulation"));
         apps.add(new App("BoxCarrier", "Elise", "A game of infinite haulage"));
         apps.add(new App("Keyboard", "Processing", "Is a key being pressed"));
+        apps.add(new App("Mouse", "Evan", "Mouse stuff"));
 
         drawDefaultApp(gc);
 
-        /*
-         * scene.setOnMousePressed(new EventHandler<MouseEvent>() {
-         * 
-         * @Override public void handle(MouseEvent event) { if (event.getButton() ==
-         * MouseButton.PRIMARY) { try { apps.get(0).execute(); } catch (Exception e) {}
-         * } if (event.getButton() == MouseButton.SECONDARY) { try {
-         * apps.get(1).execute(); } catch (Exception e) {} } } });
-         */
+        scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseClickedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseDraggedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseMovedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mousePressedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseReleasedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnScroll(new EventHandler<ScrollEvent>() {
+            public void handle(ScrollEvent event) {
+                try {
+                    mouseWheelMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
 
         scene.setOnKeyPressed(event -> {
 
@@ -184,6 +238,7 @@ public class Main extends Application {
         gc.save();
         FXApp defaultApp = new FXApp(gc);
         defaultApp.fullScreen();
+        defaultApp.updateTime();
         defaultApp.background(20);
         double rectH = (height - (spacing * (toDisplay+1)))/toDisplay;
         for (int i = 0; i < apps.size(); i++) {
@@ -207,20 +262,31 @@ public class Main extends Application {
             defaultApp.text(apps.get(i).appAuthor, 230, yPos+90);
             defaultApp.textSize(25);
             defaultApp.text(apps.get(i).appDesc, 230, yPos+130);
-            //gc.fillText(apps.get(i).appName, 150, yPos+20);
-            //gc.fillText(apps.get(i).appAuthor, 150, yPos+50);
         }
+
+        defaultApp.fill(255);
+        String dateAndTime = defaultApp.day()+"/"+defaultApp.month()+"/"+defaultApp.year()+" "+defaultApp.hour()+":"+defaultApp.minute()+":"+defaultApp.second();
+        defaultApp.text(dateAndTime, 200, defaultApp.height - 100);
         gc.restore();
     }
 
     public static void executeProgram(String name, GraphicsContext gc) throws Exception {
         runFile("src/programs/"+name+".pde", gc);
         setupMethod = programClass.getMethod("handleSetup");
-        setupMethod.invoke(programObject);
         drawMethod = programClass.getMethod("handleDraw");
+
         keyPressedMethod = programClass.getMethod("handleKeyPressed", KeyEvent.class);
         keyReleasedMethod = programClass.getMethod("handleKeyReleased", KeyEvent.class);
         keyTypedMethod = programClass.getMethod("handleKeyTyped", KeyEvent.class);
+
+        mouseClickedMethod = programClass.getMethod("handleMouseClicked", MouseEvent.class);
+        mouseDraggedMethod = programClass.getMethod("handleMouseDragged", MouseEvent.class);
+        mouseMovedMethod = programClass.getMethod("handleMouseMoved", MouseEvent.class);
+        mousePressedMethod = programClass.getMethod("handleMousePressed", MouseEvent.class);
+        mouseReleasedMethod = programClass.getMethod("handleMouseReleased", MouseEvent.class);
+        mouseWheelMethod = programClass.getMethod("handleMouseWheel", ScrollEvent.class);
+        
+        setupMethod.invoke(programObject);
     }
 
     private static String readFile(String path, Charset encoding) throws IOException {
@@ -234,8 +300,7 @@ public class Main extends Application {
         program += readFile(path, Charset.forName("UTF-8"));
         program += "}";
 
-        program = program.replace("void setup()", "public void setup()");
-        program = program.replace("void draw()", "public void draw()");
+        program = program.replace("void ", "public void ");
         program = program.replace("float", "double");
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();

@@ -240,4 +240,13 @@ public class FXUtils {
     public static final double TAU = 6.2831855f;
     public static final double TWO_PI = 6.2831855f;
 
+    public static final int OPEN = 0;
+    public static final int CHORD = 1;
+    public static final int PIE = 2;
+
+    public static final int CORNER = 0;
+    public static final int CORNERS = 1;
+    public static final int RADIUS = 2;
+    public static final int CENTER = 3;
+
 }
