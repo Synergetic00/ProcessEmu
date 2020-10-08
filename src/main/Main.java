@@ -65,10 +65,10 @@ public class Main extends Application {
 
         currentAppIndex = 0;
 
-        apps.add(new App("Bounce", "Processing"));
-        apps.add(new App("Collision", "Processing"));
-        apps.add(new App("BoxCarrier", "Elise"));
-        apps.add(new App("Keyboard", "Processing"));
+        apps.add(new App("Bounce", "Processing", "Bouncing ball without acceleration"));
+        apps.add(new App("Collision", "Processing", "A physics simulation"));
+        apps.add(new App("BoxCarrier", "Elise", "A game of infinite haulage"));
+        apps.add(new App("Keyboard", "Processing", "Is a key being pressed"));
 
         drawDefaultApp(gc);
 
@@ -172,6 +172,7 @@ public class Main extends Application {
             }
         }.start();
 
+        stage.setOnCloseRequest(value -> { System.exit(0); });
         stage.setScene(scene);
         stage.setFullScreen(true);
         stage.show();
@@ -187,24 +188,36 @@ public class Main extends Application {
         double rectH = (height - (spacing * (toDisplay+1)))/toDisplay;
         for (int i = 0; i < apps.size(); i++) {
             double yPos = i*(rectH+spacing)+spacing;
+            defaultApp.fill(0);
+            defaultApp.strokeWeight(5);
+            if (i == currentAppIndex) {
+                defaultApp.stroke(255,0,0);
+            } else {
+                defaultApp.stroke(255);
+            }
+            defaultApp.rect(200, yPos, defaultApp.width - 400, rectH);
             if (i == currentAppIndex) {
                 defaultApp.fill(255,0,0);
             } else {
                 defaultApp.fill(255);
             }
-            defaultApp.rect(100, yPos, 200, rectH);
-            defaultApp.fill(0);
-            gc.fillText(apps.get(i).appName, 150, yPos+20);
-            gc.fillText(apps.get(i).appAuthor, 150, yPos+50);
+            defaultApp.textSize(35);
+            defaultApp.text(apps.get(i).appName, 230, yPos+50);
+            defaultApp.textSize(20);
+            defaultApp.text(apps.get(i).appAuthor, 230, yPos+90);
+            defaultApp.textSize(25);
+            defaultApp.text(apps.get(i).appDesc, 230, yPos+130);
+            //gc.fillText(apps.get(i).appName, 150, yPos+20);
+            //gc.fillText(apps.get(i).appAuthor, 150, yPos+50);
         }
         gc.restore();
     }
 
     public static void executeProgram(String name, GraphicsContext gc) throws Exception {
         runFile("src/programs/"+name+".pde", gc);
-        setupMethod = programClass.getMethod("setup");
+        setupMethod = programClass.getMethod("handleSetup");
         setupMethod.invoke(programObject);
-        drawMethod = programClass.getMethod("draw");
+        drawMethod = programClass.getMethod("handleDraw");
         keyPressedMethod = programClass.getMethod("handleKeyPressed", KeyEvent.class);
         keyReleasedMethod = programClass.getMethod("handleKeyReleased", KeyEvent.class);
         keyTypedMethod = programClass.getMethod("handleKeyTyped", KeyEvent.class);
@@ -226,15 +239,13 @@ public class Main extends Application {
         program = program.replace("float", "double");
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
-        JavaFileObject compilationUnit = new StringJavaFileObject("CodeGenTest", program);
-        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(
-                compiler.getStandardFileManager(null, null, null));
-        JavaCompiler.CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null,
-                Arrays.asList(compilationUnit));
+        JavaFileObject compilationUnit = new StringJavaFileObject("ProcessingApp", program);
+        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(compiler.getStandardFileManager(null, null, null));
+        JavaCompiler.CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(compilationUnit));
         compilationTask.call();
         CompiledClassLoader classLoader = new CompiledClassLoader(fileManager.getGeneratedOutputFiles());
 
-        programClass = classLoader.loadClass("programs.CodeGenTest");
+        programClass = classLoader.loadClass("programs.ProcessingApp");
         programConstructor = programClass.getConstructor(GraphicsContext.class);
         programObject = programConstructor.newInstance(gc);
     }

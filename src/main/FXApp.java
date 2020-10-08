@@ -4,13 +4,18 @@ package main;
 //import static utils.PVector.*;
 import static utils.FXUtils.*;
 
+import java.util.*;
+
 import javafx.scene.canvas.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.paint.*;
 import javafx.scene.shape.*;
+import javafx.scene.text.Font;
 
 public class FXApp {
+    
+    Calendar date;
 
     public int clamp(int val, int min, int max) {
         return Math.max(min, Math.min(max, val));
@@ -41,8 +46,12 @@ public class FXApp {
     public char key;
     public KeyCode keyCode;
     public boolean keyPressed;
+    List<KeyCode> pressedKeys = new ArrayList<>(20);
     
     protected FXApp(GraphicsContext gc){
+
+        date = new Calendar.Builder().build();
+
         this.gc = gc;
 
         startX = 0;
@@ -83,15 +92,25 @@ public class FXApp {
         gc.restore();
     }
 
+    public void textSize(double size) {
+        gc.setFont(new Font(size));
+    }
+
+    public void text(String text, double x, double y) {
+        gc.fillText(text, x, y);
+    }
+
     public void handleKeyPressed(KeyEvent event) {
         updateKeys(event);
+        if (!pressedKeys.contains(keyCode)) pressedKeys.add(keyCode);
         keyPressed = true;
         keyPressed();
     }
 
     public void handleKeyReleased(KeyEvent event) {
         updateKeys(event);
-        keyPressed = false;
+        pressedKeys.remove(keyCode);
+        keyPressed = !pressedKeys.isEmpty();
         keyReleased();
     }
 
@@ -101,12 +120,22 @@ public class FXApp {
     }
 
     void updateKeys(KeyEvent event) {
+        System.out.println(date.get(Calendar.MINUTE)+":"+date.get(Calendar.SECOND));
         keyCode = event.getCode();
         key = event.getCharacter().charAt(0);
     }
 
+    public void handleSetup() {
+        setup();
+    }
+    public void handleDraw() {
+        date.setTimeInMillis(System.currentTimeMillis());
+        draw();
+    }
+
     public void setup() {}
     public void draw() {}
+
     public void keyPressed() {}
     public void keyReleased() {}
     public void keyTyped() {}

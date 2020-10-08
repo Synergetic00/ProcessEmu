@@ -10,8 +10,8 @@ import java.io.*;
 import static utils.FXUtils.*;
 import main.FXApp;
 
-public class CodeGenTest extends FXApp {
+public class ProcessingApp extends FXApp {
 
-    public CodeGenTest(GraphicsContext gc) {
+    public ProcessingApp(GraphicsContext gc) {
         super(gc);
     }
