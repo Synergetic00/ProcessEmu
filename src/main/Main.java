@@ -41,6 +41,9 @@ public class Main extends Application {
 
     static Method setupMethod;
     static Method drawMethod;
+    static Method keyPressedMethod;
+    static Method keyReleasedMethod;
+    static Method keyTypedMethod;
 
     static int currentAppIndex;
     static boolean onHomeScreen = true;
@@ -63,8 +66,11 @@ public class Main extends Application {
 
         apps.add(new App("Bounce", "Processing"));
         apps.add(new App("Collision", "Processing"));
+        apps.add(new App("BoxCarrier", "Elise"));
 
         drawDefaultApp(gc);
+
+
 
         /*
          * scene.setOnMousePressed(new EventHandler<MouseEvent>() {
@@ -119,7 +125,6 @@ public class Main extends Application {
                 }
 
                 default: {
-                    
                     break;
                 }
                 
@@ -132,17 +137,15 @@ public class Main extends Application {
             if (currentAppIndex >= apps.size()) {
                 currentAppIndex = 0;
             }
-            
-            /*if (keyPressed == 'q') {
-                currentAppIndex = -1;
-            } else {
-                System.out.println((int) keyPressed);
-                currentAppIndex = 0;
-                try {
-                    apps.get(0).execute();
-                } catch (Exception e) {}
-            }*/
 		});
+
+        scene.setOnKeyReleased(event -> {
+
+        });
+
+        scene.setOnKeyTyped(event -> {
+
+        });
 
         new AnimationTimer() {
             public void handle(long now) {
@@ -191,6 +194,9 @@ public class Main extends Application {
         setupMethod = programClass.getMethod("setup");
         setupMethod.invoke(programObject);
         drawMethod = programClass.getMethod("draw");
+        keyPressedMethod = programClass.getMethod("keyPressed");
+        keyReleasedMethod = programClass.getMethod("keyReleased");
+        keyTypedMethod = programClass.getMethod("keyTyped");
     }
 
     private static String readFile(String path, Charset encoding) throws IOException {
@@ -206,6 +212,7 @@ public class Main extends Application {
 
         program = program.replace("void setup()", "public void setup()");
         program = program.replace("void draw()", "public void draw()");
+        program = program.replace("float", "double");
 
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileObject compilationUnit = new StringJavaFileObject("CodeGenTest", program);

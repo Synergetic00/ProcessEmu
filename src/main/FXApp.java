@@ -72,6 +72,9 @@ public class FXApp {
 
     public void setup() {}
     public void draw() {}
+    public void keyPressed() {}
+    public void keyReleased() {}
+    public void keyTyped() {}
 
     public boolean hasFill = true;
     public boolean hasStroke = true;
@@ -250,13 +253,13 @@ public class FXApp {
                 break;
             }
             case RADIUS: {
+                nwidth *= 2;
+                nheight *= 2;
                 nx -= nwidth / 2;
                 ny -= nheight / 2;
                 break;
             }
             case CENTER: {
-                nwidth /= 2;
-                nheight /= 2;
                 nx -= nwidth / 2;
                 ny -= nheight / 2;
                 break;
