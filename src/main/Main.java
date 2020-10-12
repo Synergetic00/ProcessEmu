@@ -36,6 +36,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import utils.FXUtils;
 
 public class Main extends Application {
 
@@ -79,13 +80,16 @@ public class Main extends Application {
 
         appIndex = 0;
 
-        apps.add(new App("Bounce", "", ""));
-        apps.add(new App("BoxCarrier", "", ""));
-        apps.add(new App("Collision", "", ""));
-        apps.add(new App("Gravity", "", ""));
-        apps.add(new App("Keyboard", "", ""));
-        apps.add(new App("Mouse", "", ""));
-        apps.add(new App("Test", "", ""));
+        apps.add(new App("TextAlignment1", "B", "B"));
+        apps.add(new App("TextAlignment2", "B", "B"));
+        apps.add(new App("Bounce", "B", "B"));
+        apps.add(new App("Clock", "B", "B"));
+        apps.add(new App("BoxCarrier", "B", "B"));
+        apps.add(new App("Collision", "B", "B"));
+        apps.add(new App("Gravity", "B", "B"));
+        apps.add(new App("Keyboard", "B", "B"));
+        apps.add(new App("Mouse", "B", "B"));
+        apps.add(new App("Test", "B", "B"));
 
         drawDefaultApp(gc);
 
@@ -239,17 +243,20 @@ public class Main extends Application {
         gc.save();
         FXApp dApp = new FXApp(gc);
         dApp.fullScreen();
+        dApp.updateTime();
         dApp.background(0);
 
         int dispNum = 5;
         int pageNum = (int) (appIndex / dispNum);
+        int pageTtl = (int) Math.ceil(apps.size() / (double) dispNum);
         int tailNum = apps.size() % dispNum;
         int calcNum = apps.size() - (pageNum * dispNum);
         int toRender = (calcNum == tailNum) ? tailNum : dispNum;
 
         int height = (int) gc.getCanvas().getHeight();
-        int spacing = 20;
+        int spacing = 30;
         double rectH = (height - (spacing * (dispNum+1)))/dispNum;
+        double rectX = 600;
 
         int actualIndex = 0;
 
@@ -264,61 +271,51 @@ public class Main extends Application {
             } else {
                 dApp.stroke(255);
             }
-            dApp.rect(200, yPos, dApp.width - 400, rectH);
+            dApp.rect(rectX, yPos, dApp.width - rectX - spacing, rectH);
             if (i == appIndex) {
                 dApp.fill(255,0,0);
             } else {
                 dApp.fill(255);
             }
             dApp.textSize(35);
-            dApp.text(apps.get(actualIndex).appName, 230, yPos+50);
+            dApp.text(apps.get(actualIndex).appName, rectX + spacing, yPos+(35*2));
             dApp.textSize(20);
-            dApp.text(apps.get(actualIndex).appAuthor, 230, yPos+90);
+            dApp.text(apps.get(actualIndex).appAuthor, rectX + spacing, yPos+(rectH/2 + (20/2)));
             dApp.textSize(25);
-            dApp.text(apps.get(actualIndex).appDesc, 230, yPos+130);
+            dApp.text(apps.get(actualIndex).appDesc, rectX + spacing, yPos+(rectH - (25*2)));
         }
-        gc.restore();
-    }
 
-    /*
-    private void drawDefaultApp(GraphicsContext gc) {
-        int spacing = 20, toDisplay = 5;
-        int height = (int) gc.getCanvas().getHeight();
-        gc.save();
-        FXApp dApp = new FXApp(gc);
-        dApp.fullScreen();
-        dApp.updateTime();
-        dApp.background(20);
-        double rectH = (height - (spacing * (toDisplay+1)))/toDisplay;
-        for (int i = 0; i < apps.size(); i++) {
-            double yPos = i*(rectH+spacing)+spacing;
-            dApp.fill(0);
-            dApp.strokeWeight(5);
-            if (i == appIndex) {
-                dApp.stroke(255,0,0);
-            } else {
-                dApp.stroke(255);
-            }
-            dApp.rect(200, yPos, dApp.width - 400, rectH);
-            if (i == appIndex) {
-                dApp.fill(255,0,0);
-            } else {
-                dApp.fill(255);
-            }
-            dApp.textSize(35);
-            dApp.text(apps.get(i).appName, 230, yPos+50);
-            dApp.textSize(20);
-            dApp.text(apps.get(i).appAuthor, 230, yPos+90);
-            dApp.textSize(25);
-            dApp.text(apps.get(i).appDesc, 230, yPos+130);
+        for (int i = 0; i < pageTtl; i++) {
+            dApp.stroke(255);
+            if (i == pageNum) dApp.fill(255);
+            else dApp.fill(0);
+            dApp.ellipse((rectX/2)-(25*pageTtl)+(50*i)+25, height - 50, 25, 25);
         }
+
+        String day = String.format("%02d", dApp.day());
+        String month = String.format("%02d", dApp.month());
+        String year = String.format("%04d", dApp.year());
+        String hour = String.format("%02d", dApp.hour());
+        String minute = String.format("%02d", dApp.minute());
+        String second = String.format("%02d", dApp.second());
+
+        String dateNow = day+"/"+month+"/"+year;
+        String timeNow = hour+":"+minute+":"+second;
 
         dApp.fill(255);
-        String dateAndTime = dApp.day()+"/"+dApp.month()+"/"+dApp.year()+" "+dApp.hour()+":"+dApp.minute()+":"+dApp.second();
-        dApp.text(dateAndTime, 200, dApp.height - 100);
+        dApp.textSize(30);
+        dApp.textAlign(FXUtils.CENTER,FXUtils.CENTER);
+        dApp.text(dateNow, (rectX/2), dApp.height - 200);
+        dApp.text(timeNow, (rectX/2), dApp.height - 150);
+
+        dApp.fill(255,0,0);
+        dApp.textSize(70);
+        dApp.text("RaspberryPiFX",(rectX/2),100);
+        dApp.textSize(40);
+        dApp.text("v1.3.4",(rectX/2),200);
+
         gc.restore();
     }
-    */
 
     public static void executeProgram(String name, GraphicsContext gc) throws Exception {
         runFile("src/programs/"+name+".pde", gc);

@@ -6,6 +6,7 @@ import static utils.FXUtils.*;
 
 import java.util.*;
 
+import javafx.geometry.VPos;
 import javafx.scene.canvas.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.*;
@@ -27,6 +28,8 @@ public class FXApp {
     }
 
     protected void defaultSettings() {
+        gc.setTextAlign(alignH);
+        gc.setTextBaseline(alignV);
         stroke(0);
         fill(255);
         size(100,100);
@@ -464,13 +467,7 @@ public class FXApp {
         gc.restore();
     }
 
-    public void textSize(double size) {
-        gc.setFont(new Font(size));
-    }
 
-    public void text(String text, double x, double y) {
-        gc.fillText(text, x, y);
-    }
 
     ////////////
     // Output //
@@ -525,29 +522,6 @@ public class FXApp {
         gc.setFill(Color.rgb(r,g,b));
     }
 
-
-    ////////////////////////////////////
-    // Shape // 2D Primitives // Line //
-    ////////////////////////////////////
-
-    
-
-    /////////////////////////////////////
-    // Shape // 2D Primitives // Point //
-    /////////////////////////////////////
-
-    
-
-    ////////////////////////////////////
-    // Shape // 2D Primitives // Quad //
-    ////////////////////////////////////
-
-    
-
-    ////////////////////////////////////
-    // Shape // 2D Primitives // Rect //
-    ////////////////////////////////////
-
     
 
     public void setMousePos(double x, double y) {
@@ -556,5 +530,92 @@ public class FXApp {
         mouseX = x;
         mouseY = y;
     }
+
+    ////////////////
+    // Typography //
+    ////////////////
+
+    // PFont.java
+
+    ///////////////////////////////////////
+    // Typography / Loading & Displaying //
+    ///////////////////////////////////////
+
+    // text()
+
+    public void text(String text, double x, double y) {
+        double nx = x;
+        double ny = y;
+
+        gc.fillText(text, startX+nx, startY+ny);
+    }
+
+    /////////////////////////////
+    // Typography / Attributes //
+    /////////////////////////////
+
+    TextAlignment alignH = TextAlignment.LEFT;
+    VPos alignV = VPos.BASELINE;
+    int alignX = LEFT, alignY = BASELINE;
+
+    // textAlign()
+
+    public void textAlign(int newAlignX) {
+        alignX = newAlignX;
+        switch (newAlignX) {
+            case LEFT: {
+                alignH = TextAlignment.LEFT;
+                break;
+            }
+            case CENTER: {
+                alignH = TextAlignment.CENTER;
+                break;
+            }
+            case RIGHT: {
+                alignH = TextAlignment.RIGHT;
+                break;
+            }
+        
+            default: { break; }
+        }
+        gc.setTextAlign(alignH);
+    }
+
+    public void textAlign(int newAlignX, int newAlignY) {
+        alignX = newAlignX;
+        alignY = newAlignY;
+        textAlign(newAlignX);
+        switch (newAlignY) {
+            case TOP: {
+                alignV = VPos.TOP;
+                break;
+            }
+            case BOTTOM: {
+                alignV = VPos.BOTTOM;
+                break;
+            }
+            case CENTER: {
+                alignV = VPos.CENTER;
+                break;
+            }
+            case BASELINE: {
+                alignV = VPos.BASELINE;
+                break;
+            }
+        
+            default: { break; }
+        }
+        gc.setTextBaseline(alignV);
+    }
+
+    // textSize()
+
+    public void textSize(double size) {
+        gc.setFont(new Font(size));
+    }
+
+    //////////////////////////
+    // Typography / Metrics //
+    //////////////////////////
     
 }

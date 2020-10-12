@@ -249,4 +249,10 @@ public class FXUtils {
     public static final int RADIUS = 2;
     public static final int CENTER = 3;
 
+    public static final int LEFT = 4;
+    public static final int RIGHT = 5;
+    public static final int TOP = 6;
+    public static final int BOTTOM = 7;
+    public static final int BASELINE = 8;
+
 }
