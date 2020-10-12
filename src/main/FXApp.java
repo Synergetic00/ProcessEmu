@@ -45,8 +45,6 @@ public class FXApp {
     public void handleDraw() {
         updateTime();
         draw();
-        noStroke();
-        fill(20);
         //rect(-startX, -startY, (trueWidth-width)/2, trueHeight);
         //rect(trueWidth-startX, -startY, (trueWidth-width)/2, trueHeight);
         //rect(-startX, -startY, trueWidth, (trueHeight-height)/2);

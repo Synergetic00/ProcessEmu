@@ -59,7 +59,7 @@ public class Main extends Application {
     static Method mouseReleasedMethod;
     static Method mouseWheelMethod;
 
-    static int currentAppIndex;
+    static int appIndex;
     static boolean onHomeScreen = true;
 
     static ArrayList<App> apps = new ArrayList<App>();
@@ -77,13 +77,15 @@ public class Main extends Application {
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
 
-        currentAppIndex = 0;
+        appIndex = 0;
 
-        apps.add(new App("Bounce", "Processing", "Bouncing ball without acceleration"));
-        apps.add(new App("Collision", "Processing", "A physics simulation"));
-        apps.add(new App("BoxCarrier", "Elise", "A game of infinite haulage"));
-        apps.add(new App("Keyboard", "Processing", "Is a key being pressed"));
-        apps.add(new App("Mouse", "Evan", "Mouse stuff"));
+        apps.add(new App("Bounce", "", ""));
+        apps.add(new App("BoxCarrier", "", ""));
+        apps.add(new App("Collision", "", ""));
+        apps.add(new App("Gravity", "", ""));
+        apps.add(new App("Keyboard", "", ""));
+        apps.add(new App("Mouse", "", ""));
+        apps.add(new App("Test", "", ""));
 
         drawDefaultApp(gc);
 
@@ -153,7 +155,7 @@ public class Main extends Application {
                 case R: {
                     if (!onHomeScreen) {
                         try {
-                            apps.get(currentAppIndex).execute();
+                            apps.get(appIndex).execute();
                         } catch (Exception e) {
                         }
                     }
@@ -162,14 +164,14 @@ public class Main extends Application {
 
                 case UP: {
                     if (onHomeScreen) {
-                        currentAppIndex--;
+                        appIndex--;
                     }
                     break;
                 }
 
                 case DOWN: {
                     if (onHomeScreen) {
-                        currentAppIndex++;
+                        appIndex++;
                     }
                     break;
                 }
@@ -178,7 +180,7 @@ public class Main extends Application {
                     if (onHomeScreen) {
                         try {
                             onHomeScreen = false;
-                            apps.get(currentAppIndex).execute();
+                            apps.get(appIndex).execute();
                         } catch (Exception e) {
                         }
                     }
@@ -191,12 +193,12 @@ public class Main extends Application {
 
             }
 
-            if (currentAppIndex < 0) {
-                currentAppIndex = apps.size() - 1;
+            if (appIndex < 0) {
+                appIndex = apps.size() - 1;
             }
 
-            if (currentAppIndex >= apps.size()) {
-                currentAppIndex = 0;
+            if (appIndex >= apps.size()) {
+                appIndex = 0;
             }
         });
 
@@ -233,42 +235,90 @@ public class Main extends Application {
     }
 
     private void drawDefaultApp(GraphicsContext gc) {
+
+        gc.save();
+        FXApp dApp = new FXApp(gc);
+        dApp.fullScreen();
+        dApp.background(0);
+
+        int dispNum = 5;
+        int pageNum = (int) (appIndex / dispNum);
+        int tailNum = apps.size() % dispNum;
+        int calcNum = apps.size() - (pageNum * dispNum);
+        int toRender = (calcNum == tailNum) ? tailNum : dispNum;
+
+        int height = (int) gc.getCanvas().getHeight();
+        int spacing = 20;
+        double rectH = (height - (spacing * (dispNum+1)))/dispNum;
+
+        int actualIndex = 0;
+
+        for (int i = 0; i < toRender; i++) {
+            actualIndex = i + (pageNum * dispNum);
+
+            double yPos = i*(rectH+spacing)+spacing;
+            dApp.fill(0);
+            dApp.strokeWeight(5);
+            if (i == appIndex % dispNum) {
+                dApp.stroke(255,0,0);
+            } else {
+                dApp.stroke(255);
+            }
+            dApp.rect(200, yPos, dApp.width - 400, rectH);
+            if (i == appIndex) {
+                dApp.fill(255,0,0);
+            } else {
+                dApp.fill(255);
+            }
+            dApp.textSize(35);
+            dApp.text(apps.get(actualIndex).appName, 230, yPos+50);
+            dApp.textSize(20);
+            dApp.text(apps.get(actualIndex).appAuthor, 230, yPos+90);
+            dApp.textSize(25);
+            dApp.text(apps.get(actualIndex).appDesc, 230, yPos+130);
+        }
+        gc.restore();
+    }
+
+    /*
+    private void drawDefaultApp(GraphicsContext gc) {
         int spacing = 20, toDisplay = 5;
         int height = (int) gc.getCanvas().getHeight();
         gc.save();
-        FXApp defaultApp = new FXApp(gc);
-        defaultApp.fullScreen();
-        defaultApp.updateTime();
-        defaultApp.background(20);
+        FXApp dApp = new FXApp(gc);
+        dApp.fullScreen();
+        dApp.updateTime();
+        dApp.background(20);
         double rectH = (height - (spacing * (toDisplay+1)))/toDisplay;
         for (int i = 0; i < apps.size(); i++) {
             double yPos = i*(rectH+spacing)+spacing;
-            defaultApp.fill(0);
-            defaultApp.strokeWeight(5);
-            if (i == currentAppIndex) {
-                defaultApp.stroke(255,0,0);
+            dApp.fill(0);
+            dApp.strokeWeight(5);
+            if (i == appIndex) {
+                dApp.stroke(255,0,0);
             } else {
-                defaultApp.stroke(255);
+                dApp.stroke(255);
             }
-            defaultApp.rect(200, yPos, defaultApp.width - 400, rectH);
-            if (i == currentAppIndex) {
-                defaultApp.fill(255,0,0);
+            dApp.rect(200, yPos, dApp.width - 400, rectH);
+            if (i == appIndex) {
+                dApp.fill(255,0,0);
             } else {
-                defaultApp.fill(255);
+                dApp.fill(255);
             }
-            defaultApp.textSize(35);
-            defaultApp.text(apps.get(i).appName, 230, yPos+50);
-            defaultApp.textSize(20);
-            defaultApp.text(apps.get(i).appAuthor, 230, yPos+90);
-            defaultApp.textSize(25);
-            defaultApp.text(apps.get(i).appDesc, 230, yPos+130);
+            dApp.textSize(35);
+            dApp.text(apps.get(i).appName, 230, yPos+50);
+            dApp.textSize(20);
+            dApp.text(apps.get(i).appAuthor, 230, yPos+90);
+            dApp.textSize(25);
+            dApp.text(apps.get(i).appDesc, 230, yPos+130);
         }
 
-        defaultApp.fill(255);
-        String dateAndTime = defaultApp.day()+"/"+defaultApp.month()+"/"+defaultApp.year()+" "+defaultApp.hour()+":"+defaultApp.minute()+":"+defaultApp.second();
-        defaultApp.text(dateAndTime, 200, defaultApp.height - 100);
+        dApp.fill(255);
+        String dateAndTime = dApp.day()+"/"+dApp.month()+"/"+dApp.year()+" "+dApp.hour()+":"+dApp.minute()+":"+dApp.second();
+        dApp.text(dateAndTime, 200, dApp.height - 100);
         gc.restore();
     }
+    */
 
     public static void executeProgram(String name, GraphicsContext gc) throws Exception {
         runFile("src/programs/"+name+".pde", gc);
@@ -300,6 +350,7 @@ public class Main extends Application {
         program += readFile(path, Charset.forName("UTF-8"));
         program += "}";
 
+        program = program.replace("public void ", "void ");
         program = program.replace("void ", "public void ");
         program = program.replace("float", "double");
 
