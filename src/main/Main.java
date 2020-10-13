@@ -80,6 +80,7 @@ public class Main extends Application {
 
         appIndex = 0;
 
+        apps.add(new App("Triangle", "B", "B"));
         apps.add(new App("TextAlignment1", "B", "B"));
         apps.add(new App("TextAlignment2", "B", "B"));
         apps.add(new App("Bounce", "B", "B"));
@@ -267,13 +268,13 @@ public class Main extends Application {
             dApp.fill(0);
             dApp.strokeWeight(5);
             if (i == appIndex % dispNum) {
-                dApp.stroke(255,0,0);
+                dApp.stroke(54, 205, 255);
             } else {
                 dApp.stroke(255);
             }
             dApp.rect(rectX, yPos, dApp.width - rectX - spacing, rectH);
             if (i == appIndex) {
-                dApp.fill(255,0,0);
+                dApp.fill(54, 205, 255);
             } else {
                 dApp.fill(255);
             }
@@ -308,7 +309,7 @@ public class Main extends Application {
         dApp.text(dateNow, (rectX/2), dApp.height - 200);
         dApp.text(timeNow, (rectX/2), dApp.height - 150);
 
-        dApp.fill(255,0,0);
+        dApp.fill(54, 205, 255);
         dApp.textSize(70);
         dApp.text("RaspberryPiFX",(rectX/2),100);
         dApp.textSize(40);

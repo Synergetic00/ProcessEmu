@@ -375,6 +375,235 @@ public class FXApp {
     // Output //
     ////////////
 
+    ////////////////////////
+    // Output / Text Area //
+    ////////////////////////
+
+    // print()
+
+    public void print(byte toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(boolean toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(char toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(int toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(long toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(float toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(double toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(String toPrint) {
+        System.out.print(toPrint);
+        System.out.flush();
+    }
+    
+    public void print(Object toPrint) {
+        if (toPrint == null) {
+            System.out.print("null");
+        } else {
+            System.out.println(toPrint.toString());
+        }
+    }
+
+    public void print(Object... variables) {
+        StringBuilder sb = new StringBuilder();
+        for (Object o : variables) {
+            if (sb.length() != 0) {
+                sb.append(" ");
+            }
+            if (o == null) {
+                sb.append("null");
+            } else {
+                sb.append(o.toString());
+            }
+        }
+        System.out.print(sb.toString());
+    }
+
+    // printArray()
+
+    public void printArray(Object toPrint) {
+        if (toPrint == null) {
+            System.out.println("null");
+        } else {
+            String name = toPrint.getClass().getName();
+            if (name.charAt(0) == '[') {
+                switch (name.charAt(1)) {
+                    case '[': { // multi-dimensional
+                        System.out.println(toPrint);
+                        break;
+                    }
+
+                    case 'L': { // objects
+                        Object objectArr[] = (Object[]) toPrint;
+                        for (int i = 0; i < objectArr.length; i++) {
+                            if (objectArr[i] instanceof String) {
+                                System.out.println("[" + i + "] \"" + objectArr[i] + "\"");
+                            } else {
+                                System.out.println("[" + i + "] " + objectArr[i]);
+                            }
+                        }
+                        break;
+                    }
+
+                    case 'Z': { // boolean
+                        boolean booleanArr[] = (boolean[]) toPrint;
+                        for (int i = 0; i < booleanArr.length; i++) {
+                            System.out.println("[" + i + "] " + booleanArr[i]);
+                        }
+                        break;
+                    }
+
+                    case 'B': { // byte
+                        byte byteArr[] = (byte[]) toPrint;
+                        for (int i = 0; i < byteArr.length; i++) {
+                            System.out.println("[" + i + "] " + byteArr[i]);
+                        }
+                        break;
+                    }
+
+                    case 'C': { // char
+                        char charArr[] = (char[]) toPrint;
+                        for (int i = 0; i < charArr.length; i++) {
+                            System.out.println("[" + i + "] '" + charArr[i] + "'");
+                        }
+                        break;
+                    }
+
+                    case 'I': { // int
+                        int intArr[] = (int[]) toPrint;
+                        for (int i = 0; i < intArr.length; i++) {
+                            System.out.println("[" + i + "] " + intArr[i]);
+                        }
+                        break;
+                    }
+
+                    case 'J': { // long
+                        long longArr[] = (long[]) toPrint;
+                        for (int i = 0; i < longArr.length; i++) {
+                            System.out.println("[" + i + "] " + longArr[i]);
+                        }
+                        break;
+                    }
+
+                    case 'F': { // float
+                        float floatArr[] = (float[]) toPrint;
+                        for (int i = 0; i < floatArr.length; i++) {
+                            System.out.println("[" + i + "] " + floatArr[i]);
+                        }
+                        break;
+                    }
+
+                    case 'D': { // double
+                        double doubleArr[] = (double[]) toPrint;
+                        for (int i = 0; i < doubleArr.length; i++) {
+                            System.out.println("[" + i + "] " + doubleArr[i]);
+                        }
+                        break;
+                    }
+                
+                    default: { // other data types
+                        System.out.println(toPrint);
+                        break;
+                    }
+                }
+            } else {
+                System.out.println(toPrint);
+            }
+
+
+        }
+
+        System.out.flush();
+    }
+
+    // println()
+
+    public void println() {
+        System.out.println();
+        System.out.flush();
+    }
+
+    public void println(byte toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+  
+    public void println(boolean toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+  
+    public void println(char toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+  
+    public void println(int toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+  
+    public void println(long toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+  
+    public void println(float toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+  
+    public void println(double toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+  
+    public void println(String toPrint) {
+        System.out.println(toPrint);
+        System.out.flush();
+    }
+
+    public void println(Object toPrint) {
+        if (toPrint == null) {
+            System.out.println("null");
+        } else if (toPrint.getClass().isArray()) {
+            printArray(toPrint);
+        } else {
+            System.out.println(toPrint.toString());
+            System.out.flush();
+        }
+    }
+
+    public void println(Object... variables) {
+        print(variables);
+        println();
+    }
+
     ///////////////
     // Transform //
     ///////////////
@@ -520,6 +749,10 @@ public class FXApp {
     public void fill(int r, int g, int b){
         hasFill = true;
         gc.setFill(Color.rgb(r,g,b));
+    }
+
+    public void smooth() {
+        
     }
 
     
