@@ -1,6 +1,7 @@
 package main;
 
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.lang.reflect.Constructor;
@@ -69,6 +70,18 @@ public class Main extends Application {
         launch(args);
     }
 
+    public static void readFolder(final File folderPath) {
+        for (final File fileEntry : folderPath.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                readFolder(fileEntry);
+            } else {
+                String fileName = fileEntry.getName();
+                apps.add(new App(fileName.substring(0, fileName.length()-4), "An author", "A description"));
+                //System.out.println(fileEntry.getName());
+            }
+        }
+    }
+
     @Override
     public void start(Stage stage) throws Exception {
         Group root = new Group();
@@ -79,19 +92,8 @@ public class Main extends Application {
         gc = canvas.getGraphicsContext2D();
 
         appIndex = 0;
-
-        apps.add(new App("Triangle", "B", "B"));
-        apps.add(new App("TextAlignment1", "B", "B"));
-        apps.add(new App("TextAlignment2", "B", "B"));
-        apps.add(new App("Bounce", "B", "B"));
-        apps.add(new App("Clock", "B", "B"));
-        apps.add(new App("BoxCarrier", "B", "B"));
-        apps.add(new App("Collision", "B", "B"));
-        apps.add(new App("Gravity", "B", "B"));
-        apps.add(new App("Keyboard", "B", "B"));
-        apps.add(new App("Mouse", "B", "B"));
-        apps.add(new App("Test", "B", "B"));
-
+        final File folder = new File("src/programs");
+        readFolder(folder);
         drawDefaultApp(gc);
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
@@ -273,7 +275,7 @@ public class Main extends Application {
                 dApp.stroke(255);
             }
             dApp.rect(rectX, yPos, dApp.width - rectX - spacing, rectH);
-            if (i == appIndex) {
+            if (i == appIndex % dispNum) {
                 dApp.fill(54, 205, 255);
             } else {
                 dApp.fill(255);
@@ -313,7 +315,7 @@ public class Main extends Application {
         dApp.textSize(70);
         dApp.text("RaspberryPiFX",(rectX/2),100);
         dApp.textSize(40);
-        dApp.text("v1.3.4",(rectX/2),200);
+        dApp.text("v1.3.6",(rectX/2),200);
 
         gc.restore();
     }
@@ -363,6 +365,10 @@ public class Main extends Application {
         programConstructor = programClass.getConstructor(GraphicsContext.class);
         programObject = programConstructor.newInstance(gc);
     }
+
+    ////////////////////////////////////
+    // Dynamic Code Java Class Loader //
+    ////////////////////////////////////
 
     private static class StringJavaFileObject extends SimpleJavaFileObject {
         private final String code;

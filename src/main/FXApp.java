@@ -743,12 +743,21 @@ public class FXApp {
         hasFill = false;
     }
     
-    public void fill(int gray){
-        fill(gray, gray, gray);
+    public void fill(int gray) {
+        fill(gray, gray, gray, 255);
     }
-    public void fill(int r, int g, int b){
+    
+    public void fill(int gray, int alpha) {
+        fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(int red, int green, int blue) {
+        fill(red, green, blue, 255);
+    }
+    
+    public void fill(int red, int green, int blue, int alpha) {
         hasFill = true;
-        gc.setFill(Color.rgb(r,g,b));
+        gc.setFill(new Color(map(red, 0, 255, 0, 1), map(green, 0, 255, 0, 1), map(blue, 0, 255, 0, 1), map(alpha, 0, 255, 0, 1)));
     }
 
     public void smooth() {
@@ -776,11 +785,19 @@ public class FXApp {
 
     // text()
 
+    public void text(int textVar, double x, double y) { text(textVar+"", x, y); }
+
+    public void text(double textVar, double x, double y) { text(nfs(textVar,3), x, y); }
+
     public void text(String text, double x, double y) {
         double nx = x;
         double ny = y;
 
         gc.fillText(text, startX+nx, startY+ny);
+    }
+
+    public String nfs(double num, int right) {
+        return String.format("%."+right+"f", num);
     }
 
     /////////////////////////////
