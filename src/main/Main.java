@@ -22,6 +22,7 @@ import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
+import javax.tools.JavaCompiler.CompilationTask;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
@@ -68,18 +69,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-    }
-
-    public static void readFolder(final File folderPath) {
-        for (final File fileEntry : folderPath.listFiles()) {
-            if (fileEntry.isDirectory()) {
-                readFolder(fileEntry);
-            } else {
-                String fileName = fileEntry.getName();
-                apps.add(new App(fileName.substring(0, fileName.length()-4), "An author", "A description"));
-                //System.out.println(fileEntry.getName());
-            }
-        }
     }
 
     @Override
@@ -320,6 +309,19 @@ public class Main extends Application {
         gc.restore();
     }
 
+    // Methods for loading the files into loadable code
+
+    public static void readFolder(final File folderPath) {
+        for (final File fileEntry : folderPath.listFiles()) {
+            if (fileEntry.isDirectory()) {
+                readFolder(fileEntry);
+            } else {
+                String fileName = fileEntry.getName();
+                apps.add(new App(fileName.substring(0, fileName.length()-4), "An author", "A description"));
+            }
+        }
+    }
+
     public static void executeProgram(String name, GraphicsContext gc) throws Exception {
         runFile("src/programs/"+name+".pde", gc);
         setupMethod = programClass.getMethod("handleSetup");
@@ -345,30 +347,35 @@ public class Main extends Application {
     }
 
     private static void runFile(String path, GraphicsContext gc) throws Exception {
-        String program = "";
-        program += readFile("src/utils/Opening.txt", Charset.forName("UTF-8"));
-        program += readFile(path, Charset.forName("UTF-8"));
-        program += "}";
-
-        program = program.replace("public void ", "void ");
-        program = program.replace("void ", "public void ");
-        program = program.replace("float", "double");
-
+        String program = loadFile(path);
+        program = editProgramString(program);
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileObject compilationUnit = new StringJavaFileObject("ProcessingApp", program);
         SimpleJavaFileManager fileManager = new SimpleJavaFileManager(compiler.getStandardFileManager(null, null, null));
-        JavaCompiler.CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(compilationUnit));
+        CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(compilationUnit));
         compilationTask.call();
         CompiledClassLoader classLoader = new CompiledClassLoader(fileManager.getGeneratedOutputFiles());
-
         programClass = classLoader.loadClass("programs.ProcessingApp");
         programConstructor = programClass.getConstructor(GraphicsContext.class);
         programObject = programConstructor.newInstance(gc);
     }
 
-    ////////////////////////////////////
-    // Dynamic Code Java Class Loader //
-    ////////////////////////////////////
+    public static String loadFile(String path) throws IOException {
+        String program = "";
+        program += readFile("src/utils/Opening.txt", Charset.forName("UTF-8"));
+        program += readFile(path, Charset.forName("UTF-8"));
+        program += "}";
+        return program;
+    }
+
+    public static String editProgramString(String program) {
+        program = program.replace("public void ", "void ");
+        program = program.replace("void ", "public void ");
+        program = program.replace("float", "double");
+        return program;
+    }
+    
+    // Dynamic Java code class loader boilerplate
 
     private static class StringJavaFileObject extends SimpleJavaFileObject {
         private final String code;
@@ -449,5 +456,4 @@ public class Main extends Application {
             return super.findClass(name);
         }
     }
-    
 }
