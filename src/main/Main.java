@@ -40,6 +40,8 @@ public class Main extends Application {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         Charset charset = Charset.forName("UTF-8");
         String output = new String(bytes, charset);
+        bytes = Files.readAllBytes(Paths.get(path));
+        return output += bytes;
     }
 
     public static void loadFolder() {
