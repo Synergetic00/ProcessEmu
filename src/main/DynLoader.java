@@ -77,7 +77,7 @@ public class DynLoader {
     public static class CompiledClassLoader extends ClassLoader {
         private final List<ClassJavaFileObject> files;
 
-        private CompiledClassLoader(List<ClassJavaFileObject> files) {
+        CompiledClassLoader(List<ClassJavaFileObject> files) {
             this.files = files;
         }
 

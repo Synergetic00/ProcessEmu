@@ -1,0 +1,9 @@
+package programs;
+
+import javafx.scene.canvas.GraphicsContext;
+import main.FXApp;
+
+public class ProcessingApp extends FXApp {
+
+public ProcessingApp(GraphicsContext gc) { super(gc); }
+
