@@ -35,6 +35,7 @@ public class Main extends Application {
 
     public static GraphicsContext gc;
     public static ArrayList<App> apps;
+    public static Stage stageObj;
 
     public static void main(String[] args) {
         launch(args);
@@ -42,6 +43,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        stageObj = stage;
         Group root = new Group();
         Scene scene = new Scene(root);
         Canvas canvas = new Canvas(1280, 720);
@@ -53,17 +55,21 @@ public class Main extends Application {
 
         apps.get(0).launch();
 
+        // Call the draw method once every frame
         new AnimationTimer() {
             public void handle(long now) {
                 try {
                     if (drawMethod != null) {
                         drawMethod.invoke(programObject);
                     }
-                } catch (Exception e) {}
+                } catch (Exception e) {
+                }
             }
         }.start();
 
-        stage.setOnCloseRequest(value -> { System.exit(0); });
+        stage.setOnCloseRequest(value -> {
+            System.exit(0);
+        });
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
@@ -77,7 +83,6 @@ public class Main extends Application {
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         Charset charset = Charset.forName("UTF-8");
         String program = new String(header, charset).concat(new String(bytes, charset)).concat("\n\n}");
-        System.out.println(program);
 
         // Change all the incompatiable code from Processing
         program = program.replace("public void ", "void ");
@@ -101,12 +106,13 @@ public class Main extends Application {
 
     // Load the apps metadata into array
     public static void loadApp(String appName) throws IOException {
-        FileReader fr = new FileReader("src/programs/"+appName);
+        FileReader fr = new FileReader("src/programs/" + appName);
         BufferedReader br = new BufferedReader(fr);
-        String appTitle = appName.substring(0, appName.length()-4);
+        String appTitle = appName.substring(0, appName.length() - 4);
         String appAuthour = br.readLine().substring(2);
         String appDescription = br.readLine().substring(2);
-        br.close(); fr.close();
+        br.close();
+        fr.close();
         apps.add(new App(appTitle, appAuthour, appDescription));
     }
 
@@ -143,8 +149,10 @@ public class Main extends Application {
         // Use boilerplate code to compile the string
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileObject compilationUnit = new StringJavaFileObject("ProcessingApp", program);
-        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(compiler.getStandardFileManager(null, null, null));
-        CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(compilationUnit));
+        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(
+                compiler.getStandardFileManager(null, null, null));
+        CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null,
+                Arrays.asList(compilationUnit));
         compilationTask.call();
         CompiledClassLoader classLoader = new CompiledClassLoader(fileManager.getGeneratedOutputFiles());
 

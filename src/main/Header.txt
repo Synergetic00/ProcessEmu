@@ -1,7 +1,10 @@
 package programs;
 
+import javafx.stage.Stage;
 import javafx.scene.canvas.GraphicsContext;
 import main.FXApp;
+import utils.*;
+import static utils.PConstants.*;
 
 public class ProcessingApp extends FXApp {
 
