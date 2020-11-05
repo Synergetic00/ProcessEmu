@@ -7,13 +7,12 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import utils.*;
+//import utils.*;
 //import static utils.PConstants.*;
 
 public class FXApp {
 
     GraphicsContext gc;
-    PSurface surface;
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
@@ -21,17 +20,18 @@ public class FXApp {
     }
 
     private void defaultSettings() {
-        //settings();
+        // settings();
         loop();
         isTerminating = false;
     }
-    
+
     // [Structure]
 
     boolean isLooping;
     boolean isTerminating;
 
-    public void draw() {}
+    public void draw() {
+    }
 
     public void exit() {
         isTerminating = true;
@@ -45,46 +45,37 @@ public class FXApp {
         isLooping = false;
     }
 
-    public void pop() {}
+    public void pop() {
+    }
 
-    public void popStyle() {}
+    public void popStyle() {
+    }
 
-    public void push() {}
+    public void push() {
+    }
 
-    public void pushStyle() {}
+    public void pushStyle() {
+    }
 
     public void redraw() {
         draw();
     }
 
-    public void setup() {}
+    public void setup() {
+    }
 
     public void thread(String name) {
-        //new Thread(name);
+        // new Thread(name);
     }
 
     // [Environment]
 
     public int frameCount;
 
-    public void cursor(int kind) {
-        surface.setCursor(kind);
-    }
-
-    public void cursor(PImage image) {
-       
-    }
-
-    public void cursor(PImage image, int x, int y) {
-       
-    }
-
-    public void cursor() {
-       surface.showCursor();
-    }
-
-    public void noCursor() {
-       surface.hideCursor();
+    public void delay(int millis) {
+        try {
+            Thread.sleep(millis);
+        } catch (InterruptedException e) {}
     }
 
     public void settings() {}
@@ -195,8 +186,8 @@ public class FXApp {
 
     public void handleDraw() {
         if (isLooping && !isTerminating) {
-            draw();
             frameCount++;
+            draw();
         }
         if (isTerminating) forceExit(0);
     }
