@@ -149,10 +149,8 @@ public class Main extends Application {
         // Use boilerplate code to compile the string
         JavaCompiler compiler = ToolProvider.getSystemJavaCompiler();
         JavaFileObject compilationUnit = new StringJavaFileObject("ProcessingApp", program);
-        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(
-                compiler.getStandardFileManager(null, null, null));
-        CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null,
-                Arrays.asList(compilationUnit));
+        SimpleJavaFileManager fileManager = new SimpleJavaFileManager(compiler.getStandardFileManager(null, null, null));
+        CompilationTask compilationTask = compiler.getTask(null, fileManager, null, null, null, Arrays.asList(compilationUnit));
         compilationTask.call();
         CompiledClassLoader classLoader = new CompiledClassLoader(fileManager.getGeneratedOutputFiles());
 
@@ -193,6 +191,7 @@ class App {
         title = t;
         authour = a;
         description = d;
+        System.out.println("Loaded: "+title+" by "+authour+"\n------> "+description);
     }
 
     public void launch() throws Exception {
