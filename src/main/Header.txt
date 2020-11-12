@@ -4,7 +4,8 @@ import javafx.stage.Stage;
 import javafx.scene.canvas.GraphicsContext;
 import main.FXApp;
 import utils.*;
-import static utils.PConstants.*;
+import static utils.Constants.*;
+import static utils.MathUtils.*;
 
 public class ProcessingApp extends FXApp {
 
