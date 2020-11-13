@@ -8,7 +8,6 @@ import javafx.scene.input.*;
 import utils.PGraphics;
 
 import static utils.Constants.*;
-import static utils.MathUtils.*;
 
 public class FXApp {
 
@@ -22,8 +21,16 @@ public class FXApp {
         g = new PGraphics(gc, this);
     }
 
+    public PGraphics createGraphics(int w, int h) {
+        return g.createGraphics(w, h);
+    }
+
     public void setOffset(double x, double y) {
         g.setOffset(x, y);
+    }
+
+    public void image(PGraphics pg, int x, int y) {
+
     }
 
     // [Structure]
@@ -50,7 +57,7 @@ public class FXApp {
         g.beginShape(type);
     }
 
-    public void vertex(float x, float y) {
+    public void vertex(double x, double y) {
         g.vertex(x, y);
     }
 
@@ -215,6 +222,7 @@ public class FXApp {
 
     public void size(int width, int height) {
         g.size(width, height);
+        System.out.println("From FXApp");
     }
 
     public void arc(double x, double y, double width, double height, double start, double stop) {

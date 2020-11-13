@@ -36,10 +36,14 @@ public class PGraphics {
     }
 
     private void defaultSettings() {
-        colorMode(RGB, 255, 255, 255, 255);
-        size(100,100);
-        fill(255);
-        stroke(0);
+        this.colorMode(RGB, 255, 255, 255, 255);
+        this.size(100,100);
+        this.fill(255);
+        this.stroke(0);
+    }
+
+    public PGraphics createGraphics(int w, int h) {
+        return this;
     }
 
     public void setOffset(double x, double y) {
@@ -69,6 +73,7 @@ public class PGraphics {
         gc.fillRect(0, 0, screenW, screenH);
         background(204);
         gc.restore();
+        System.out.println("From PGraphics");
     }
 
     // [Data]
@@ -104,6 +109,26 @@ public class PGraphics {
     
         workPath.reset();
         auxPath.reset();
+    }
+
+    public void smooth() {
+        // Not yet implemented
+    }
+
+    public void beginDraw() {
+        // Not yet implemented
+    }
+
+    public void endDraw() {
+        // Not yet implemented
+    }
+
+    public void beginShape() {
+        // Not yet implemented
+    }
+
+    public void endShape() {
+        // Not yet implemented
     }
 
     public void vertex(double x, double y) {
