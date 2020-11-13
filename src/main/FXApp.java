@@ -7,6 +7,9 @@ import javafx.scene.canvas.*;
 import javafx.scene.input.*;
 import utils.PGraphics;
 
+import static utils.Constants.*;
+import static utils.MathUtils.*;
+
 public class FXApp {
 
     GraphicsContext gc;
@@ -41,6 +44,18 @@ public class FXApp {
 
     public void strokeWeight(int w) {
         g.strokeWeight(w);
+    }
+
+    public void beginShape(int type) {
+        g.beginShape(type);
+    }
+
+    public void vertex(float x, float y) {
+        g.vertex(x, y);
+    }
+
+    public void endShape() {
+        g.endShape(CLOSE);
     }
 
     // [Input]

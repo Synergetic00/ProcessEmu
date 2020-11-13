@@ -9,6 +9,10 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import main.FXApp;
 
+import com.sun.javafx.geom.Path2D;
+import com.sun.javafx.geom.PathIterator;
+import com.sun.javafx.geom.Shape;
+
 import static utils.Constants.*;
 import static utils.MathUtils.*;
 
@@ -73,9 +77,196 @@ public class PGraphics {
 
     // [Shape]
 
+    int shape;
+    final int DEFAULT_VERTICES = 512;
+    final int VERTEX_FIELD_COUNT = 37;
+    double[][] vertices = new double[DEFAULT_VERTICES][VERTEX_FIELD_COUNT];
+    int vertexCount;
+    boolean openContour;
+    boolean adjustedForThinLines;
+    /// break the shape at the next vertex (next vertex() call is a moveto())
+    boolean breakShape;
+    private float[] pathCoordsBuffer = new float[6];
+    Path2D workPath = new Path2D();
+    Path2D auxPath = new Path2D();
+
+    double[][] curveVertices;
+    int curveVertexCount;
+
     public void strokeWeight(int w) {
         gc.setLineWidth(w);
     }
+
+	public void beginShape(int type) {
+        shape = type;
+        vertexCount = 0;
+        curveVertexCount = 0;
+    
+        workPath.reset();
+        auxPath.reset();
+    }
+
+    public void vertex(double x, double y) {
+        if (vertexCount == vertices.length) {
+          double[][] temp = new double[vertexCount<<1][VERTEX_FIELD_COUNT];
+          System.arraycopy(vertices, 0, temp, 0, vertexCount);
+          vertices = temp;
+          //message(CHATTER, "allocating more vertices " + vertices.length);
+        }
+        // not everyone needs this, but just easier to store rather
+        // than adding another moving part to the code...
+        vertices[vertexCount][X] = x;
+        vertices[vertexCount][Y] = y;
+        vertexCount++;
+    
+        switch (shape) {
+    
+        case POINTS:
+          point(x, y);
+          break;
+    
+        case LINES:
+          if ((vertexCount % 2) == 0) {
+            line(vertices[vertexCount-2][X],
+                 vertices[vertexCount-2][Y], x, y);
+          }
+          break;
+    
+        case TRIANGLES:
+          if ((vertexCount % 3) == 0) {
+            triangle(vertices[vertexCount - 3][X],
+                     vertices[vertexCount - 3][Y],
+                     vertices[vertexCount - 2][X],
+                     vertices[vertexCount - 2][Y],
+                     x, y);
+          }
+          break;
+    
+        case TRIANGLE_STRIP:
+          if (vertexCount >= 3) {
+            triangle(vertices[vertexCount - 2][X],
+                     vertices[vertexCount - 2][Y],
+                     vertices[vertexCount - 1][X],
+                     vertices[vertexCount - 1][Y],
+                     vertices[vertexCount - 3][X],
+                     vertices[vertexCount - 3][Y]);
+          }
+          break;
+    
+        case TRIANGLE_FAN:
+          if (vertexCount >= 3) {
+            // This is an unfortunate implementation because the stroke for an
+            // adjacent triangle will be repeated. However, if the stroke is not
+            // redrawn, it will replace the adjacent line (when it lines up
+            // perfectly) or show a faint line (when off by a small amount).
+            // The alternative would be to wait, then draw the shape as a
+            // polygon fill, followed by a series of vertices. But that's a
+            // poor method when used with PDF, DXF, or other recording objects,
+            // since discrete triangles would likely be preferred.
+            triangle(vertices[0][X],
+                     vertices[0][Y],
+                     vertices[vertexCount - 2][X],
+                     vertices[vertexCount - 2][Y],
+                     x, y);
+          }
+          break;
+    
+        case QUAD:
+        case QUADS:
+          if ((vertexCount % 4) == 0) {
+            quad(vertices[vertexCount - 4][X],
+                 vertices[vertexCount - 4][Y],
+                 vertices[vertexCount - 3][X],
+                 vertices[vertexCount - 3][Y],
+                 vertices[vertexCount - 2][X],
+                 vertices[vertexCount - 2][Y],
+                 x, y);
+          }
+          break;
+    
+        case QUAD_STRIP:
+          // 0---2---4
+          // |   |   |
+          // 1---3---5
+          if ((vertexCount >= 4) && ((vertexCount % 2) == 0)) {
+            quad(vertices[vertexCount - 4][X],
+                 vertices[vertexCount - 4][Y],
+                 vertices[vertexCount - 2][X],
+                 vertices[vertexCount - 2][Y],
+                 x, y,
+                 vertices[vertexCount - 3][X],
+                 vertices[vertexCount - 3][Y]);
+          }
+          break;
+    
+        case POLYGON:
+          if (workPath.getNumCommands() == 0 || breakShape) {
+            workPath.moveTo((float) x, (float) y);
+            breakShape = false;
+          } else {
+            workPath.lineTo((float) x, (float) y);
+          }
+          break;
+        }
+      }
+
+      public void endShape(int mode) {
+        if (openContour) { // correct automagically, notify user
+          //endContour();
+          //PGraphics.showWarning("Missing endContour() before endShape()");
+        }
+        if (workPath.getNumCommands() > 0) {
+          if (shape == POLYGON) {
+            if (mode == CLOSE) {
+              workPath.closePath();
+            }
+            if (auxPath.getNumCommands() > 0) {
+              workPath.append(auxPath, false);
+            }
+            drawShape(workPath);
+          }
+        }
+        shape = 0;
+        //if (adjustedForThinLines) {
+          //adjustedForThinLines = false;
+          //translate(-0.5f, -0.5f);
+        //}
+        //loaded = false;
+      }
+    
+    
+      private void drawShape(Shape s) {
+        gc.beginPath();
+        PathIterator pi = s.getPathIterator(null);
+        while (!pi.isDone()) {
+          int pitype = pi.currentSegment(pathCoordsBuffer);
+          switch (pitype) {
+            case PathIterator.SEG_MOVETO:
+              gc.moveTo(pathCoordsBuffer[0], pathCoordsBuffer[1]);
+              break;
+            case PathIterator.SEG_LINETO:
+              gc.lineTo(pathCoordsBuffer[0], pathCoordsBuffer[1]);
+              break;
+            case PathIterator.SEG_QUADTO:
+              gc.quadraticCurveTo(pathCoordsBuffer[0], pathCoordsBuffer[1],
+                                       pathCoordsBuffer[2], pathCoordsBuffer[3]);
+              break;
+            case PathIterator.SEG_CUBICTO:
+              gc.bezierCurveTo(pathCoordsBuffer[0], pathCoordsBuffer[1],
+                                    pathCoordsBuffer[2], pathCoordsBuffer[3],
+                                    pathCoordsBuffer[4], pathCoordsBuffer[5]);
+              break;
+            case PathIterator.SEG_CLOSE:
+              gc.closePath();
+              break;
+            default:
+              //showWarning("Unknown segment type " + pitype);
+          }
+          pi.next();
+        }
+        if (hasFill) gc.fill();
+        if (hasStroke) gc.stroke();
+      }
 
     // [Input]
 

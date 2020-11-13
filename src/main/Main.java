@@ -406,7 +406,6 @@ class App {
         title = t;
         authour = a;
         description = d;
-        System.out.println("Loaded: "+title+" by "+authour+"\n------> "+description);
     }
 
     public void launch() throws Exception {
