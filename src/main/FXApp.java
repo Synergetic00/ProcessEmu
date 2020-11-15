@@ -23,12 +23,12 @@ public class FXApp {
         gc.restore();
 
         g = new PGraphics(gc, this);
-        g.isPrimary = true;
+        g.gs.isPrimary = true;
     }
 
     public PGraphics createGraphics(int w, int h) {
         PGraphics newPGraphics = new PGraphics(gc, this);
-        newPGraphics.isPrimary = false;
+        newPGraphics.gs.isPrimary = false;
         newPGraphics.size(w, h);
         return newPGraphics;
     }
@@ -54,7 +54,7 @@ public class FXApp {
     }
     
     public void image(PGraphics pg, double x, double y) {
-        pg.setOffset(((screenW - pg.width) / 2) + x, ((screenH - pg.height) / 2) + y);
+        pg.setOffset(((screenW - pg.gs.width) / 2) + x, ((screenH - pg.gs.height) / 2) + y);
     }
 
 

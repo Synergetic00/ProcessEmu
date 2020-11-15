@@ -8,34 +8,29 @@ public class PGraphics {
 
     GraphicsContext gc;
     FXApp parent;
-
-    public double offsetX, offsetY;
-    public double screenW, screenH;
-    public int width, height;
-
-    public boolean isPrimary;
+    public GraphicState gs;
 
 	public PGraphics(GraphicsContext gc, FXApp parent) {
         this.gc = gc;
         this.parent = parent;
-        screenW = gc.getCanvas().getWidth();
-        screenH = gc.getCanvas().getHeight();
+        gs.screenW = gc.getCanvas().getWidth();
+        gs.screenH = gc.getCanvas().getHeight();
     }
 
     public void hello(String text) {
-        System.out.println(""+text+" "+isPrimary+" "+width);
+        System.out.println(""+text+" "+gs.isPrimary+" "+gs.width);
     }
 
     public void size(int w, int h) {
-        width = w;
-        height = h;
+        gs.width = w;
+        gs.height = h;
 
-        setOffset(((screenW - width) / 2), ((screenH - height) / 2));
+        setOffset(((gs.screenW - gs.width) / 2), ((gs.screenH - gs.height) / 2));
     }
 
     public void setOffset(double x, double y) {
-        offsetX = x;
-        offsetY = y;
+        gs.offsetX = x;
+        gs.offsetY = y;
     }
 
     public void fill(int red, int green, int blue) {
@@ -45,17 +40,17 @@ public class PGraphics {
     public void background(int gray) {
         gc.save();
         gc.setFill(Color.rgb(gray, gray, gray));
-        gc.fillRect(offsetX, offsetY, width, height);
+        gc.fillRect(gs.offsetX, gs.offsetY, gs.width, gs.height);
         gc.restore();
     }
 
 	public void rect(double x, double y, double w, double h) {
-        if (isPrimary) {
+        if (gs.isPrimary) {
             gc.setFill(Color.RED);
         } else {
             gc.setFill(Color.BLUE);
         }
-        gc.fillRect(offsetX+x, offsetY+y, w, h);
+        gc.fillRect(gs.offsetX+x, gs.offsetY+y, w, h);
     }
     
     public void beginDraw() {
