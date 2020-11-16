@@ -2,11 +2,15 @@ package utils;
 
 public class GraphicState {
     
-    public double offsetX, offsetY;
+    public static double offsetX, offsetY;
     public double screenW, screenH;
     public int width, height;
-    public boolean isPrimary;
 
     public GraphicState() {}
+
+    public static void setOffset(double x, double y) {
+        offsetX = x;
+        offsetY = y;
+    }
 
 }
