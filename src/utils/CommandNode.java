@@ -1,5 +1,7 @@
 package utils;
 
+import javafx.scene.paint.Color;
+
 public class CommandNode {
 
     String commandString;
@@ -11,6 +13,10 @@ public class CommandNode {
     double valueY;
     double valueW;
     double valueH;
+
+    public Color backgroundColour;
+    public Color fillColour;
+    public Color strokeColour;
 
     public CommandNode(String s, int v1, int v2, int v3, int vA) {
         commandString = s;
@@ -28,16 +34,36 @@ public class CommandNode {
         valueH = h;
     }
 
-	public void execute(Renderer r, double x, double y) {
-        r.renderPos(x, y);
-        switch (commandString) {
+	public CommandNode(String string, Color colour) {
+        commandString = string;
+        switch (string) {
             case "background": {
-                r.background(value1);
+                backgroundColour = colour;
                 break;
             }
             
             case "fill": {
-                r.fill(value1, value2, value3);
+                fillColour = colour;
+                break;
+            }
+            
+            case "stroke": {
+                strokeColour = colour;
+                break;
+            }
+        }
+	}
+
+	public void execute(Renderer r, double x, double y) {
+        r.renderPos(x, y);
+        switch (commandString) {
+            case "background": {
+                r.background(backgroundColour);
+                break;
+            }
+            
+            case "fill": {
+                r.fill(fillColour);
                 break;
             }
             

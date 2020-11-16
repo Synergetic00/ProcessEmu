@@ -30,7 +30,6 @@ public class FXApp {
         PGraphics newPGraphics = new PGraphics(gc, this);
         newPGraphics.isPrimary = false;
         newPGraphics.size(w, h);
-        gc.save();
         return newPGraphics;
     }
 

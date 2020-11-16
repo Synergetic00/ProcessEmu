@@ -3,6 +3,7 @@ package utils;
 import java.util.ArrayList;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 import main.FXApp;
 
 public class PGraphics {
@@ -13,6 +14,10 @@ public class PGraphics {
     GraphicState gs;
     ArrayList<CommandNode> commands;
     public boolean isPrimary;
+
+    public Color backgroundColour;
+    public Color fillColour;
+    public Color strokeColour;
 
 	public PGraphics(GraphicsContext gc, FXApp parent) {
         this.gc = gc;
@@ -38,22 +43,28 @@ public class PGraphics {
     }
 
     public void fill(int red, int green, int blue) {
+        this.fillColour = Color.rgb(red, green, blue);
+
         if (isPrimary) {
-            r.fill(red, green, blue);
+            r.fill(fillColour);
         } else {
-            commands.add(new CommandNode("fill", red, green, blue, 255));
+            commands.add(new CommandNode("fill", fillColour));
         }
     }
 
     public void background(int gray) {
+        this.backgroundColour = Color.rgb(gray, gray, gray);
+
         if (isPrimary) {
-            r.background(gray);
+            r.background(backgroundColour);
         } else {
-            commands.add(new CommandNode("background", gray, gray, gray, 255));
+            commands.add(new CommandNode("background", backgroundColour));
         }
     }
 
 	public void rect(double x, double y, double w, double h) {
+        r.fill(fillColour);
+        System.out.println(fillColour);
         if (isPrimary) {
             r.rect(x, y, w, h);
         } else {
@@ -67,12 +78,9 @@ public class PGraphics {
         } else {
             commands.clear();
         }
-        gc.save();
     }
     
     public void endDraw() {
-        gc.restore();
-        gc.restore();
     }
 
 	public void render(double x, double y) {

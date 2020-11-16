@@ -9,10 +9,6 @@ public class Renderer {
     GraphicState gs;
     double renderX, renderY;
 
-    public Color backgroundColour;
-    public Color fillColour;
-    public Color strokeColour;
-
 	public Renderer(GraphicsContext gc, GraphicState gs) {
         this.gc = gc;
         this.gs = gs;
@@ -23,13 +19,9 @@ public class Renderer {
         renderY = y;
     }
 
-    public void fill(int red, int green, int blue) {
-        gc.setFill(Color.rgb(red, green, blue));
-    }
-
-    public void background(int gray) {
+    public void background(Color backgroundColour) {
         gc.save();
-        gc.setFill(Color.rgb(gray, gray, gray));
+        gc.setFill(backgroundColour);
         gc.fillRect(GraphicState.offsetX+renderX, GraphicState.offsetY+renderY, gs.width, gs.height);
         gc.restore();
     }
@@ -37,5 +29,9 @@ public class Renderer {
 	public void rect(double x, double y, double w, double h) {
         gc.fillRect(GraphicState.offsetX+x, GraphicState.offsetY+y, w, h);
     }
+
+	public void fill(Color fillColour) {
+        gc.setFill(fillColour);
+	}
     
 }
