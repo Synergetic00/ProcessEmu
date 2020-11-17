@@ -67,12 +67,8 @@ public class CommandNode {
                 break;
             }
             
-            case "rect": {
-                r.rect(valueX+x, valueY+y, valueW, valueH);
-                break;
-            }
-
-            default: {
+            case "stroke": {
+                r.stroke(strokeColour);
                 break;
             }
         }
