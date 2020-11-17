@@ -6,16 +6,16 @@ import javafx.scene.paint.Color;
 public class Renderer {
 
     GraphicsContext gc;
+    PGraphics pg;
     public GraphicState gs;
     double renderX, renderY;
-    boolean hasFill;
-    boolean hasStroke;
 
-	public Renderer(GraphicsContext gc, GraphicState gs) {
+	public Renderer(GraphicsContext gc, GraphicState gs, PGraphics pg) {
         this.gc = gc;
         this.gs = gs;
-        hasFill = true;
-        hasStroke = true;
+        this.pg = pg;
+        pg.hasFill = true;
+        pg.hasStroke = true;
         fill(Color.WHITE);
     }
     

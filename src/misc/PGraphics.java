@@ -37,7 +37,7 @@ public class PGraphics {
         this.gc = gc;
         this.parent = parent;
         gs = new GraphicState();
-        r = new Renderer(gc, gs);
+        r = new Renderer(gc, gs, this);
         gs.screenW = gc.getCanvas().getWidth();
         gs.screenH = gc.getCanvas().getHeight();
     }
@@ -48,40 +48,60 @@ public class PGraphics {
         r.stroke(strokeColour);
     }
 
-    public void background(int rh, int gs, int bb, int al) {
-        updateVars();
+    public void background(int rh, int gs, int bb, int alpha) {
+        backgroundColour = getColor(rh, gs, bb, alpha);
+
+        if (isPrimary) {
+            r.background(backgroundColour);
+        } else {
+            commands.add(new CommandNode("background", backgroundColour));
+        }
     }
 
-    public void fill(int rh, int gs, int bb, int al) {
-        updateVars();
+    public void fill(int rh, int gs, int bb, int alpha) {
+        fillColour = getColor(rh, gs, bb, alpha);
+        hasFill = true;
+
+        if (isPrimary) {
+            r.background(fillColour);
+        } else {
+            commands.add(new CommandNode("fill", fillColour));
+        }
     }
 
-    public void stroke(int rb, int gs, int bb, int al) {
-        updateVars();
+    public void stroke(int rh, int gs, int bb, int alpha) {
+        strokeColour = getColor(rh, gs, bb, alpha);
+        hasStroke = true;
+
+        if (isPrimary) {
+            r.stroke(strokeColour);
+        } else {
+            commands.add(new CommandNode("stroke", strokeColour));
+        }
     }
 
-    public void colorMode(int mode, int rh, int gs, int bb, int al) {
+    public void colorMode(int mode, int rh, int gs, int bb, int alpha) {
         colorMode = mode;
         maxRH = rh;
         maxGS = gs;
         maxBB = bb;
-        maxAL = al;
+        maxAL = alpha;
     }
 
-    public Color getColor(int v1, int v2, int v3, int alpha) {
+    public Color getColor(int rh, int gs, int bb, int alpha) {
         switch (colorMode) {
             case RGB: {
-                int red = (int) map(v1, 0, maxRH, 0, 255);
-                int green = (int) map(v2, 0, maxGS, 0, 255);
-                int blue = (int) map(v3, 0, maxBB, 0, 255);
+                int red = (int) map(rh, 0, maxRH, 0, 255);
+                int green = (int) map(gs, 0, maxGS, 0, 255);
+                int blue = (int) map(bb, 0, maxBB, 0, 255);
                 double opacity = map(alpha, 0, maxAL, 0, 1);
                 return Color.rgb(red, green, blue, opacity);
             }
 
             case HSB: {
-                double hue = map(v1, 0, maxRH, 0, 359);
-                double saturation = map(v2, 0, maxGS, 0, 1);
-                double brightness = map(v3, 0, maxBB, 0, 1);
+                double hue = map(rh, 0, maxRH, 0, 359);
+                double saturation = map(gs, 0, maxGS, 0, 1);
+                double brightness = map(bb, 0, maxBB, 0, 1);
                 double opacity = map(alpha, 0, maxAL, 0, 1);
                 return Color.hsb(hue, saturation, brightness, opacity);
             }

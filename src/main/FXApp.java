@@ -4,7 +4,6 @@ import javafx.scene.canvas.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import misc.*;
-import utils.*;
 
 import static utils.MathUtils.*;
 
@@ -28,10 +27,6 @@ public class FXApp {
 
         g = new PGraphics(gc, this);
         g.isPrimary = true;
-    }
-
-    public color color(int r, int g, int b) {
-        return color.getColour(r, g, b);
     }
 
     public void background(int gray) {
