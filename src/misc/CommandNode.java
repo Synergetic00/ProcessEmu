@@ -1,4 +1,4 @@
-package utils;
+package misc;
 
 import javafx.scene.paint.Color;
 

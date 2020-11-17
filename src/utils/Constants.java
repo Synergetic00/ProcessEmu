@@ -39,33 +39,33 @@ public class Constants {
 
     public static final int CLOSE = 2;
 
-    static final int GROUP           = 0;   // createShape()
+    public static final int GROUP           = 0;   // createShape()
   
-    static final int POINT           = 2;   // primitive
-    static final int POINTS          = 3;   // vertices
+    public static final int POINT           = 2;   // primitive
+    public static final int POINTS          = 3;   // vertices
   
-    static final int LINE            = 4;   // primitive
-    static final int LINES           = 5;   // beginShape(), createShape()
-    static final int LINE_STRIP      = 50;  // beginShape()
-    static final int LINE_LOOP       = 51;
+    public static final int LINE            = 4;   // primitive
+    public static final int LINES           = 5;   // beginShape(), createShape()
+    public static final int LINE_STRIP      = 50;  // beginShape()
+    public static final int LINE_LOOP       = 51;
   
-    static final int TRIANGLE        = 8;   // primitive
-    static final int TRIANGLES       = 9;   // vertices
-    static final int TRIANGLE_STRIP  = 10;  // vertices
-    static final int TRIANGLE_FAN    = 11;  // vertices
+    public static final int TRIANGLE        = 8;   // primitive
+    public static final int TRIANGLES       = 9;   // vertices
+    public static final int TRIANGLE_STRIP  = 10;  // vertices
+    public static final int TRIANGLE_FAN    = 11;  // vertices
   
-    static final int QUAD            = 16;  // primitive
-    static final int QUADS           = 17;  // vertices
-    static final int QUAD_STRIP      = 18;  // vertices
+    public static final int QUAD            = 16;  // primitive
+    public static final int QUADS           = 17;  // vertices
+    public static final int QUAD_STRIP      = 18;  // vertices
   
-    static final int POLYGON         = 20;  // in the end, probably cannot
-    static final int PATH            = 21;  // separate these two
+    public static final int POLYGON         = 20;  // in the end, probably cannot
+    public static final int PATH            = 21;  // separate these two
   
-    static final int RECT            = 30;  // primitive
-    static final int ELLIPSE         = 31;  // primitive
-    static final int ARC             = 32;  // primitive
+    public static final int RECT            = 30;  // primitive
+    public static final int ELLIPSE         = 31;  // primitive
+    public static final int ARC             = 32;  // primitive
   
-    static final int SPHERE          = 40;  // primitive
-    static final int BOX             = 41;  // primitive
+    public static final int SPHERE          = 40;  // primitive
+    public static final int BOX             = 41;  // primitive
     
 }

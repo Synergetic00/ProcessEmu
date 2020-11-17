@@ -1,10 +1,10 @@
-package utils;
+package misc;
 
 import java.util.ArrayList;
 import com.sun.javafx.geom.Path2D;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import main.FXApp;
+import main.*;
 
 import static utils.Constants.*;
 

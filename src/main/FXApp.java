@@ -3,8 +3,8 @@ package main;
 import javafx.scene.canvas.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
-import utils.GraphicState;
-import utils.PGraphics;
+import misc.*;
+
 import static utils.MathUtils.*;
 
 public class FXApp {

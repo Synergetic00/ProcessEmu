@@ -57,7 +57,7 @@ public class Main extends Application {
 
         loadFolder(new File("src/programs"));
 
-        apps.get(2).launch();
+        apps.get(0).launch();
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
