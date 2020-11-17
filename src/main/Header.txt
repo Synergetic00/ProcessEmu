@@ -10,5 +10,7 @@ import static utils.MathUtils.*;
 
 public class ProcessingApp extends FXApp {
 
+    public int TRIANGLE_STRIP = 10;
+
 public ProcessingApp(GraphicsContext gc) { super(gc); }
 

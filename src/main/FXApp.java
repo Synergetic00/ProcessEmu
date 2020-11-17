@@ -3,7 +3,9 @@ package main;
 import javafx.scene.canvas.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
+import utils.GraphicState;
 import utils.PGraphics;
+import static utils.MathUtils.*;
 
 public class FXApp {
 
@@ -11,6 +13,7 @@ public class FXApp {
     public PGraphics g;
 
     double screenW, screenH;
+    public int width, height;
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
@@ -39,6 +42,8 @@ public class FXApp {
 
     public void size(int w, int h) {
         g.size(w, h);
+        width = g.gs.width;
+        height = g.gs.height;
     }
 
     public void background(int gray) {
@@ -58,6 +63,17 @@ public class FXApp {
     }
 
 
+    public void beginShape(int kind) {
+        g.beginShape(kind);
+    }
+
+    public void endShape() {
+        g.endShape();
+    }
+
+    public void vertex(double x, double y) {
+        g.vertex(x, y);
+      }
 
 
 
@@ -74,9 +90,15 @@ public class FXApp {
 
 
 
+    public double mouseX, mouseY, pmouseX, pmouseY;
 
+    public void updateMouse(MouseEvent event) {
+        pmouseX = mouseX;
+        pmouseY = mouseY;
 
-
+        mouseX = clamp((int)(event.getSceneX()-GraphicState.offsetX), 0, g.gs.width);
+        mouseY = clamp((int)(event.getSceneY()-GraphicState.offsetY), 0, g.gs.height);
+    }
 
     // Methods to be overwritten
     public void settings() {}
@@ -107,6 +129,7 @@ public class FXApp {
     }
 
     public void handleMouseClicked(MouseEvent event) {
+        updateMouse(event);
         mouseClicked();
     }
 
@@ -115,14 +138,17 @@ public class FXApp {
     }
 
     public void handleMouseMoved(MouseEvent event) {
+        updateMouse(event);
         mousedMoved();
     }
 
     public void handleMousePressed(MouseEvent event) {
+        updateMouse(event);
         mousePressed();
     }
 
     public void handleMouseReleased(MouseEvent event) {
+        updateMouse(event);
         mouseReleased();
     }
 

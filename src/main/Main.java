@@ -19,6 +19,7 @@ import javax.tools.ToolProvider;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -56,7 +57,73 @@ public class Main extends Application {
 
         loadFolder(new File("src/programs"));
 
-        apps.get(0).launch();
+        apps.get(2).launch();
+
+        scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseClickedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMouseDragged(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseDraggedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMouseMoved(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseMovedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMousePressed(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mousePressedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnMouseReleased(new EventHandler<MouseEvent>() {
+            public void handle(MouseEvent event) {
+                try {
+                    mouseReleasedMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnScroll(new EventHandler<ScrollEvent>() {
+            public void handle(ScrollEvent event) {
+                try {
+                    mouseWheelMethod.invoke(programObject, event);
+                } catch (Exception e) {}
+            }
+        });
+
+        scene.setOnKeyPressed(event -> {
+            try {
+                keyPressedMethod.invoke(programObject, event);
+            } catch (Exception e) {}
+        });
+
+        scene.setOnKeyReleased(event -> {
+            try {
+                keyReleasedMethod.invoke(programObject, event);
+            } catch (Exception e) {}
+        });
+
+        scene.setOnKeyTyped(event -> {
+            try {
+                keyTypedMethod.invoke(programObject, event);
+            } catch (Exception e) {}
+        });
 
         // Call the draw method once every frame
         new AnimationTimer() {

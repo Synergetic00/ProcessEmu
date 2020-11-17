@@ -23,6 +23,10 @@ public class MathUtils {
         return (int) ((val > 0) ? val - (val % 1) + 1: val - (val % 1) );
     }
 
+    public static int clamp(int val, int min, int max) {
+        return Math.max(min, Math.min(max, val));
+    }
+
     public static int constrain(int val, int low, int high) {
 		return (val < low) ? low : ((val > high) ? high : val);
     }
