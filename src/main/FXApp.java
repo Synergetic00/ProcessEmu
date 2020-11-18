@@ -39,61 +39,21 @@ public class FXApp {
     public void size(int w, int h) {
         g.size(w, h);
     }
-
-    public void background(int gray) {
-        g.background(gray);
-    }
-
-    public void background(int gray, int alpha) {
-        g.background(gray, alpha);
-    }
-
-    public void background(int rh, int gs, int bb) {
-        g.background(rh, gs, bb);
-    }
-
-    public void background(int rh, int gs, int bb, int alpha) {
-        g.background(rh, gs, bb, alpha);
-    }
-
-    public void fill(int gray) {
-        g.fill(gray, gray, gray, (int)g.maxAL);
-    }
-
-    public void fill(int gray, int alpha) {
-        g.fill(gray, gray, gray, alpha);
-    }
-
-    public void fill(int rh, int gs, int bb) {
-        g.fill(rh, gs, bb, (int)g.maxAL);
-    }
-
-    public void fill(int rh, int gs, int bb, int alpha) {
-        g.fill(rh, gs, bb, alpha);
-    }
-
-    public void stroke(int gray) {
-        stroke(gray, gray, gray, (int)g.maxAL);
-    }
-
-    public void stroke(int gray, int alpha) {
-        stroke(gray, gray, gray, alpha);
-    }
-
-    public void stroke(int rh, int gs, int bb) {
-        stroke(rh, gs, bb, (int)g.maxAL);
-    }
-
-    public void stroke(int rh, int gs, int bb, int alpha) {
-        g.stroke(rh, gs, bb, alpha);
+    
+    public void image(PGraphics pg, double x, double y) {
+        pg.render(x, y);
     }
 
     public void rect(double x, double y, double w, double h) {
         g.rect(x, y, w, h);
     }
-    
-    public void image(PGraphics pg, double x, double y) {
-        pg.render(x, y);
+
+    public void background(int gray) {
+        g.background(gray);
+    }
+
+    public void fill(int rh, int gs, int bb) {
+        g.fill(rh, gs, bb);
     }
 
 
