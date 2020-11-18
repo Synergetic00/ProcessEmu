@@ -29,32 +29,43 @@ public class FXApp {
         g.isPrimary = true;
     }
 
+    public PGraphics createGraphics(int w, int h) {
+        PGraphics newPGraphics = new PGraphics(gc, this);
+        newPGraphics.isPrimary = false;
+        newPGraphics.size(w, h);
+        return newPGraphics;
+    }
+
+    public void size(int w, int h) {
+        g.size(w, h);
+    }
+
     public void background(int gray) {
-        
+        g.background(gray);
     }
 
     public void background(int gray, int alpha) {
-
+        g.background(gray, alpha);
     }
 
-    public void background(int red, int green, int blue) {
-
+    public void background(int rh, int gs, int bb) {
+        g.background(rh, gs, bb);
     }
 
-    public void background(int red, int green, int blue, int alpha) {
-
+    public void background(int rh, int gs, int bb, int alpha) {
+        g.background(rh, gs, bb, alpha);
     }
 
     public void fill(int gray) {
-        fill(gray, gray, gray, (int)g.maxAL);
+        g.fill(gray, gray, gray, (int)g.maxAL);
     }
 
     public void fill(int gray, int alpha) {
-        fill(gray, gray, gray, alpha);
+        g.fill(gray, gray, gray, alpha);
     }
 
     public void fill(int rh, int gs, int bb) {
-        fill(rh, gs, bb, (int)g.maxAL);
+        g.fill(rh, gs, bb, (int)g.maxAL);
     }
 
     public void fill(int rh, int gs, int bb, int alpha) {
@@ -62,19 +73,27 @@ public class FXApp {
     }
 
     public void stroke(int gray) {
-
+        stroke(gray, gray, gray, (int)g.maxAL);
     }
 
     public void stroke(int gray, int alpha) {
-
+        stroke(gray, gray, gray, alpha);
     }
 
-    public void stroke(int red, int green, int blue) {
-
+    public void stroke(int rh, int gs, int bb) {
+        stroke(rh, gs, bb, (int)g.maxAL);
     }
 
-    public void stroke(int red, int green, int blue, int alpha) {
+    public void stroke(int rh, int gs, int bb, int alpha) {
+        g.stroke(rh, gs, bb, alpha);
+    }
 
+    public void rect(double x, double y, double w, double h) {
+        g.rect(x, y, w, h);
+    }
+    
+    public void image(PGraphics pg, double x, double y) {
+        pg.render(x, y);
     }
 
 

@@ -38,4 +38,9 @@ public class Renderer {
 	public void stroke(Color strokeColour) {
         gc.setStroke(strokeColour);
 	}
+
+	public void rect(double nx, double ny, double nw, double nh) {
+        if (pg.hasFill) gc.fillRect(nx, ny, nw, nh);
+        if (pg.hasStroke) gc.strokeRect(nx, ny, nw, nh);
+	}
 }

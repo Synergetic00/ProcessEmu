@@ -40,12 +40,63 @@ public class PGraphics {
         r = new Renderer(gc, gs, this);
         gs.screenW = gc.getCanvas().getWidth();
         gs.screenH = gc.getCanvas().getHeight();
+        defaultSettings();
     }
 
-    public void updateVars() {
+    void defaultSettings() {
+        colorMode(RGB, 255, 255, 255, 255);
+        background(204, 204, 204, 255);
+        fill(255, 255, 255, 255);
+        stroke(0, 0, 0, 255);
+        rectMode = CORNER;
+        ellipseMode = CENTER;
+        commands = new ArrayList<CommandNode>();
+    }
+
+    void updateVars() {
         r.background(backgroundColour);
         r.fill(fillColour);
         r.stroke(strokeColour);
+    }
+
+    public void size(int w, int h) {
+        gs.width = w;
+        gs.height = h;
+
+        if (isPrimary) {
+            GraphicState.setOffset(((gs.screenW - gs.width) / 2), ((gs.screenH - gs.height) / 2));
+        }
+
+    }
+
+    public void beginDraw() {
+        if (commands == null) {
+            commands = new ArrayList<CommandNode>();
+        } else {
+            commands.clear();
+        }
+    }
+    
+    public void endDraw() {
+    }
+
+	public void render(double x, double y) {
+        r.renderPos(x, y);
+        for (CommandNode command : commands) {
+            command.execute(r, x, y);
+        }
+	}
+
+    public void background(int gray) {
+        background(gray, gray, gray, (int)maxAL);
+    }
+
+    public void background(int gray, int alpha) {
+        background(gray, gray, gray, alpha);
+    }
+
+    public void background(int rh, int gs, int bb) {
+        background(rh, gs, bb, (int)maxAL);
     }
 
     public void background(int rh, int gs, int bb, int alpha) {
@@ -56,6 +107,18 @@ public class PGraphics {
         } else {
             commands.add(new CommandNode("background", backgroundColour));
         }
+    }
+
+    public void fill(int gray) {
+        fill(gray, gray, gray, (int)maxAL);
+    }
+
+    public void fill(int gray, int alpha) {
+        fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(int rh, int gs, int bb) {
+        fill(rh, gs, bb, (int)maxAL);
     }
 
     public void fill(int rh, int gs, int bb, int alpha) {
@@ -87,6 +150,42 @@ public class PGraphics {
         maxBB = bb;
         maxAL = alpha;
     }
+
+    public void rect(double x, double y, double w, double h) {
+        updateVars();
+
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (rectMode) {
+            case CORNERS: {
+                nw /= 2;
+                nh /= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+            }
+        }
+
+        if (isPrimary) {
+            r.rect(nx, ny, nw, nh);
+        } else {
+            commands.add(new CommandNode("rect", nx, ny, nw, nh));
+        }
+    }
+
+    // Utils
 
     public Color getColor(int rh, int gs, int bb, int alpha) {
         switch (colorMode) {
