@@ -54,6 +54,18 @@ public class PGraphics {
         r.stroke(strokeColour);
     }
 
+    public void colorMode(int mode) {
+        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, (int)maxAL);
+    }
+
+    public void colorMode(int mode, int max) {
+        colorMode(mode, max, max, max, (int)maxAL);
+    }
+
+    public void colorMode(int mode, int rh, int gs, int bb) {
+        colorMode(mode, rh, gs, bb, (int)maxAL);
+    }
+
     public void colorMode(int mode, int rh, int gs, int bb, int alpha) {
         colorMode = mode;
         maxRH = rh;
@@ -82,7 +94,14 @@ public class PGraphics {
         }
     }
     
-    public void endDraw() {
+    public void endDraw() {}
+
+    public void rectMode(int mode) {
+        rectMode = mode;
+    }
+
+    public void ellipseMode(int mode) {
+        ellipseMode = mode;
     }
 
     public void rect(double x, double y, double w, double h) {
@@ -119,6 +138,41 @@ public class PGraphics {
         }
     }
 
+	public void ellipse(double x, double y, double w, double h) {
+        updateVars();
+        
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (ellipseMode) {
+            case CORNER: {
+                nw *= 2;
+                nh *= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+        }
+
+        if (isPrimary) {
+            r.ellipse(GraphicState.offsetX+nx, GraphicState.offsetY+ny, nw, nh);
+        } else {
+            commands.add(new CommandNode("ellipse", GraphicState.offsetX+nx, GraphicState.offsetY+ny, nw, nh));
+        }
+	}
+
     public void background(int gray) {
         background(gray, gray, gray, (int)maxAL);
     }
@@ -141,6 +195,10 @@ public class PGraphics {
         }
     }
 
+    public void noFill() {
+        hasFill = false;
+    }
+
     public void fill(int gray) {
         fill(gray, gray, gray, (int)maxAL);
     }
@@ -155,12 +213,76 @@ public class PGraphics {
 
     public void fill(int rh, int gs, int bb, int alpha) {
         this.fillColour = getColor(rh, gs, bb, alpha);
+        hasFill = true;
 
         if (isPrimary) {
             r.fill(fillColour);
         } else {
             commands.add(new CommandNode("fill", fillColour));
         }
+    }
+
+    public void noStroke() {
+        hasStroke = false;
+    }
+
+    public void stroke(int gray) {
+        stroke(gray, gray, gray, (int)maxAL);
+    }
+
+    public void stroke(int gray, int alpha) {
+        stroke(gray, gray, gray, alpha);
+    }
+
+    public void stroke(int rh, int gs, int bb) {
+        stroke(rh, gs, bb, (int)maxAL);
+    }
+
+    public void stroke(int rh, int gs, int bb, int alpha) {
+        this.strokeColour = getColor(rh, gs, bb, alpha);
+        hasStroke = true;
+
+        if (isPrimary) {
+            r.stroke(strokeColour);
+        } else {
+            commands.add(new CommandNode("stroke", strokeColour));
+        }
+    }
+
+    public void textAlign(int newAlignX) {
+
+    }
+
+    public void textAlign(int newAlignX, int newAlignY) {
+        
+    }
+
+    public void textSize(double newSize) {
+
+    }
+
+    public void text(String value, double x, double y) {
+
+    }
+
+    public void strokeWeight(double weight) {
+
+    }
+
+    public void line(double startX, double startY, double endX, double endY) {
+
+    }
+
+    public void beginShape() {
+
+    }
+
+    public void vertex(double x, double y) {
+
+    }
+
+    public void endShape() {
+
     }
 
 	public void render(double x, double y) {

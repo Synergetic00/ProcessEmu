@@ -48,18 +48,117 @@ public class FXApp {
         g.rect(x, y, w, h);
     }
 
+    public void ellipse(double x, double y, double w, double h) {
+        g.ellipse(x, y, w, h);
+    }
+
     public void background(int gray) {
         g.background(gray);
     }
 
-    public void fill(int rh, int gs, int bb) {
-        g.fill(rh, gs, bb);
+    public void background(int gray, int alpha) {
+        g.background(gray, alpha);
     }
 
+    public void background(int rh, int gs, int bb) {
+        g.background(rh, gs, bb);
+    }
 
+    public void background(int rh, int gs, int bb, int alpha) {
+        g.background(rh, gs, bb, alpha);
+    }
 
+    public void noFill() {
+        g.noFill();
+    }
 
+    public void fill(int gray) {
+        g.fill(gray, gray, gray, (int)g.maxAL);
+    }
 
+    public void fill(int gray, int alpha) {
+        g.fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(int rh, int gs, int bb) {
+        g.fill(rh, gs, bb, (int)g.maxAL);
+    }
+
+    public void fill(int rh, int gs, int bb, int alpha) {
+        g.fill(rh, gs, bb, alpha);
+    }
+
+    public void noStroke() {
+        g.noStroke();
+    }
+
+    public void stroke(int gray) {
+        g.stroke(gray);
+    }
+
+    public void stroke(int gray, int alpha) {
+        g.stroke(gray, alpha);
+    }
+
+    public void stroke(int rh, int gs, int bb) {
+        g.stroke(rh, gs, bb);
+    }
+
+    public void stroke(int rh, int gs, int bb, int alpha) {
+        g.stroke(rh, gs, bb, alpha);
+    }
+
+    public void textAlign(int newAlignX) {
+
+    }
+
+    public void textAlign(int newAlignX, int newAlignY) {
+        
+    }
+
+    public void textSize(double newSize) {
+
+    }
+
+    public void text(String value, double x, double y) {
+
+    }
+
+    public void strokeWeight(double weight) {
+
+    }
+
+    public void line(double startX, double startY, double endX, double endY) {
+
+    }
+
+    public void beginShape() {
+
+    }
+
+    public void vertex(double x, double y) {
+
+    }
+
+    public void endShape() {
+
+    }
+
+    public void colorMode(int mode) {
+        g.colorMode(mode);
+    }
+
+    public void colorMode(int mode, int max) {
+        g.colorMode(mode, max);
+    }
+
+    public void colorMode(int mode, int rh, int gs, int bb) {
+        g.colorMode(mode, rh, gs, bb);
+    }
+
+    public void colorMode(int mode, int rh, int gs, int bb, int alpha) {
+        g.colorMode(mode, rh, gs, bb, alpha);
+    }
 
 
 

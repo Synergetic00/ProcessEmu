@@ -76,6 +76,11 @@ public class CommandNode {
                 r.rect(valueX+x, valueY+y, valueW, valueH);
                 break;
             }
+            
+            case "ellipse": {
+                r.ellipse(valueX+x, valueY+y, valueW, valueH);
+                break;
+            }
         }
 	}
     

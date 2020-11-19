@@ -43,4 +43,8 @@ public class Renderer {
         if (pg.hasFill) gc.fillRect(nx, ny, nw, nh);
         if (pg.hasStroke) gc.strokeRect(nx, ny, nw, nh);
 	}
+
+	public void ellipse(double nx, double ny, double nw, double nh) {
+
+	}
 }
