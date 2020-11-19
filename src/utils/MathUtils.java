@@ -131,8 +131,8 @@ public class MathUtils {
         return Math.pow(n, e);
     }
 
-    public static double round(double a) {
-        return Math.round(a);
+    public static int round(double a) {
+        return (int) Math.round(a);
     }
 
     public static double sq(double a) {

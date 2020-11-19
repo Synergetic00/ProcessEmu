@@ -157,6 +157,7 @@ public class Main extends Application {
         program = program.replace("void ", "public void ");
         program = program.replace("float", "double");
         program = program.replace("Float", "Double");
+        program = program.replace("color ", "int ");
         return program;
 
     }
