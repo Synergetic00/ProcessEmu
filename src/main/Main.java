@@ -54,6 +54,7 @@ public class Main extends Application {
         apps = new ArrayList<App>();
 
         loadFolder(new File("src/programs"));
+        System.out.println("Loaded "+apps.size()+" apps");
 
         apps.get(0).launch();
 

@@ -127,27 +127,27 @@ public class FXApp {
     }
 
     public void textAlign(int newAlignX) {
-
+        g.textAlign(newAlignX);
     }
 
     public void textAlign(int newAlignX, int newAlignY) {
-        
+        g.textAlign(newAlignX, newAlignY);
     }
 
     public void textSize(double newSize) {
-
-    }
-
-    public void text(String value, double x, double y) {
-
+        g.textSize(newSize);
     }
 
     public void text(int value, double x, double y) {
-
+        g.text(value, x, y);
     }
 
     public void text(double value, double x, double y) {
+        g.text(value, x, y);
+    }
 
+    public void text(String value, double x, double y) {
+        g.text(value, x, y);
     }
 
     public void strokeWeight(double weight) {

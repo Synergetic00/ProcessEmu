@@ -1,3 +1,6 @@
+//carykh
+//An evolution simulator
+
 final float windowSizeMultiplier = 0.8;
 final int SEED = 0;
 

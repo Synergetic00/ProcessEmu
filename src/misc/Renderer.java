@@ -1,7 +1,10 @@
 package misc;
 
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 
 public class Renderer {
 
@@ -46,5 +49,18 @@ public class Renderer {
 
 	public void ellipse(double nx, double ny, double nw, double nh) {
 
+	}
+
+	public void text(String value, double x, double y) {
+        gc.fillText(value, x, y);
+	}
+
+	public void textAlign(TextAlignment alignH, VPos alignV) {
+        gc.setTextAlign(alignH);
+        gc.setTextBaseline(alignV);
+	}
+
+	public void textSize(double newSize) {
+        gc.setFont(new Font(newSize));
 	}
 }

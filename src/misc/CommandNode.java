@@ -1,10 +1,13 @@
 package misc;
 
+import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 
 public class CommandNode {
 
     String commandString;
+    String textString;
     int value1;
     int value2;
     int value3;
@@ -13,6 +16,8 @@ public class CommandNode {
     double valueY;
     double valueW;
     double valueH;
+    TextAlignment textAlignment;
+    VPos vPos;
 
     public Color backgroundColour;
     public Color fillColour;
@@ -34,6 +39,13 @@ public class CommandNode {
         valueH = h;
     }
 
+	public CommandNode(String s, String t, double x, double y) {
+        commandString = s;
+        textString = t;
+        valueX = x;
+        valueY = y;
+	}
+
 	public CommandNode(String string, Color colour) {
         commandString = string;
         switch (string) {
@@ -52,6 +64,17 @@ public class CommandNode {
                 break;
             }
         }
+	}
+
+	public CommandNode(String s, TextAlignment alignH, VPos alignV) {
+        commandString = s;
+        textAlignment = alignH;
+        vPos = alignV;
+	}
+
+	public CommandNode(String s, double newSize) {
+        commandString = s;
+        valueW = newSize;
 	}
 
 	public void execute(Renderer r, double x, double y) {
@@ -79,6 +102,21 @@ public class CommandNode {
             
             case "ellipse": {
                 r.ellipse(valueX+x, valueY+y, valueW, valueH);
+                break;
+            }
+            
+            case "text": {
+                r.text(textString, valueX+x, valueY+y);
+                break;
+            }
+            
+            case "textAlign": {
+                r.textAlign(textAlignment, vPos);
+                break;
+            }
+            
+            case "textSize": {
+                r.textSize(valueW);
                 break;
             }
         }

@@ -1,12 +1,16 @@
 package misc;
 
 import java.util.ArrayList;
+
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.TextAlignment;
 import main.*;
 
 import static utils.Constants.*;
 import static utils.MathUtils.*;
+import static utils.DataUtils.*;
 
 public class PGraphics {
     GraphicsContext gc;
@@ -52,6 +56,7 @@ public class PGraphics {
     void updateVars() {
         r.fill(fillColour);
         r.stroke(strokeColour);
+        r.textAlign(alignH, alignV);
     }
 
     public void colorMode(int mode) {
@@ -281,28 +286,87 @@ public class PGraphics {
         }
     }
 
+    TextAlignment alignH = TextAlignment.LEFT;
+    VPos alignV = VPos.BASELINE;
+
     public void textAlign(int newAlignX) {
 
+        switch (newAlignX) {
+            case LEFT: {
+                alignH = TextAlignment.LEFT;
+                break;
+            }
+            case CENTER: {
+                alignH = TextAlignment.CENTER;
+                break;
+            }
+            case RIGHT: {
+                alignH = TextAlignment.RIGHT;
+                break;
+            }
+        }
+
+        if (isPrimary) {
+            r.textAlign(alignH, alignV);
+        } else {
+            commands.add(new CommandNode("textAlign", alignH, alignV));
+        }
     }
 
     public void textAlign(int newAlignX, int newAlignY) {
-        
+        textAlign(newAlignX);
+
+        switch (newAlignY) {
+            case TOP: {
+                alignV = VPos.TOP;
+                break;
+            }
+            case BOTTOM: {
+                alignV = VPos.BOTTOM;
+                break;
+            }
+            case CENTER: {
+                alignV = VPos.CENTER;
+                break;
+            }
+            case BASELINE: {
+                alignV = VPos.BASELINE;
+                break;
+            }
+        }
+
+        if (isPrimary) {
+            r.textAlign(alignH, alignV);
+        } else {
+            commands.add(new CommandNode("textAlign", alignH, alignV));
+        }
     }
 
     public void textSize(double newSize) {
 
-    }
-
-    public void text(String value, double x, double y) {
-
+        if (isPrimary) {
+            r.textSize(newSize);
+        } else {
+            commands.add(new CommandNode("textSize", newSize));
+        }
     }
 
     public void text(int value, double x, double y) {
-
+        text(nfs(value, 3), x, y);
     }
 
     public void text(double value, double x, double y) {
+        text(value+"", x, y);
+    }
 
+    public void text(String value, double x, double y) {
+        updateVars();
+
+        if (isPrimary) {
+            r.text(value, x, y);
+        } else {
+            commands.add(new CommandNode("text", value, x, y));
+        }
     }
 
     public void strokeWeight(double weight) {
