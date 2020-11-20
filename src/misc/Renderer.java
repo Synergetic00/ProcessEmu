@@ -176,7 +176,6 @@ public class Renderer {
             }
 
             case TRIANGLE_STRIP: {
-                System.out.println("Started triangle strip");
                 if (vertexCount >= 3) {
                     triangle(vertices[vertexCount - 2][X],
                         vertices[vertexCount - 2][Y],
@@ -185,7 +184,6 @@ public class Renderer {
                         vertices[vertexCount - 3][X],
                         vertices[vertexCount - 3][Y]);
                 }
-                System.out.println("Finished triangle strip");
                 break;
             }
 
@@ -247,7 +245,6 @@ public class Renderer {
         double[] yPoints = {y1, y2, y3};
         if (pg.hasFill) gc.fillPolygon(xPoints, yPoints, 3);
         if (pg.hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
-        System.out.println("Drew triangle");
     }
 
     public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {

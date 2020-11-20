@@ -16,6 +16,7 @@ void draw() {
   int numPoints = (int)(map(mouseX, 0, width, 6, 60));
   float angle = 0;
   float angleStep = 180.0/numPoints;
+  //System.out.println("Points: "+numPoints+" MouseX: "+mouseX+" Width: "+width);
     
   beginShape(TRIANGLE_STRIP); 
   for (int i = 0; i <= numPoints; i++) {
