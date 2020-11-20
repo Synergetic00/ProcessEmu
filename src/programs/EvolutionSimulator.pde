@@ -1,7 +1,7 @@
 //carykh
 //An evolution simulator
 
-final float windowSizeMultiplier = 0.8;
+final float windowSizeMultiplier = 1;
 final int SEED = 0;
 
 PFont font;
@@ -1471,8 +1471,8 @@ void setup() {
   frameRate(60);
   randomSeed(SEED);
   //noSmooth();
-  size(1024,576);
-  //size((int)(windowWidth*windowSizeMultiplier), (int)(windowHeight*windowSizeMultiplier));
+  //size(1024,576);
+  size((int)(windowWidth*windowSizeMultiplier), (int)(windowHeight*windowSizeMultiplier));
   ellipseMode(CENTER);
   Float[] beginPercentile = new Float[29];
   Integer[] beginBar = new Integer[barLen];

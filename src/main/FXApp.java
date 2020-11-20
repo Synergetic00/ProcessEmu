@@ -5,6 +5,7 @@ import javafx.scene.input.*;
 import javafx.scene.paint.Color;
 import misc.*;
 
+import static utils.Constants.*;
 import static utils.MathUtils.*;
 
 import event.MouseEvent;
@@ -151,23 +152,31 @@ public class FXApp {
     }
 
     public void strokeWeight(double weight) {
-
+        g.strokeWeight(weight);
     }
 
     public void line(double startX, double startY, double endX, double endY) {
+        g.line(startX, startY, endX, endY);
+    }
 
+    public void beginShape(int type) {
+        g.beginShape(type);
     }
 
     public void beginShape() {
-
+        g.beginShape();
     }
 
     public void vertex(double x, double y) {
-
+        g.vertex(x, y);
     }
 
     public void endShape() {
+        g.endShape(CLOSE);
+    }
 
+    public void endShape(int mode) {
+        g.endShape(mode);
     }
 
     public void colorMode(int mode) {
@@ -191,35 +200,35 @@ public class FXApp {
     }
 
     public void pushMatrix() {
-
+        g.pushMatrix();
     }
 
     public void popMatrix() {
-
+        g.popMatrix();
     }
 
     public void ellipseMode(int mode) {
-
+        g.ellipseMode(mode);
     }
 
     public void rectMode(int mode) {
-
+        g.rectMode(mode);
     }
     
     public void scale(double amt) {
-
+        g.scale(amt);
+    }
+    
+    public void scale(double amtX, double amtY) {
+        g.scale(amtX, amtY);
     }
 
     public void translate(double amtX, double amtY) {
-
+        g.translate(amtX, amtY);
     }
 
     public void frameRate(int fps) {
         // What the shit, not atm, thanks
-    }
-
-    public void endShape(int mode) {
-
     }
 
 

@@ -77,6 +77,11 @@ public class CommandNode {
         valueW = newSize;
 	}
 
+
+	public CommandNode(String s, int value) {
+        commandString = s;
+        value1 = value;
+	}
 	public CommandNode(String s) {
         commandString = s;
 	}
@@ -152,6 +157,26 @@ public class CommandNode {
             
             case "translate": {
                 r.translate(valueX, valueY);
+                break;
+            }
+            
+            case "line": {
+                r.line(valueX, valueY, valueW, valueH);
+                break;
+            }
+            
+            case "strokeWeight": {
+                r.strokeWeight(valueW);
+                break;
+            }
+            
+            case "vertex": {
+                r.vertex(valueX, valueY);
+                break;
+            }
+            
+            case "endShape": {
+                r.endShape(value1);
                 break;
             }
         }

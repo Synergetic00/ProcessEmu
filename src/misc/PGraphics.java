@@ -9,6 +9,8 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import main.*;
 
+import com.sun.javafx.geom.*;
+
 import static utils.Constants.*;
 import static utils.MathUtils.*;
 import static utils.DataUtils.*;
@@ -371,24 +373,69 @@ public class PGraphics {
     }
 
     public void strokeWeight(double weight) {
-
+        if (isPrimary) {
+            r.strokeWeight(weight);
+        } else {
+            commands.add(new CommandNode("strokeWeight", weight));
+        }
     }
 
     public void line(double startX, double startY, double endX, double endY) {
-
+        if (isPrimary) {
+            r.line(startX, startY, endX, endY);
+        } else {
+            commands.add(new CommandNode("line", GraphicState.offsetX+startX, GraphicState.offsetY+startY, GraphicState.offsetX+endX, GraphicState.offsetY+endY));
+        }
     }
+
+    int shape;
+    final int DEFAULT_VERTICES = 512;
+    final int VERTEX_FIELD_COUNT = 37;
+    double[][] vertices = new double[DEFAULT_VERTICES][VERTEX_FIELD_COUNT];
+    int vertexCount;
+    boolean openContour;
+    boolean adjustedForThinLines;
+    /// break the shape at the next vertex (next vertex() call is a moveto())
+    boolean breakShape;
+    float[] pathCoordsBuffer = new float[6];
+    Path2D workPath = new Path2D();
+    Path2D auxPath = new Path2D();
+
+    double[][] curveVertices;
+    int curveVertexCount;
+
+	public void beginShape(int type) {
+        shape = type;
+        vertexCount = 0;
+        curveVertexCount = 0;
+    
+        workPath.reset();
+        auxPath.reset();  
+	}
 
     public void beginShape() {
 
     }
 
     public void vertex(double x, double y) {
-
+        if (isPrimary) {
+            r.vertex(x, y);
+        } else {
+            commands.add(new CommandNode("vertex", GraphicState.offsetX+x, GraphicState.offsetY+y));
+        }
     }
 
     public void endShape() {
-
+        endShape(CLOSE);
     }
+
+	public void endShape(int mode) {
+        if (isPrimary) {
+            r.endShape(mode);
+        } else {
+            commands.add(new CommandNode("endShape", mode));
+        }
+	}
 
     final int MATRIX_STACK_DEPTH = 32;
     int transformCount;
@@ -473,7 +520,6 @@ public class PGraphics {
 	public void render(double x, double y, double w, double h) {
         double scaleX = w / gs.width;
         double scaleY = h / gs.height;
-        System.out.println("Renderering with "+w+" "+h+" scaled by "+scaleX+" "+scaleY);
         r.pushMatrix();
         r.scale(scaleX, scaleY);
         double transX = GraphicState.offsetX * (1-scaleX);
@@ -482,8 +528,6 @@ public class PGraphics {
         transY *= (1/scaleY);
         transX += x * ((1/scaleX)-1);
         transY += y * ((1/scaleY)-1);
-        System.out.println((1/scaleX)+" "+(1/scaleY));
-        System.out.println(x + " " + y);
         r.translate(transX, transY);
         r.renderPos(x, y);
         for (CommandNode command : commands) {
