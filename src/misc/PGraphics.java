@@ -9,8 +9,6 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import main.*;
 
-import com.sun.javafx.geom.*;
-
 import static utils.Constants.*;
 import static utils.MathUtils.*;
 import static utils.DataUtils.*;
@@ -381,36 +379,18 @@ public class PGraphics {
     }
 
     public void line(double startX, double startY, double endX, double endY) {
+        updateVars();
         if (isPrimary) {
-            r.line(startX, startY, endX, endY);
+            r.line(GraphicState.offsetX+startX, GraphicState.offsetY+startY, GraphicState.offsetX+endX, GraphicState.offsetY+endY);
         } else {
             commands.add(new CommandNode("line", GraphicState.offsetX+startX, GraphicState.offsetY+startY, GraphicState.offsetX+endX, GraphicState.offsetY+endY));
         }
     }
 
-    int shape;
-    final int DEFAULT_VERTICES = 512;
-    final int VERTEX_FIELD_COUNT = 37;
-    double[][] vertices = new double[DEFAULT_VERTICES][VERTEX_FIELD_COUNT];
-    int vertexCount;
-    boolean openContour;
-    boolean adjustedForThinLines;
-    /// break the shape at the next vertex (next vertex() call is a moveto())
-    boolean breakShape;
-    float[] pathCoordsBuffer = new float[6];
-    Path2D workPath = new Path2D();
-    Path2D auxPath = new Path2D();
-
-    double[][] curveVertices;
-    int curveVertexCount;
-
 	public void beginShape(int type) {
-        shape = type;
-        vertexCount = 0;
-        curveVertexCount = 0;
-    
-        workPath.reset();
-        auxPath.reset();  
+        if (isPrimary) {
+            r.beginShape(type);
+        }
 	}
 
     public void beginShape() {
@@ -418,22 +398,27 @@ public class PGraphics {
     }
 
     public void vertex(double x, double y) {
+        updateVars();
         if (isPrimary) {
-            r.vertex(x, y);
+            r.vertex(GraphicState.offsetX+x, GraphicState.offsetY+y);
         } else {
             commands.add(new CommandNode("vertex", GraphicState.offsetX+x, GraphicState.offsetY+y));
         }
     }
 
     public void endShape() {
-        endShape(CLOSE);
+        if (isPrimary) {
+            r.endShape();
+        } else {
+            commands.add(new CommandNode("endShape"));
+        }
     }
 
 	public void endShape(int mode) {
         if (isPrimary) {
-            r.endShape(mode);
+            //r.endShape(mode);
         } else {
-            commands.add(new CommandNode("endShape", mode));
+            //commands.add(new CommandNode("endShape", mode));
         }
 	}
 
@@ -535,5 +520,13 @@ public class PGraphics {
         }
         r.popMatrix();
 	}
+
+	public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+        if (isPrimary) {
+            r.triangle(GraphicState.offsetX+x1, GraphicState.offsetY+y1, GraphicState.offsetX+x2, GraphicState.offsetY+y2, GraphicState.offsetX+x3, GraphicState.offsetY+y3);
+        } else {
+            //commands.add(new CommandNode("translate", amtX, amtY));
+        }
+    }
 
 }

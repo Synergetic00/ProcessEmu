@@ -30,6 +30,8 @@ public class FXApp {
 
         g = new PGraphics(gc, this);
         g.isPrimary = true;
+        g.size(100,100);
+        g.background(204);
     }
 
     public PGraphics createGraphics(int w, int h) {
@@ -159,24 +161,20 @@ public class FXApp {
         g.line(startX, startY, endX, endY);
     }
 
-    public void beginShape(int type) {
-        g.beginShape(type);
+    public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+        g.triangle(x1, y1, x2, y2, x3, y3);
     }
 
-    public void beginShape() {
-        g.beginShape();
+    public void beginShape(int kind) {
+        g.beginShape(kind);
+    }
+
+    public void endShape() {
+        g.endShape();
     }
 
     public void vertex(double x, double y) {
         g.vertex(x, y);
-    }
-
-    public void endShape() {
-        g.endShape(CLOSE);
-    }
-
-    public void endShape(int mode) {
-        g.endShape(mode);
     }
 
     public void colorMode(int mode) {

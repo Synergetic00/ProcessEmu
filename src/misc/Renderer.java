@@ -109,61 +109,92 @@ public class Renderer {
 	public void strokeWeight(double weight) {
         gc.setLineWidth(weight);
     }
+
+    int shape;
+    final int DEFAULT_VERTICES = 512;
+    final int VERTEX_FIELD_COUNT = 37;
+    double[][] vertices = new double[DEFAULT_VERTICES][VERTEX_FIELD_COUNT];
+    int vertexCount;
+    boolean openContour;
+    boolean adjustedForThinLines;
+    /// break the shape at the next vertex (next vertex() call is a moveto())
+    boolean breakShape;
+    float[] pathCoordsBuffer = new float[6];
+    Path2D workPath = new Path2D();
+    Path2D auxPath = new Path2D();
+
+    double[][] curveVertices;
+    int curveVertexCount;
+
+    public void beginShape(int kind) {
+        shape = kind;
+        vertexCount = 0;
+        curveVertexCount = 0;
+
+        workPath.reset();
+        auxPath.reset();
+    }
+
+	public void endShape() {
+
+    }
     
     public void vertex(double x, double y) {
-        if (pg.vertexCount == pg.vertices.length) {
-          double[][] temp = new double[pg.vertexCount<<1][pg.VERTEX_FIELD_COUNT];
-          System.arraycopy(pg.vertices, 0, temp, 0, pg.vertexCount);
-          pg.vertices = temp;
+        if (vertexCount == vertices.length) {
+          double[][] temp = new double[vertexCount<<1][VERTEX_FIELD_COUNT];
+          System.arraycopy(vertices, 0, temp, 0, vertexCount);
+          vertices = temp;
         }
 
-        pg.vertices[pg.vertexCount][X] = x;
-        pg.vertices[pg.vertexCount][Y] = y;
-        pg.vertexCount++;
+        vertices[vertexCount][X] = x;
+        vertices[vertexCount][Y] = y;
+        vertexCount++;
     
-        switch (pg.shape) {
+        switch (shape) {
             case POINTS: {
                 point(x, y);
                 break;
             }
 
             case LINES: {
-                if ((pg.vertexCount % 2) == 0) {
-                    line(pg.vertices[pg.vertexCount-2][X],
-                        pg.vertices[pg.vertexCount-2][Y], x, y);
+                if ((vertexCount % 2) == 0) {
+                    line(vertices[vertexCount-2][X],
+                        vertices[vertexCount-2][Y], x, y);
                 }
                 break;
             }
 
             case TRIANGLES: {
-                if ((pg.vertexCount % 3) == 0) {
-                    triangle(pg.vertices[pg.vertexCount - 3][X],
-                        pg.vertices[pg.vertexCount - 3][Y],
-                        pg.vertices[pg.vertexCount - 2][X],
-                        pg.vertices[pg.vertexCount - 2][Y],
+                if ((vertexCount % 3) == 0) {
+                    triangle(vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
                         x, y);
                 }
                 break;
             }
 
             case TRIANGLE_STRIP: {
-                if (pg.vertexCount >= 3) {
-                    triangle(pg.vertices[pg.vertexCount - 2][X],
-                        pg.vertices[pg.vertexCount - 2][Y],
-                        pg.vertices[pg.vertexCount - 1][X],
-                        pg.vertices[pg.vertexCount - 1][Y],
-                        pg.vertices[pg.vertexCount - 3][X],
-                        pg.vertices[pg.vertexCount - 3][Y]);
+                System.out.println("Started triangle strip");
+                if (vertexCount >= 3) {
+                    triangle(vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
+                        vertices[vertexCount - 1][X],
+                        vertices[vertexCount - 1][Y],
+                        vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y]);
                 }
+                System.out.println("Finished triangle strip");
                 break;
             }
 
             case TRIANGLE_FAN: {
-                if (pg.vertexCount >= 3) {
-                    triangle(pg.vertices[0][X],
-                        pg.vertices[0][Y],
-                        pg.vertices[pg.vertexCount - 2][X],
-                        pg.vertices[pg.vertexCount - 2][Y],
+                if (vertexCount >= 3) {
+                    triangle(vertices[0][X],
+                        vertices[0][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
                         x, y);
                 }
                 break;
@@ -174,37 +205,37 @@ public class Renderer {
             }
 
             case QUADS: {
-                if ((pg.vertexCount % 4) == 0) {
-                    quad(pg.vertices[pg.vertexCount - 4][X],
-                        pg.vertices[pg.vertexCount - 4][Y],
-                        pg.vertices[pg.vertexCount - 3][X],
-                        pg.vertices[pg.vertexCount - 3][Y],
-                        pg.vertices[pg.vertexCount - 2][X],
-                        pg.vertices[pg.vertexCount - 2][Y],
+                if ((vertexCount % 4) == 0) {
+                    quad(vertices[vertexCount - 4][X],
+                        vertices[vertexCount - 4][Y],
+                        vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
                         x, y);
                 }
                 break;
             }
 
             case QUAD_STRIP: {
-                if ((pg.vertexCount >= 4) && ((pg.vertexCount % 2) == 0)) {
-                    quad(pg.vertices[pg.vertexCount - 4][X],
-                        pg.vertices[pg.vertexCount - 4][Y],
-                        pg.vertices[pg.vertexCount - 2][X],
-                        pg.vertices[pg.vertexCount - 2][Y],
+                if ((vertexCount >= 4) && ((vertexCount % 2) == 0)) {
+                    quad(vertices[vertexCount - 4][X],
+                        vertices[vertexCount - 4][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
                         x, y,
-                        pg.vertices[pg.vertexCount - 3][X],
-                        pg.vertices[pg.vertexCount - 3][Y]);
+                        vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y]);
                 }
                 break;
             }
 
             case POLYGON: {
-                if (pg.workPath.getNumCommands() == 0 || pg.breakShape) {
-                    pg.workPath.moveTo((float) x, (float) y);
-                    pg.breakShape = false;
+                if (workPath.getNumCommands() == 0 || breakShape) {
+                    workPath.moveTo((float) x, (float) y);
+                    breakShape = false;
                 } else {
-                    pg.workPath.lineTo((float) x, (float) y);
+                    workPath.lineTo((float) x, (float) y);
                 }
                 break;
             }
@@ -216,6 +247,7 @@ public class Renderer {
         double[] yPoints = {y1, y2, y3};
         if (pg.hasFill) gc.fillPolygon(xPoints, yPoints, 3);
         if (pg.hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
+        System.out.println("Drew triangle");
     }
 
     public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
@@ -224,57 +256,4 @@ public class Renderer {
         if (pg.hasFill) gc.fillPolygon(xPoints, yPoints, 4);
         if (pg.hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
-
-	public void endShape(int mode) {
-        System.out.println("Got end shape command");
-        if (pg.workPath.getNumCommands() > 0) {
-            if (pg.shape == POLYGON) {
-              if (mode == CLOSE) {
-                pg.workPath.closePath();
-              }
-              if (pg.auxPath.getNumCommands() > 0) {
-                pg.workPath.append(pg.auxPath, false);
-              }
-              System.out.println("Got before draw shape");
-              drawShape(pg.workPath);
-            }
-          }
-          pg.shape = 0;
-        
-        System.out.println("Finished end shape command");
-    }
-    
-    private void drawShape(Shape s) {
-        System.out.println("Got draw shape command");
-        gc.beginPath();
-        PathIterator pi = s.getPathIterator(null);
-        while (!pi.isDone()) {
-          int pitype = pi.currentSegment(pg.pathCoordsBuffer);
-          switch (pitype) {
-            case PathIterator.SEG_MOVETO:
-              gc.moveTo(pg.pathCoordsBuffer[0], pg.pathCoordsBuffer[1]);
-              break;
-            case PathIterator.SEG_LINETO:
-              gc.lineTo(pg.pathCoordsBuffer[0], pg.pathCoordsBuffer[1]);
-              break;
-            case PathIterator.SEG_QUADTO:
-              gc.quadraticCurveTo(pg.pathCoordsBuffer[0], pg.pathCoordsBuffer[1],
-                pg.pathCoordsBuffer[2], pg.pathCoordsBuffer[3]);
-              break;
-            case PathIterator.SEG_CUBICTO:
-              gc.bezierCurveTo(pg.pathCoordsBuffer[0], pg.pathCoordsBuffer[1],
-                    pg.pathCoordsBuffer[2], pg.pathCoordsBuffer[3],
-                    pg.pathCoordsBuffer[4], pg.pathCoordsBuffer[5]);
-              break;
-            case PathIterator.SEG_CLOSE:
-              gc.closePath();
-              break;
-            default:
-              break;
-          }
-          pi.next();
-        }
-        if (pg.hasFill) gc.fill();
-        if (pg.hasStroke) gc.stroke();
-      }
 }

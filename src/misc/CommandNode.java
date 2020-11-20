@@ -176,7 +176,7 @@ public class CommandNode {
             }
             
             case "endShape": {
-                r.endShape(value1);
+                r.endShape();
                 break;
             }
         }
