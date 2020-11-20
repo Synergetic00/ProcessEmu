@@ -47,7 +47,7 @@ public class FXApp {
     }
     
     public void image(PGraphics pg, double x, double y, double w, double h) {
-        pg.render(x, y);
+        pg.render(x, y, w, h);
     }
 
     public void rect(double x, double y, double w, double h) {

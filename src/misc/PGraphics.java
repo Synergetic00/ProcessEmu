@@ -6,6 +6,7 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Affine;
 import main.*;
 
 import static utils.Constants.*;
@@ -363,9 +364,9 @@ public class PGraphics {
         updateVars();
 
         if (isPrimary) {
-            r.text(value, x, y);
+            r.text(value, GraphicState.offsetX+x, GraphicState.offsetY+y);
         } else {
-            commands.add(new CommandNode("text", value, x, y));
+            commands.add(new CommandNode("text", value, GraphicState.offsetX+x, GraphicState.offsetY+y));
         }
     }
 
@@ -389,29 +390,53 @@ public class PGraphics {
 
     }
 
-    public void pushMatrix() {
+    final int MATRIX_STACK_DEPTH = 32;
+    int transformCount;
+    Affine[] transformStack = new Affine[MATRIX_STACK_DEPTH];
 
+    public void pushMatrix() {
+        if (isPrimary) {
+            r.pushMatrix();
+        } else {
+            commands.add(new CommandNode("pushMatrix"));
+        }
     }
 
     public void popMatrix() {
+        if (isPrimary) {
+            r.popMatrix();
+        } else {
+            commands.add(new CommandNode("popMatrix"));
+        }
+    }
 
+    public void resetMatrix() {
+        if (isPrimary) {
+            r.resetMatrix();
+        } else {
+            commands.add(new CommandNode("resetMatrix"));
+        }
     }
     
     public void scale(double amt) {
-
+        scale(amt, amt);
+    }
+    
+    public void scale(double amtX, double amtY) {
+        if (isPrimary) {
+            r.scale(amtX, amtY);
+        } else {
+            commands.add(new CommandNode("scale", amtX, amtY));
+        }
     }
 
     public void translate(double amtX, double amtY) {
-
-    }
-
-	public void render(double x, double y) {
-        System.out.println("Renderering");
-        r.renderPos(x, y);
-        for (CommandNode command : commands) {
-            command.execute(r, x, y);
+        if (isPrimary) {
+            r.translate(amtX, amtY);
+        } else {
+            commands.add(new CommandNode("translate", amtX, amtY));
         }
-	}
+    }
 
     public Color getColor(double rh, double gs, double bb, double alpha) {
         switch (colorMode) {
@@ -436,5 +461,35 @@ public class PGraphics {
             }
         }
     }
+
+	public void render(double x, double y) {
+        System.out.println("Renderering");
+        r.renderPos(x, y);
+        for (CommandNode command : commands) {
+            command.execute(r, x, y);
+        }
+	}
+
+	public void render(double x, double y, double w, double h) {
+        double scaleX = w / gs.width;
+        double scaleY = h / gs.height;
+        System.out.println("Renderering with "+w+" "+h+" scaled by "+scaleX+" "+scaleY);
+        r.pushMatrix();
+        r.scale(scaleX, scaleY);
+        double transX = GraphicState.offsetX * (1-scaleX);
+        double transY = GraphicState.offsetY * (1-scaleY);
+        transX *= (1/scaleX);
+        transY *= (1/scaleY);
+        transX += x * ((1/scaleX)-1);
+        transY += y * ((1/scaleY)-1);
+        System.out.println((1/scaleX)+" "+(1/scaleY));
+        System.out.println(x + " " + y);
+        r.translate(transX, transY);
+        r.renderPos(x, y);
+        for (CommandNode command : commands) {
+            command.execute(r, x, y);
+        }
+        r.popMatrix();
+	}
 
 }

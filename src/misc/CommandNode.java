@@ -77,6 +77,16 @@ public class CommandNode {
         valueW = newSize;
 	}
 
+	public CommandNode(String s) {
+        commandString = s;
+	}
+
+	public CommandNode(String s, double x, double y) {
+        commandString = s;
+        valueX = x;
+        valueY = y;
+	}
+
 	public void execute(Renderer r, double x, double y) {
         r.renderPos(x, y);
         switch (commandString) {
@@ -117,6 +127,31 @@ public class CommandNode {
             
             case "textSize": {
                 r.textSize(valueW);
+                break;
+            }
+            
+            case "pushMatrix": {
+                r.pushMatrix();
+                break;
+            }
+            
+            case "popMatrix": {
+                r.popMatrix();
+                break;
+            }
+            
+            case "resetMatrix": {
+                r.resetMatrix();
+                break;
+            }
+            
+            case "scale": {
+                r.scale(valueX, valueY);
+                break;
+            }
+            
+            case "translate": {
+                r.translate(valueX, valueY);
                 break;
             }
         }

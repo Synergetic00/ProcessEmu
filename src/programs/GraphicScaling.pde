@@ -16,5 +16,6 @@ void setup() {
   pg1.textSize(60);
   pg1.text("Hello", 50, 50);
   pg1.endDraw();
-  image(pg1,75,100,100,200);
+  image(pg1,75,100,75,300);
+  rect(75,100,5,5);
 }
