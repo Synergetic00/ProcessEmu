@@ -204,7 +204,7 @@ public class FXApp {
     }
 
     public int color(double rh, double gs, double bb) {
-        return 0;
+        return 70;
     }
 
     public void pushMatrix() {
