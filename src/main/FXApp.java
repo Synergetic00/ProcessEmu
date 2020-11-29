@@ -44,7 +44,7 @@ public class FXApp {
         g.size(w, h);
         width = g.gs.width;
         height = g.gs.height;
-        g.background(204);
+        //g.background(204);
     }
     
     public void image(PGraphics pg, double x, double y) {
@@ -63,72 +63,48 @@ public class FXApp {
         g.ellipse(x, y, w, h);
     }
 
-    public void background(Color color) {
-        g.background(color);
-    }
-
     public void background(double gray) {
-        g.background(gray);
     }
 
     public void background(double gray, double alpha) {
-        g.background(gray, alpha);
     }
 
     public void background(double rh, double gs, double bb) {
-        g.background(rh, gs, bb);
     }
 
-    public void background(double rh, double gs, double bb, double alpha) {
-        g.background(rh, gs, bb, alpha);
+    public void background(double rh, double gs, double bb, double ao) {
     }
 
     public void noFill() {
         g.noFill();
     }
 
-    public void fill(Color color) {
-        g.fill(color);
-    }
-
     public void fill(double gray) {
-        g.fill(gray, gray, gray, (int)g.maxAL);
     }
 
     public void fill(double gray, double alpha) {
-        g.fill(gray, gray, gray, alpha);
     }
 
     public void fill(double rh, double gs, double bb) {
-        g.fill(rh, gs, bb, (int)g.maxAL);
     }
 
-    public void fill(double rh, double gs, double bb, double alpha) {
-        g.fill(rh, gs, bb, alpha);
+    public void fill(double rh, double gs, double bb, double ao) {
     }
 
     public void noStroke() {
         g.noStroke();
     }
 
-    public void stroke(Color color) {
-        g.stroke(color);
-    }
-
     public void stroke(double gray) {
-        g.stroke(gray);
     }
 
     public void stroke(double gray, double alpha) {
-        g.stroke(gray, alpha);
     }
 
     public void stroke(double rh, double gs, double bb) {
-        g.stroke(rh, gs, bb);
     }
 
-    public void stroke(double rh, double gs, double bb, double alpha) {
-        g.stroke(rh, gs, bb, alpha);
+    public void stroke(double rh, double gs, double bb, double ao) {
     }
 
     public void textAlign(int newAlignX) {

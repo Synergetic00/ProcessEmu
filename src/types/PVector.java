@@ -1,7 +1,8 @@
-package utils;
+package types;
 
 import static utils.Constants.*;
 import static utils.MathUtils.*;
+import utils.MathUtils;
 
 public class PVector {
 
