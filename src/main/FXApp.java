@@ -7,6 +7,11 @@ import misc.*;
 
 import static utils.Constants.*;
 import static utils.MathUtils.*;
+
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
+
 import static utils.ColourUtils.*;
 
 import event.MouseEvent;
@@ -21,6 +26,7 @@ public class FXApp {
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
+        date = new Calendar.Builder().build();
         screenW = gc.getCanvas().getWidth();
         screenH = gc.getCanvas().getHeight();
 
@@ -31,7 +37,9 @@ public class FXApp {
 
         g = new PGraphics(gc, this);
         g.isPrimary = true;
-        g.size(100,100);
+        size(100,100);
+        fill(255);
+        stroke(0);
     }
 
     public PGraphics createGraphics(int w, int h) {
@@ -46,6 +54,10 @@ public class FXApp {
         width = g.gs.width;
         height = g.gs.height; 
         background(204);
+    }
+
+    public void fullScreen() {
+        size((int)screenW, (int)screenH);
     }
     
     public void image(PGraphics pg, double x, double y) {
@@ -321,16 +333,67 @@ public class FXApp {
         mouseWheel(event);
     }
 
+    public char key;
+    public KeyCode keyCode;
+    public boolean keyPressed;
+    List<KeyCode> pressedKeys = new ArrayList<>(20);
+
     public void handleKeyPressed(KeyEvent event) {
+        updateKeys(event);
+        if (!pressedKeys.contains(keyCode)) pressedKeys.add(keyCode);
+        keyPressed = true;
         keyPressed();
     }
 
     public void handleKeyReleased(KeyEvent event) {
+        updateKeys(event);
+        pressedKeys.remove(keyCode);
+        keyPressed = !pressedKeys.isEmpty();
         keyReleased();
     }
 
     public void handleKeyTyped(KeyEvent event) {
+        updateKeys(event);
         keyTyped();
+    }
+
+    private void updateKeys(KeyEvent event) {
+        keyCode = event.getCode();
+        key = event.getCharacter().charAt(0);
+    }
+
+    Calendar date;
+
+    public void updateTime() {
+        date.setTimeInMillis(System.currentTimeMillis());
+    }
+
+    public int day() {
+        return date.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public int hour() {
+        return date.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public int millis() {
+        return date.get(Calendar.MILLISECOND);
+    }
+
+    public int minute() {
+        return date.get(Calendar.MINUTE);
+    }
+
+    public int month() {
+        return date.get(Calendar.MONTH) + 1;
+    }
+
+    public int second() {
+        return date.get(Calendar.SECOND);
+    }
+
+    public int year() {
+        return date.get(Calendar.YEAR);
     }
 
 }

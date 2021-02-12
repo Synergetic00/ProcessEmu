@@ -24,11 +24,14 @@ import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.*;
 import javafx.stage.Stage;
 import main.DynLoader.CompiledClassLoader;
 import main.DynLoader.SimpleJavaFileManager;
 import main.DynLoader.StringJavaFileObject;
+
+import static utils.Constants.*;
 
 public class Main extends Application {
 
@@ -56,7 +59,10 @@ public class Main extends Application {
         loadFolder(new File("src/programs"));
         System.out.println("Loaded "+apps.size()+" apps");
 
-        apps.get(0).launch();
+        appIndex = 0;
+        drawDefaultApp(gc);
+
+        //apps.get(0).launch();
 
         scene.setOnMouseClicked(new EventHandler<MouseEvent>() {
             public void handle(MouseEvent event) {
@@ -107,9 +113,68 @@ public class Main extends Application {
         });
 
         scene.setOnKeyPressed(event -> {
+
             try {
                 keyPressedMethod.invoke(programObject, event);
             } catch (Exception e) {}
+
+            KeyCode keyCode = event.getCode();
+            switch (keyCode) {
+                case Q: {
+                    if (!onHomeScreen) {
+                        onHomeScreen = true;
+                    }
+                    break;
+                }
+
+                case R: {
+                    if (!onHomeScreen) {
+                        try {
+                            apps.get(appIndex).launch();
+                        } catch (Exception e) {
+                        }
+                    }
+                    break;
+                }
+
+                case UP: {
+                    if (onHomeScreen) {
+                        appIndex--;
+                    }
+                    break;
+                }
+
+                case DOWN: {
+                    if (onHomeScreen) {
+                        appIndex++;
+                    }
+                    break;
+                }
+
+                case ENTER: {
+                    if (onHomeScreen) {
+                        try {
+                            onHomeScreen = false;
+                            apps.get(appIndex).launch();
+                        } catch (Exception e) {
+                        }
+                    }
+                    break;
+                }
+
+                default: {
+                    break;
+                }
+
+            }
+
+            if (appIndex < 0) {
+                appIndex = apps.size() - 1;
+            }
+
+            if (appIndex >= apps.size()) {
+                appIndex = 0;
+            }
         });
 
         scene.setOnKeyReleased(event -> {
@@ -127,11 +192,14 @@ public class Main extends Application {
         // Call the draw method once every frame
         new AnimationTimer() {
             public void handle(long now) {
-                try {
-                    if (drawMethod != null) {
-                        drawMethod.invoke(programObject);
-                    }
-                } catch (Exception e) {
+                if (onHomeScreen) {
+                    drawDefaultApp(gc);
+                } else {
+                    try {
+                        if (drawMethod != null) {
+                            drawMethod.invoke(programObject);
+                        }
+                    } catch (Exception e) {}
                 }
             }
         }.start();
@@ -139,9 +207,91 @@ public class Main extends Application {
         stage.setOnCloseRequest(value -> {
             System.exit(0);
         });
+        stage.setTitle("RaspberryPiFX");
+        Image icon = new Image("file:RPFXLogo.png");
+        stage.getIcons().add(icon);
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    private void drawDefaultApp(GraphicsContext gc) {
+        gc.save();
+        FXApp dApp = new FXApp(gc);
+        dApp.fullScreen();
+        dApp.updateTime();
+        dApp.background(0);
+
+        int dispNum = 5;
+        int pageNum = (int) (appIndex / dispNum);
+        int pageTtl = (int) Math.ceil(apps.size() / (double) dispNum);
+        int tailNum = apps.size() % dispNum;
+        int calcNum = apps.size() - (pageNum * dispNum);
+        int toRender = (calcNum == tailNum) ? tailNum : dispNum;
+
+        int height = (int) gc.getCanvas().getHeight();
+        int spacing = 30;
+        double rectH = (height - (spacing * (dispNum+1)))/dispNum;
+        double rectX = 600;
+
+        int actualIndex = 0;
+
+        dApp.textAlign(LEFT, CENTER);
+
+        for (int i = 0; i < toRender; i++) {
+            actualIndex = i + (pageNum * dispNum);
+
+            double yPos = i*(rectH+spacing)+spacing;
+            dApp.fill(0);
+            dApp.strokeWeight(5);
+            if (i == appIndex % dispNum) {
+                dApp.stroke(54, 205, 255);
+            } else {
+                dApp.stroke(255);
+            }
+            dApp.rect(rectX, yPos, dApp.width - rectX - spacing, rectH);
+            if (i == appIndex % dispNum) {
+                dApp.fill(54, 205, 255);
+            } else {
+                dApp.fill(255);
+            }
+            dApp.textSize(30);
+            dApp.text(apps.get(actualIndex).title, rectX + spacing, yPos+(30));
+            dApp.textSize(15);
+            dApp.text(apps.get(actualIndex).authour, rectX + spacing, yPos+(rectH/2)+(3));
+            dApp.textSize(20);
+            dApp.text(apps.get(actualIndex).description, rectX + spacing, yPos+(rectH)-(30));
+        }
+
+        for (int i = 0; i < pageTtl; i++) {
+            dApp.stroke(255);
+            if (i == pageNum) dApp.fill(255);
+            else dApp.fill(0);
+            dApp.ellipse((rectX/2)-(25*pageTtl)+(50*i)+25, height - 50, 25, 25);
+        }
+
+        String day = String.format("%02d", dApp.day());
+        String month = String.format("%02d", dApp.month());
+        String year = String.format("%04d", dApp.year());
+        String hour = String.format("%02d", dApp.hour());
+        String minute = String.format("%02d", dApp.minute());
+        String second = String.format("%02d", dApp.second());
+
+        String dateNow = day+"/"+month+"/"+year;
+        String timeNow = hour+":"+minute+":"+second;
+
+        dApp.fill(255);
+        dApp.textSize(30);
+        dApp.textAlign(CENTER, CENTER);
+        dApp.text(dateNow, (rectX/2), dApp.height - 200);
+        dApp.text(timeNow, (rectX/2), dApp.height - 150);
+
+        dApp.fill(54, 205, 255);
+        dApp.textSize(70);
+        dApp.text("RaspberryPiFX",(rectX/2),100);
+        dApp.textSize(40);
+        dApp.text("v2.4.0",(rectX/2),200);
+        gc.restore();
     }
 
     // Load the processing code into a string of java code to be run

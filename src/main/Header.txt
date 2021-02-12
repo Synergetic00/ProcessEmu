@@ -7,6 +7,7 @@ import main.FXApp;
 import javafx.scene.paint.Color;
 import utils.*;
 import misc.*;
+import types.*;
 import event.*;
 
 import static utils.Constants.*;

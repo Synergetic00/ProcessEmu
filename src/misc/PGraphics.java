@@ -492,14 +492,17 @@ public class PGraphics {
     }
 
 	public void render(double x, double y) {
+        gc.save();
         System.out.println("Renderering");
         r.renderPos(x, y);
         for (CommandNode command : commands) {
             command.execute(r, x, y);
         }
+        gc.restore();
 	}
 
 	public void render(double x, double y, double w, double h) {
+        gc.save();
         double scaleX = w / gs.width;
         double scaleY = h / gs.height;
         r.pushMatrix();
@@ -516,6 +519,7 @@ public class PGraphics {
             command.execute(r, x, y);
         }
         r.popMatrix();
+        gc.restore();
 	}
 
 	public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {

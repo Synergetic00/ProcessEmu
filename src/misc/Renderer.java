@@ -22,7 +22,6 @@ public class Renderer {
         this.pg = pg;
         pg.hasFill = true;
         pg.hasStroke = true;
-        fill(Color.WHITE);
     }
     
     public void renderPos(double x, double y) {
