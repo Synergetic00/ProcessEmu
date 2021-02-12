@@ -1,7 +1,5 @@
 void setup() {
     size(640,360);
-    color c = color(50, 55, 100);
-    background(10);
-    background(c);
-    rect(0,0,100,100);
+    background(200,0,0);
+    rect(0,0,10,100);
 }

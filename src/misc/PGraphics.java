@@ -58,18 +58,26 @@ public class PGraphics {
     }
 
     public void setBackground(int encodedValue) {
-
+        if (isPrimary) {
+            r.setBackground(decodeColour(encodedValue));
+        } else {
+            commands.add(new CommandNode("background", decodeColour(encodedValue)));
+        }
     }
 
     public void setFill(int encodedValue) {
-
+        if (isPrimary) {
+            r.setFill(decodeColour(encodedValue));
+        } else {
+            commands.add(new CommandNode("fill", decodeColour(encodedValue)));
+        }
     }
 
     public void setStroke(int encodedValue) {
         if (isPrimary) {
-            r.setStroke(decodeC)
+            r.setStroke(decodeColour(encodedValue));
         } else {
-
+            commands.add(new CommandNode("stroke", decodeColour(encodedValue)));
         }
     }
 
