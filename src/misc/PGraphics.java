@@ -12,6 +12,7 @@ import main.*;
 import static utils.Constants.*;
 import static utils.MathUtils.*;
 import static utils.DataUtils.*;
+import static utils.ColourUtils.*;
 
 public class PGraphics {
     GraphicsContext gc;
@@ -36,7 +37,9 @@ public class PGraphics {
     public double maxRH;
     public double maxGS;
     public double maxBB;
-    public double maxAL;
+    public double maxAO;
+
+    public int bColour, fColour, sColour;
 
     public PGraphics(GraphicsContext gc, FXApp parent) {
         this.gc = gc;
@@ -54,6 +57,132 @@ public class PGraphics {
         ellipseMode = CENTER;
     }
 
+    public void setBackground(int encodedValue) {
+        if (isPrimary) {
+            r.setBackground(decodeColour(colorMode, encodedValue));
+        } else {
+            commands.add(new CommandNode("background", decodeColour(colorMode, encodedValue)));
+        }
+    }
+
+    public void setFill(int encodedValue) {
+        if (isPrimary) {
+            r.setFill(decodeColour(colorMode, encodedValue));
+        } else {
+            commands.add(new CommandNode("fill", decodeColour(colorMode, encodedValue)));
+        }
+    }
+
+    public void setStroke(int encodedValue) {
+        if (isPrimary) {
+            r.setStroke(decodeColour(colorMode, encodedValue));
+        } else {
+            commands.add(new CommandNode("stroke", decodeColour(colorMode, encodedValue)));
+        }
+    }
+
+    public void background(double value) {
+        if (between(value, 0, maxRH)) {
+            background(value, value, value, maxAO);
+        } else {
+            setBackground((int)value);
+        }
+    }
+
+    public void background(double gray, double alpha) {
+        background(gray, gray, gray, alpha);
+    }
+
+    public void background(double rh, double gs, double bb) {
+        background(rh, gs, bb, maxAO);
+    }
+
+    public void background(double rh, double gs, double bb, double ao) {
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBB = clamp(map(bb, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        setBackground(encodeColour(mappedRH, mappedGS, mappedBB, mappedAO));
+    }
+
+    public void noFill() { hasFill = false; }
+
+    public void fill(double value) {
+        if (between(value, 0, maxRH)) {
+            fill(value, value, value, maxAO);
+        } else {
+            setFill((int)value);
+        }
+    }
+
+    public void fill(double gray, double alpha) {
+        fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(double rh, double gs, double bb) {
+        fill(rh, gs, bb, maxAO);
+    }
+
+    public void fill(double rh, double gs, double bb, double ao) {
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBB = clamp(map(bb, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        setFill(encodeColour(mappedRH, mappedGS, mappedBB, mappedAO));
+    }
+
+    
+    public void noStroke() { hasStroke = false; }
+
+    public void stroke(double value) {
+        if (between(value, 0, maxRH)) {
+            stroke(value, value, value, maxAO);
+        } else {
+            setStroke((int)value);
+        }
+    }
+
+    public void stroke(double gray, double alpha) {
+        stroke(gray, gray, gray, alpha);
+    }
+
+    public void stroke(double rh, double gs, double bb) {
+        stroke(rh, gs, bb, maxAO);
+    }
+
+    public void stroke(double rh, double gs, double bb, double ao) {
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBB = clamp(map(bb, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        setStroke(encodeColour(mappedRH, mappedGS, mappedBB, mappedAO));
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
     void updateVars() {
         r.fill(fillColour);
         r.stroke(strokeColour);
@@ -61,15 +190,15 @@ public class PGraphics {
     }
 
     public void colorMode(int mode) {
-        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, (int)maxAL);
+        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, (int)maxAO);
     }
 
     public void colorMode(int mode, double max) {
-        colorMode(mode, max, max, max, (int)maxAL);
+        colorMode(mode, max, max, max, (int)maxAO);
     }
 
     public void colorMode(int mode, double rh, double gs, double bb) {
-        colorMode(mode, rh, gs, bb, (int)maxAL);
+        colorMode(mode, rh, gs, bb, (int)maxAO);
     }
 
     public void colorMode(int mode, double rh, double gs, double bb, double alpha) {
@@ -77,7 +206,7 @@ public class PGraphics {
         maxRH = rh;
         maxGS = gs;
         maxBB = bb;
-        maxAL = alpha;
+        maxAO = alpha;
     }
 
     public void size(int w, int h) {
@@ -178,114 +307,6 @@ public class PGraphics {
             commands.add(new CommandNode("ellipse", GraphicState.offsetX+nx, GraphicState.offsetY+ny, nw, nh));
         }
 	}
-
-    public void background(Color color) {
-        backgroundColour = color;
-
-        if (isPrimary) {
-            r.background(backgroundColour);
-        } else {
-            commands.add(new CommandNode("background", backgroundColour));
-        }
-    }
-
-    public void background(double gray) {
-        background(gray, gray, gray, maxAL);
-    }
-
-    public void background(double gray, double alpha) {
-        background(gray, gray, gray, alpha);
-    }
-
-    public void background(double rh, double gs, double bb) {
-        background(rh, gs, bb, maxAL);
-    }
-
-    public void background(double rh, double gs, double bb, double alpha) {
-        backgroundColour = getColor(rh, gs, bb, alpha);
-
-        if (isPrimary) {
-            r.background(backgroundColour);
-        } else {
-            commands.add(new CommandNode("background", backgroundColour));
-        }
-    }
-
-    public void noFill() {
-        hasFill = false;
-    }
-
-    public void fill(Color color) {
-        this.fillColour = color;
-        hasFill = true;
-
-        if (isPrimary) {
-            r.fill(fillColour);
-        } else {
-            commands.add(new CommandNode("fill", fillColour));
-        }
-    }
-
-    public void fill(double gray) {
-        fill(gray, gray, gray, (int)maxAL);
-    }
-
-    public void fill(double gray, double alpha) {
-        fill(gray, gray, gray, alpha);
-    }
-
-    public void fill(double rh, double gs, double bb) {
-        fill(rh, gs, bb, maxAL);
-    }
-
-    public void fill(double rh, double gs, double bb, double alpha) {
-        this.fillColour = getColor(rh, gs, bb, alpha);
-        hasFill = true;
-
-        if (isPrimary) {
-            r.fill(fillColour);
-        } else {
-            commands.add(new CommandNode("fill", fillColour));
-        }
-    }
-
-    public void noStroke() {
-        hasStroke = false;
-    }
-
-    public void stroke(Color color) {
-        this.strokeColour = color;
-        hasStroke = true;
-
-        if (isPrimary) {
-            r.stroke(strokeColour);
-        } else {
-            commands.add(new CommandNode("stroke", strokeColour));
-        }
-    }
-
-    public void stroke(double gray) {
-        stroke(gray, gray, gray, (int)maxAL);
-    }
-
-    public void stroke(double gray, double alpha) {
-        stroke(gray, gray, gray, alpha);
-    }
-
-    public void stroke(double rh, double gs, double bb) {
-        stroke(rh, gs, bb, (int)maxAL);
-    }
-
-    public void stroke(double rh, double gs, double bb, double alpha) {
-        this.strokeColour = getColor(rh, gs, bb, alpha);
-        hasStroke = true;
-
-        if (isPrimary) {
-            r.stroke(strokeColour);
-        } else {
-            commands.add(new CommandNode("stroke", strokeColour));
-        }
-    }
 
     TextAlignment alignH = TextAlignment.LEFT;
     VPos alignV = VPos.BASELINE;
@@ -467,30 +488,6 @@ public class PGraphics {
             r.translate(amtX, amtY);
         } else {
             commands.add(new CommandNode("translate", amtX, amtY));
-        }
-    }
-
-    public Color getColor(double rh, double gs, double bb, double alpha) {
-        switch (colorMode) {
-            case RGB: {
-                int red = (int) map(rh, 0, maxRH, 0, 255);
-                int green = (int) map(gs, 0, maxGS, 0, 255);
-                int blue = (int) map(bb, 0, maxBB, 0, 255);
-                double opacity = map(alpha, 0, maxAL, 0, 1);
-                return Color.rgb(red, green, blue, opacity);
-            }
-
-            case HSB: {
-                double hue = map(rh, 0, maxRH, 0, 359);
-                double saturation = map(gs, 0, maxGS, 0, 1);
-                double brightness = map(bb, 0, maxBB, 0, 1);
-                double opacity = map(alpha, 0, maxAL, 0, 1);
-                return Color.hsb(hue, saturation, brightness, opacity);
-            }
-
-            default: {
-                return Color.WHITE;
-            }
         }
     }
 

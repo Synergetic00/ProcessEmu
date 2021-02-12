@@ -7,6 +7,7 @@ import misc.*;
 
 import static utils.Constants.*;
 import static utils.MathUtils.*;
+import static utils.ColourUtils.*;
 
 import event.MouseEvent;
 
@@ -43,8 +44,8 @@ public class FXApp {
     public void size(int w, int h) {
         g.size(w, h);
         width = g.gs.width;
-        height = g.gs.height;
-        g.background(204);
+        height = g.gs.height; 
+        background(204);
     }
     
     public void image(PGraphics pg, double x, double y) {
@@ -63,12 +64,8 @@ public class FXApp {
         g.ellipse(x, y, w, h);
     }
 
-    public void background(Color color) {
-        g.background(color);
-    }
-
-    public void background(double gray) {
-        g.background(gray);
+    public void background(double value) {
+        g.background(value);
     }
 
     public void background(double gray, double alpha) {
@@ -79,44 +76,36 @@ public class FXApp {
         g.background(rh, gs, bb);
     }
 
-    public void background(double rh, double gs, double bb, double alpha) {
-        g.background(rh, gs, bb, alpha);
+    public void background(double rh, double gs, double bb, double ao) {
+        g.background(rh, gs, bb, ao);
     }
 
     public void noFill() {
         g.noFill();
     }
 
-    public void fill(Color color) {
-        g.fill(color);
-    }
-
-    public void fill(double gray) {
-        g.fill(gray, gray, gray, (int)g.maxAL);
+    public void fill(double value) {
+        g.fill(value);
     }
 
     public void fill(double gray, double alpha) {
-        g.fill(gray, gray, gray, alpha);
+        g.fill(gray, alpha);
     }
 
     public void fill(double rh, double gs, double bb) {
-        g.fill(rh, gs, bb, (int)g.maxAL);
+        g.fill(rh, gs, bb);
     }
 
-    public void fill(double rh, double gs, double bb, double alpha) {
-        g.fill(rh, gs, bb, alpha);
+    public void fill(double rh, double gs, double bb, double ao) {
+        g.fill(rh, gs, bb, ao);
     }
 
     public void noStroke() {
         g.noStroke();
     }
 
-    public void stroke(Color color) {
-        g.stroke(color);
-    }
-
-    public void stroke(double gray) {
-        g.stroke(gray);
+    public void stroke(double value) {
+        g.stroke(value);
     }
 
     public void stroke(double gray, double alpha) {
@@ -127,8 +116,8 @@ public class FXApp {
         g.stroke(rh, gs, bb);
     }
 
-    public void stroke(double rh, double gs, double bb, double alpha) {
-        g.stroke(rh, gs, bb, alpha);
+    public void stroke(double rh, double gs, double bb, double ao) {
+        g.stroke(rh, gs, bb, ao);
     }
 
     public void textAlign(int newAlignX) {
@@ -204,7 +193,10 @@ public class FXApp {
     }
 
     public int color(double rh, double gs, double bb) {
-        return 70;
+        double mappedRH = clamp(map(rh, 0, g.maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, g.maxGS, 0, 255), 0, 255);
+        double mappedBB = clamp(map(bb, 0, g.maxBB, 0, 255), 0, 255);
+        return encodeColour(mappedRH, mappedGS, mappedBB, g.maxAO);
     }
 
     public void pushMatrix() {

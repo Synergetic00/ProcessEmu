@@ -27,6 +27,12 @@ public class MathUtils {
         return Math.max(min, Math.min(max, val));
     }
 
+    public static double clamp(double val, double min, double max) {
+        if (val < min) return min;
+        if (val > max) return max;
+        return val;
+    }
+
     public static int constrain(int val, int low, int high) {
 		return (val < low) ? low : ((val > high) ? high : val);
     }
@@ -212,6 +218,13 @@ public class MathUtils {
     public static void noiseSeed(int seed) {
         if (perlinRandom == null) perlinRandom = new Random();
         perlinRandom.setSeed(seed);
+    }
+
+    // Custom
+
+    public static boolean between(double val, double min, double max) {
+        if (val >= min && val <= max) return true;
+        return false;
     }
 
 }
