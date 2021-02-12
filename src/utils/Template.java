@@ -1,7 +1,5 @@
 package utils;
 
-import types.*;
-
 public class Template {
 
     // [Structure]

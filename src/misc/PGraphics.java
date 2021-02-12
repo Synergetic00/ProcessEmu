@@ -12,7 +12,6 @@ import main.*;
 import static utils.Constants.*;
 import static utils.MathUtils.*;
 import static utils.DataUtils.*;
-import static utils.ColourUtils.*;
 
 public class PGraphics {
     GraphicsContext gc;
@@ -39,8 +38,6 @@ public class PGraphics {
     public double maxBB;
     public double maxAL;
 
-    public int bColour, fColour, sColour;
-
     public PGraphics(GraphicsContext gc, FXApp parent) {
         this.gc = gc;
         this.parent = parent;
@@ -56,57 +53,6 @@ public class PGraphics {
         rectMode = CORNER;
         ellipseMode = CENTER;
     }
-
-    public void setBackground(int encodedValue) {
-        if (isPrimary) {
-            r.setBackground(decodeColour(encodedValue));
-        } else {
-            commands.add(new CommandNode("background", decodeColour(encodedValue)));
-        }
-    }
-
-    public void setFill(int encodedValue) {
-        if (isPrimary) {
-            r.setFill(decodeColour(encodedValue));
-        } else {
-            commands.add(new CommandNode("fill", decodeColour(encodedValue)));
-        }
-    }
-
-    public void setStroke(int encodedValue) {
-        if (isPrimary) {
-            r.setStroke(decodeColour(encodedValue));
-        } else {
-            commands.add(new CommandNode("stroke", decodeColour(encodedValue)));
-        }
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     void updateVars() {
         r.fill(fillColour);
@@ -233,8 +179,113 @@ public class PGraphics {
         }
 	}
 
-    public void noFill() { hasFill = false; }
-    public void noStroke() { hasStroke = false; }
+    public void background(Color color) {
+        backgroundColour = color;
+
+        if (isPrimary) {
+            r.background(backgroundColour);
+        } else {
+            commands.add(new CommandNode("background", backgroundColour));
+        }
+    }
+
+    public void background(double gray) {
+        background(gray, gray, gray, maxAL);
+    }
+
+    public void background(double gray, double alpha) {
+        background(gray, gray, gray, alpha);
+    }
+
+    public void background(double rh, double gs, double bb) {
+        background(rh, gs, bb, maxAL);
+    }
+
+    public void background(double rh, double gs, double bb, double alpha) {
+        backgroundColour = getColor(rh, gs, bb, alpha);
+
+        if (isPrimary) {
+            r.background(backgroundColour);
+        } else {
+            commands.add(new CommandNode("background", backgroundColour));
+        }
+    }
+
+    public void noFill() {
+        hasFill = false;
+    }
+
+    public void fill(Color color) {
+        this.fillColour = color;
+        hasFill = true;
+
+        if (isPrimary) {
+            r.fill(fillColour);
+        } else {
+            commands.add(new CommandNode("fill", fillColour));
+        }
+    }
+
+    public void fill(double gray) {
+        fill(gray, gray, gray, (int)maxAL);
+    }
+
+    public void fill(double gray, double alpha) {
+        fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(double rh, double gs, double bb) {
+        fill(rh, gs, bb, maxAL);
+    }
+
+    public void fill(double rh, double gs, double bb, double alpha) {
+        this.fillColour = getColor(rh, gs, bb, alpha);
+        hasFill = true;
+
+        if (isPrimary) {
+            r.fill(fillColour);
+        } else {
+            commands.add(new CommandNode("fill", fillColour));
+        }
+    }
+
+    public void noStroke() {
+        hasStroke = false;
+    }
+
+    public void stroke(Color color) {
+        this.strokeColour = color;
+        hasStroke = true;
+
+        if (isPrimary) {
+            r.stroke(strokeColour);
+        } else {
+            commands.add(new CommandNode("stroke", strokeColour));
+        }
+    }
+
+    public void stroke(double gray) {
+        stroke(gray, gray, gray, (int)maxAL);
+    }
+
+    public void stroke(double gray, double alpha) {
+        stroke(gray, gray, gray, alpha);
+    }
+
+    public void stroke(double rh, double gs, double bb) {
+        stroke(rh, gs, bb, (int)maxAL);
+    }
+
+    public void stroke(double rh, double gs, double bb, double alpha) {
+        this.strokeColour = getColor(rh, gs, bb, alpha);
+        hasStroke = true;
+
+        if (isPrimary) {
+            r.stroke(strokeColour);
+        } else {
+            commands.add(new CommandNode("stroke", strokeColour));
+        }
+    }
 
     TextAlignment alignH = TextAlignment.LEFT;
     VPos alignV = VPos.BASELINE;

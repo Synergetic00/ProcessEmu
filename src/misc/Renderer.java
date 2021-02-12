@@ -30,47 +30,6 @@ public class Renderer {
         renderY = y;
     }
 
-	public void setBackground(Color colour) {
-        gc.save();
-        gc.setFill(colour);
-        gc.fillRect(GraphicState.offsetX+renderX, GraphicState.offsetY+renderY, gs.width, gs.height);
-        gc.restore();
-	}
-
-	public void setFill(Color colour) {
-        gc.setFill(colour);
-	}
-
-	public void setStroke(Color colour) {
-        gc.setStroke(colour);
-	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     public void background(Color backgroundColour) {
         gc.save();
         gc.setFill(backgroundColour);
