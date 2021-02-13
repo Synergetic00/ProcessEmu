@@ -327,6 +327,17 @@ public class FXApp {
 
     public void handleDraw() {
         draw();
+        coverEdges();
+    }
+
+    private void coverEdges() {
+        gc.save();
+        gc.setFill(Color.rgb(40, 40, 40));
+        gc.fillRect(0, 0, screenW, GraphicState.offsetY); // top
+        gc.fillRect(0, screenH - GraphicState.offsetY, screenW, GraphicState.offsetY); // bottom
+        gc.fillRect(0, 0, GraphicState.offsetX, screenH); // left
+        gc.fillRect(screenW - GraphicState.offsetX, 0, GraphicState.offsetX, screenH); // right
+        gc.restore();
     }
 
     public void handleMouseClicked(javafx.scene.input.MouseEvent event) {

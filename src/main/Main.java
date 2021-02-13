@@ -399,7 +399,6 @@ public class Main extends Application {
         setupMethod.invoke(programObject);
 
     }
-
 }
 
 class App {

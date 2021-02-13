@@ -221,9 +221,9 @@ public class PGraphics {
     }
 
     public void beginDraw() {
-        System.out.println("Begun drawing");
+        //System.out.println("Begun drawing");
         if (commands == null) {
-            System.out.println("Created list");
+            //System.out.println("Created list");
             commands = new ArrayList<CommandNode>();
         } else {
             commands.clear();
@@ -560,7 +560,7 @@ public class PGraphics {
 
 	public void render(double x, double y) {
         gc.save();
-        System.out.println("Renderering");
+        //System.out.println("Renderering");
         r.renderPos(x, y);
         for (CommandNode command : commands) {
             command.execute(r, x, y);
