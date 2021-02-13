@@ -7,51 +7,85 @@ import javafx.scene.text.TextAlignment;
 
 public class CommandNode {
 
-    String commandString;
-    String textString;
-    int value1;
-    int value2;
-    int value3;
-    int valueA;
-    double valueX;
-    double valueY;
-    double valueW;
-    double valueH;
-    double valueS;
-    double valueF;
-    TextAlignment textAlignment;
-    VPos vPos;
+    String type, text;
+    TextAlignment hAlign;
+    VPos vAlign;
     ArcType arcMode;
 
-    public Color backgroundColour;
-    public Color fillColour;
-    public Color strokeColour;
+    // Common: 0 = red, 1 = green, 2 = blue, 3 = alpha
+    int[] intVals = new int[4];
+    // Common: 0 = x, 1 = y, 2 = w, 3 = h, 4/5 = ranges
+    double[] dblVals = new double[6];
 
-    public CommandNode(String s, int v1, int v2, int v3, int vA) {
-        commandString = s;
-        value1 = v1;
-        value2 = v2;
-        value3 = v3;
-        valueA = vA;
-    }
+    public Color backgroundColour, fillColour, strokeColour;
 
-    public CommandNode(String s, double x, double y, double w, double h) {
-        commandString = s;
-        valueX = x;
-        valueY = y;
-        valueW = w;
-        valueH = h;
-    }
+    //////////////////
+    // Constructors //
+    //////////////////
 
-	public CommandNode(String s, String t, double x, double y) {
-        commandString = s;
-        textString = t;
-        valueX = x;
-        valueY = y;
+    public CommandNode(String s) {
+        type = s;
 	}
 
+    // Integers
+
+    public CommandNode(String s, int valA) { // 1
+        type = s;
+        intVals[0] = valA;
+	}
+
+    public CommandNode(String s, int valA, int valB, int valC, int valD) { // 4
+        type = s;
+        intVals[0] = valA;
+        intVals[1] = valB;
+        intVals[2] = valC;
+        intVals[3] = valD;
+    }
+
+    // Doubles
+
+    public CommandNode(String s, double valA) { // 1
+        type = s;
+        dblVals[0] = valA;
+	}
+
+    public CommandNode(String s, double valA, double valB) { // 2
+        type = s;
+        dblVals[0] = valA;
+        dblVals[1] = valB;
+	}
+
+    public CommandNode(String s, double valA, double valB, double valC, double valD) { // 4
+        type = s;
+        dblVals[0] = valA;
+        dblVals[1] = valB;
+        dblVals[2] = valC;
+        dblVals[3] = valD;
+    }
+
+    // Arc constructor (w/o mode)
+	public CommandNode(String s, double valA, double valB, double valC, double valD, double valE, double valF) { // 6
+        dblVals[0] = valA;
+        dblVals[1] = valB;
+        dblVals[2] = valC;
+        dblVals[3] = valD;
+        dblVals[4] = valE;
+        dblVals[5] = valF;
+	}
+
+    // Other
+
+    // Textual element constructor
+	public CommandNode(String s, String t, double x, double y) {
+        type = s;
+        text = t;
+        dblVals[0] = x;
+        dblVals[1] = y;
+	}
+
+    // Color constructor
 	public CommandNode(String string, Color colour) {
-        commandString = string;
+        type = string;
         switch (string) {
             case "background": {
                 backgroundColour = colour;
@@ -70,54 +104,28 @@ public class CommandNode {
         }
 	}
 
+    // TextAlign constructor
 	public CommandNode(String s, TextAlignment alignH, VPos alignV) {
-        commandString = s;
-        textAlignment = alignH;
-        vPos = alignV;
+        type = s;
+        hAlign = alignH;
+        vAlign = alignV;
 	}
 
-	public CommandNode(String s, double newSize) {
-        commandString = s;
-        valueW = newSize;
-	}
-
-
-	public CommandNode(String s, int value) {
-        commandString = s;
-        value1 = value;
-	}
-	public CommandNode(String s) {
-        commandString = s;
-	}
-
-	public CommandNode(String s, double x, double y) {
-        commandString = s;
-        valueX = x;
-        valueY = y;
-	}
-
-	public CommandNode(String string, double nx, double ny, double width, double height, double degStart, double degStop, ArcType mode) {
-        valueX = nx;
-        valueY = ny;
-        valueW = width;
-        valueH = height;
-        valueS = degStart;
-        valueF = degStop;
+    // Arc constructor (w/ mode)
+	public CommandNode(String s, double valA, double valB, double valC, double valD, double valE, double valF, ArcType mode) {
+        dblVals[0] = valA;
+        dblVals[1] = valB;
+        dblVals[2] = valC;
+        dblVals[3] = valD;
+        dblVals[4] = valE;
+        dblVals[5] = valF;
         arcMode = mode;
 	}
 
-	public CommandNode(String string, double nx, double ny, double width, double height, double degStart, double degStop) {
-        valueX = nx;
-        valueY = ny;
-        valueW = width;
-        valueH = height;
-        valueS = degStart;
-        valueF = degStop;
-	}
-
+    // Main execution stack    
 	public void execute(Renderer r, double x, double y) {
         r.renderPos(x, y);
-        switch (commandString) {
+        switch (type) {
             case "background": {
                 r.background(backgroundColour);
                 break;
@@ -134,12 +142,12 @@ public class CommandNode {
             }
             
             case "arc": {
-                r.arc(valueX, valueY, valueW, valueH, valueS, valueF);
+                r.arc(dblVals[0], dblVals[1], dblVals[2], dblVals[3], dblVals[4], dblVals[5]);
                 break;
             }
             
             case "arcM": {
-                r.arc(valueX, valueY, valueW, valueH, valueS, valueF, arcMode);
+                r.arc(dblVals[0], dblVals[1], dblVals[2], dblVals[3], dblVals[4], dblVals[5], arcMode);
                 break;
             }
             
@@ -148,7 +156,7 @@ public class CommandNode {
             }
             
             case "ellipse": {
-                r.ellipse(valueX+x, valueY+y, valueW, valueH);
+                r.ellipse(dblVals[0]+x, dblVals[1]+y, dblVals[2], dblVals[3]);
                 break;
             }
             
@@ -165,7 +173,7 @@ public class CommandNode {
             }
             
             case "rect": {
-                r.rect(valueX+x, valueY+y, valueW, valueH);
+                r.rect(dblVals[0]+x, dblVals[1]+y, dblVals[2], dblVals[3]);
                 break;
             }
             
@@ -178,17 +186,17 @@ public class CommandNode {
             }
             
             case "text": {
-                r.text(textString, valueX+x, valueY+y);
+                r.text(text, dblVals[0]+x, dblVals[1]+y);
                 break;
             }
             
             case "textAlign": {
-                r.textAlign(textAlignment, vPos);
+                r.textAlign(hAlign, vAlign);
                 break;
             }
             
             case "textSize": {
-                r.textSize(valueW);
+                r.textSize(dblVals[0]);
                 break;
             }
             
@@ -208,22 +216,22 @@ public class CommandNode {
             }
             
             case "scale": {
-                r.scale(valueX, valueY);
+                r.scale(dblVals[0], dblVals[1]);
                 break;
             }
             
             case "translate": {
-                r.translate(valueX, valueY);
+                r.translate(dblVals[0], dblVals[1]);
                 break;
             }
             
             case "strokeWeight": {
-                r.strokeWeight(valueW);
+                r.strokeWeight(dblVals[0]);
                 break;
             }
             
             case "vertex": {
-                r.vertex(valueX, valueY);
+                r.vertex(dblVals[0], dblVals[1]);
                 break;
             }
             

@@ -290,11 +290,15 @@ public class FXApp {
     public double mouseX, mouseY, pmouseX, pmouseY;
 
     public void updateMouse(javafx.scene.input.MouseEvent event) {
-        pmouseX = mouseX;
-        pmouseY = mouseY;
+        if (between(event.getSceneX(), GraphicState.offsetX, GraphicState.offsetX+g.gs.width)) {
+            if (between(event.getSceneY(), GraphicState.offsetY, GraphicState.offsetY+g.gs.height)) {
+                pmouseX = mouseX;
+                pmouseY = mouseY;
 
-        mouseX = clamp((int)(event.getSceneX()-GraphicState.offsetX), 0, g.gs.width);
-        mouseY = clamp((int)(event.getSceneY()-GraphicState.offsetY), 0, g.gs.height);
+                mouseX = clamp((int)(event.getSceneX()-GraphicState.offsetX), 0, g.gs.width);
+                mouseY = clamp((int)(event.getSceneY()-GraphicState.offsetY), 0, g.gs.height);
+            }
+        }
     }
 
     // Methods to be overwritten
