@@ -68,14 +68,6 @@ public class FXApp {
         pg.render(x, y, w, h);
     }
 
-    public void rect(double x, double y, double w, double h) {
-        g.rect(x, y, w, h);
-    }
-
-    public void ellipse(double x, double y, double w, double h) {
-        g.ellipse(x, y, w, h);
-    }
-
     public void background(double value) {
         g.background(value);
     }
@@ -160,8 +152,36 @@ public class FXApp {
         g.strokeWeight(weight);
     }
 
+    public void arc(double x, double y, double width, double height, double start, double stop) {
+        g.arc(x, y, width, height, start, stop);
+    }
+
+    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
+        g.arc(x, y, width, height, start, stop, mode);
+    }
+
+    public void circle(double x, double y, double size) {
+        g.circle(x, y, size);
+    }
+
+	public void ellipse(double x, double y, double w, double h) {
+        g.ellipse(x, y, w, h);
+	}
+
     public void line(double startX, double startY, double endX, double endY) {
         g.line(startX, startY, endX, endY);
+    }
+
+    public void point(double x, double y) {
+        g.point(x, y);
+    }
+
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        g.quad(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+
+    public void rect(double x, double y, double w, double h) {
+        g.rect(x, y, w, h);
     }
 
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
@@ -247,7 +267,9 @@ public class FXApp {
 
 
 
+    public void noLoop() {
 
+    }
 
 
 

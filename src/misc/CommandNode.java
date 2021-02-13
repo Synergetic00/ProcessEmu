@@ -2,6 +2,7 @@ package misc;
 
 import javafx.geometry.VPos;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.scene.text.TextAlignment;
 
 public class CommandNode {
@@ -16,8 +17,11 @@ public class CommandNode {
     double valueY;
     double valueW;
     double valueH;
+    double valueS;
+    double valueF;
     TextAlignment textAlignment;
     VPos vPos;
+    ArcType arcMode;
 
     public Color backgroundColour;
     public Color fillColour;
@@ -92,6 +96,25 @@ public class CommandNode {
         valueY = y;
 	}
 
+	public CommandNode(String string, double nx, double ny, double width, double height, double degStart, double degStop, ArcType mode) {
+        valueX = nx;
+        valueY = ny;
+        valueW = width;
+        valueH = height;
+        valueS = degStart;
+        valueF = degStop;
+        arcMode = mode;
+	}
+
+	public CommandNode(String string, double nx, double ny, double width, double height, double degStart, double degStop) {
+        valueX = nx;
+        valueY = ny;
+        valueW = width;
+        valueH = height;
+        valueS = degStart;
+        valueF = degStop;
+	}
+
 	public void execute(Renderer r, double x, double y) {
         r.renderPos(x, y);
         switch (commandString) {
@@ -110,13 +133,47 @@ public class CommandNode {
                 break;
             }
             
-            case "rect": {
-                r.rect(valueX+x, valueY+y, valueW, valueH);
+            case "arc": {
+                r.arc(valueX, valueY, valueW, valueH, valueS, valueF);
+                break;
+            }
+            
+            case "arcM": {
+                r.arc(valueX, valueY, valueW, valueH, valueS, valueF, arcMode);
+                break;
+            }
+            
+            case "circle": {
                 break;
             }
             
             case "ellipse": {
                 r.ellipse(valueX+x, valueY+y, valueW, valueH);
+                break;
+            }
+            
+            case "line": {
+                break;
+            }
+            
+            case "point": {
+                break;
+            }
+            
+            case "quad": {
+                break;
+            }
+            
+            case "rect": {
+                r.rect(valueX+x, valueY+y, valueW, valueH);
+                break;
+            }
+            
+            case "square": {
+                break;
+            }
+            
+            case "triangle": {
                 break;
             }
             
@@ -157,11 +214,6 @@ public class CommandNode {
             
             case "translate": {
                 r.translate(valueX, valueY);
-                break;
-            }
-            
-            case "line": {
-                r.line(valueX, valueY, valueW, valueH);
                 break;
             }
             

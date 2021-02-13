@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import main.*;
@@ -239,6 +240,116 @@ public class PGraphics {
         ellipseMode = mode;
     }
 
+    public void arc(double x, double y, double width, double height, double start, double stop) {
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
+
+        double nx = GraphicState.offsetX + x - width/2;
+        double ny = GraphicState.offsetY + y - height/2;
+
+        if (isPrimary) {
+            r.arc(nx, ny, width, height, degStart, degStop);
+        } else {
+            commands.add(new CommandNode("arc", nx, ny, width, height, degStart, degStop));
+        }
+    }
+
+    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
+        clamp(mode, OPEN, PIE);
+        ArcType arcMode = ArcType.OPEN;
+        switch (mode) {
+            case OPEN: {
+                arcMode = ArcType.OPEN;
+                break;
+            }
+            case CHORD: {
+                arcMode = ArcType.CHORD;
+                break;
+            }
+            case PIE: {
+                arcMode = ArcType.ROUND;
+                break;
+            }
+        }
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
+
+        double nx = GraphicState.offsetX + x - width/2;
+        double ny = GraphicState.offsetY + y - height/2;
+
+        if (isPrimary) {
+            r.arc(nx, ny, width, height, degStart, degStop, arcMode);
+        } else {
+            commands.add(new CommandNode("arcM", nx, ny, width, height, degStart, degStop, arcMode));
+        }
+    }
+
+    public void circle(double x, double y, double size) {
+        ellipse(x, y, size, size);
+    }
+
+	public void ellipse(double x, double y, double w, double h) {
+        updateVars();
+        
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (ellipseMode) {
+            case CORNER: {
+                nw *= 2;
+                nh *= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+        }
+
+        nx += GraphicState.offsetX;
+        ny += GraphicState.offsetY;
+
+        if (isPrimary) {
+            r.ellipse(nx, ny, nw, nh);
+        } else {
+            commands.add(new CommandNode("ellipse", nx, ny, nw, nh));
+        }
+	}
+
+    public void line(double startX, double startY, double endX, double endY) {
+        double sx = GraphicState.offsetX+startX;
+        double sy = GraphicState.offsetY+startY;
+        double ex = GraphicState.offsetX+endX;
+        double ey = GraphicState.offsetY+endY;
+
+        updateVars();
+        if (isPrimary) {
+            r.line(sx, sy, ex, ey);
+        } else {
+            commands.add(new CommandNode("line", sx, sy, ex, ey));
+        }
+    }
+
+    public void point(double x, double y) {
+        line(x, y, x, y);
+    }
+
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+
+    }
+
     public void rect(double x, double y, double w, double h) {
         updateVars();
         
@@ -272,41 +383,6 @@ public class PGraphics {
             commands.add(new CommandNode("rect", GraphicState.offsetX+nx, GraphicState.offsetY+ny, nw, nh));
         }
     }
-
-	public void ellipse(double x, double y, double w, double h) {
-        updateVars();
-        
-        double nx = x;
-        double ny = y;
-        double nw = w;
-        double nh = h;
-
-        switch (ellipseMode) {
-            case CORNER: {
-                nw *= 2;
-                nh *= 2;
-                break;
-            }
-            case RADIUS: {
-                nw *= 2;
-                nh *= 2;
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-            case CENTER: {
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-        }
-
-        if (isPrimary) {
-            r.ellipse(GraphicState.offsetX+nx, GraphicState.offsetY+ny, nw, nh);
-        } else {
-            commands.add(new CommandNode("ellipse", GraphicState.offsetX+nx, GraphicState.offsetY+ny, nw, nh));
-        }
-	}
 
     TextAlignment alignH = TextAlignment.LEFT;
     VPos alignV = VPos.BASELINE;
@@ -396,15 +472,6 @@ public class PGraphics {
             r.strokeWeight(weight);
         } else {
             commands.add(new CommandNode("strokeWeight", weight));
-        }
-    }
-
-    public void line(double startX, double startY, double endX, double endY) {
-        updateVars();
-        if (isPrimary) {
-            r.line(GraphicState.offsetX+startX, GraphicState.offsetY+startY, GraphicState.offsetX+endX, GraphicState.offsetY+endY);
-        } else {
-            commands.add(new CommandNode("line", GraphicState.offsetX+startX, GraphicState.offsetY+startY, GraphicState.offsetX+endX, GraphicState.offsetY+endY));
         }
     }
 

@@ -3,6 +3,7 @@ package misc;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.scene.text.*;
 import javafx.scene.transform.Affine;
 import com.sun.javafx.geom.*;
@@ -44,7 +45,9 @@ public class Renderer {
         gc.setStroke(colour);
 	}
 
-
+    public void arc() {
+        
+    }
 
 
 
@@ -293,4 +296,14 @@ public class Renderer {
         if (pg.hasFill) gc.fillPolygon(xPoints, yPoints, 4);
         if (pg.hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
+
+	public void arc(double nx, double ny, double width, double height, double degStart, double degStop, ArcType arcMode) {
+        if (pg.hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
+        if (pg.hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
+    }
+
+	public void arc(double nx, double ny, double width, double height, double degStart, double degStop) {
+        if (pg.hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
+        if (pg.hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
+	}
 }
