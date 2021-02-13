@@ -217,6 +217,7 @@ public class PGraphics {
         if (isPrimary) {
             GraphicState.setOffset(((gs.screenW - gs.width) / 2), ((gs.screenH - gs.height) / 2));
         }
+        System.out.println("x: "+GraphicState.offsetX+" y: "+GraphicState.offsetY);
 
     }
 
@@ -535,6 +536,14 @@ public class PGraphics {
             r.resetMatrix();
         } else {
             commands.add(new CommandNode("resetMatrix"));
+        }
+    }
+
+    public void rotate(double amt) {
+        if (isPrimary) {
+            r.rotate(amt);
+        } else {
+            commands.add(new CommandNode("rotate", amt));
         }
     }
     

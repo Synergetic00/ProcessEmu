@@ -290,7 +290,7 @@ public class Main extends Application {
         dApp.textSize(70);
         dApp.text("RaspberryPiFX",(rectX/2),100);
         dApp.textSize(40);
-        dApp.text("v2.4.2",(rectX/2),200);
+        dApp.text("V2.4.4",(rectX/2),200);
         gc.restore();
     }
 

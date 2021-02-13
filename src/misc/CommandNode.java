@@ -215,6 +215,11 @@ public class CommandNode {
                 break;
             }
             
+            case "rotate": {
+                r.rotate(dblVals[0]);
+                break;
+            }
+            
             case "scale": {
                 r.scale(dblVals[0], dblVals[1]);
                 break;

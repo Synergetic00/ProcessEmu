@@ -22,7 +22,7 @@ public class FXApp {
     public PGraphics g;
 
     double screenW, screenH;
-    public int width, height;
+    public int width, height, frameCount;
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
@@ -246,6 +246,10 @@ public class FXApp {
     public void rectMode(int mode) {
         g.rectMode(mode);
     }
+
+    public void rotate(double amt) {
+        g.rotate(amt);
+    }
     
     public void scale(double amt) {
         g.scale(amt);
@@ -327,9 +331,11 @@ public class FXApp {
 
     public void handleDraw() {
         draw();
-        coverEdges();
+        //coverEdges();
+        frameCount++;
     }
 
+    @SuppressWarnings("unused")
     private void coverEdges() {
         gc.save();
         gc.setFill(Color.rgb(40, 40, 40));

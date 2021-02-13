@@ -9,7 +9,9 @@ import javafx.scene.transform.Affine;
 import com.sun.javafx.geom.*;
 
 import static utils.Constants.*;
+import static utils.MathUtils.*;
 
+@SuppressWarnings("unused")
 public class Renderer {
 
     GraphicsContext gc;
@@ -45,38 +47,23 @@ public class Renderer {
         gc.setStroke(colour);
 	}
 
-    public void arc() {
-        
+	public void arc(double nx, double ny, double width, double height, double degStart, double degStop, ArcType arcMode) {
+        if (pg.hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
+        if (pg.hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+	public void arc(double nx, double ny, double width, double height, double degStart, double degStop) {
+        if (pg.hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
+        if (pg.hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
+	}
 
     public void background(Color backgroundColour) {
         gc.save();
+        //Affine savedAffine =  gc.getTransform();
+        //resetMatrix();
         gc.setFill(backgroundColour);
         gc.fillRect(GraphicState.offsetX+renderX, GraphicState.offsetY+renderY, gs.width, gs.height);
+        //gc.setTransform(savedAffine);
         gc.restore();
     }
     
@@ -103,7 +90,8 @@ public class Renderer {
     }
 
     private void point(double x, double y) {
-        line(x, y, x, y);
+        gc.fillRect(x, y, 1, 1);
+        //line(x, y, x, y);
     }
 
     public void text(String value, double x, double y) {
@@ -139,6 +127,17 @@ public class Renderer {
 
 	public void resetMatrix() {
         gc.setTransform(new Affine());
+	}
+
+	public void rotate(double amt) {
+        //work out if this is radians or degrees, fuck youu
+
+        //gc.translate(234.0450118, -253.4678752);
+        gc.translate(253.4678752, -234.0450118);
+        gc.rotate(amt);
+        //gc.rotate(degrees(amt));
+        //gc.translate(-GraphicState.offsetX, -GraphicState.offsetY);
+        //gc.translate(GraphicState.offsetX * -cos(degrees(amt)), GraphicState.offsetY * sin(degrees(amt)));
 	}
 
 	public void scale(double amtX, double amtY) {
@@ -296,14 +295,4 @@ public class Renderer {
         if (pg.hasFill) gc.fillPolygon(xPoints, yPoints, 4);
         if (pg.hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
-
-	public void arc(double nx, double ny, double width, double height, double degStart, double degStop, ArcType arcMode) {
-        if (pg.hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
-        if (pg.hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
-    }
-
-	public void arc(double nx, double ny, double width, double height, double degStart, double degStop) {
-        if (pg.hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
-        if (pg.hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
-	}
 }
