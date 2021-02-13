@@ -2,6 +2,9 @@
 //Rotated square
 
 void setup() {
-    rotate(60);
-    rect(-26, -26, 52, 52);
+    size(300,300);
+    rotate(45);
+    rect(50,50,100,50);
+    rotate(-45);
+    rect(50,50,100,50);
 }

@@ -127,17 +127,23 @@ public class Renderer {
 
 	public void resetMatrix() {
         gc.setTransform(new Affine());
-	}
+    }
+    
+    double prevRots = 0;
 
 	public void rotate(double amt) {
-        //work out if this is radians or degrees, fuck youu
-
-        //gc.translate(234.0450118, -253.4678752);
-        gc.translate(253.4678752, -234.0450118);
-        gc.rotate(amt);
-        //gc.rotate(degrees(amt));
-        //gc.translate(-GraphicState.offsetX, -GraphicState.offsetY);
-        //gc.translate(GraphicState.offsetX * -cos(degrees(amt)), GraphicState.offsetY * sin(degrees(amt)));
+        prevRots += amt;
+        double sideA = GraphicState.offsetX;
+        double sideB = GraphicState.offsetY;
+        double sideC = sqrt(sq(sideA)+sq(sideB));
+        double anglB = degrees(acos((sq(sideA)+sq(sideC)-sq(sideB))/(2*sideA*sideC)));
+        double finalAmt = degrees(amt) + anglB;
+        double rtsdA = sideC*sin(radians(finalAmt));
+        double rtsdB = sideC*cos(radians(finalAmt));
+        double diffX = sideA - rtsdB;
+        double diffY = sideB - rtsdA;
+        gc.translate(diffX, diffY);
+        gc.rotate(degrees(prevRots));
 	}
 
 	public void scale(double amtX, double amtY) {
