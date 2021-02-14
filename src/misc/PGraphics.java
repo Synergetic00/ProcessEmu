@@ -211,13 +211,13 @@ public class PGraphics {
     }
 
     public void size(int w, int h) {
+        //resetMatrix();
         gs.width = w;
         gs.height = h;
 
         if (isPrimary) {
             GraphicState.setOffset(((gs.screenW - gs.width) / 2), ((gs.screenH - gs.height) / 2));
         }
-        System.out.println("x: "+GraphicState.offsetX+" y: "+GraphicState.offsetY);
 
     }
 

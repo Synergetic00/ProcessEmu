@@ -331,11 +331,10 @@ public class FXApp {
 
     public void handleDraw() {
         draw();
-        //coverEdges();
+        coverEdges();
         frameCount++;
     }
 
-    @SuppressWarnings("unused")
     private void coverEdges() {
         gc.save();
         gc.setFill(Color.rgb(40, 40, 40));

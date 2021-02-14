@@ -41,6 +41,7 @@ public class Main extends Application {
 
     static int appIndex;
     static boolean onHomeScreen = true;
+    FXApp dApp;
 
     public static void main(String[] args) {
         launch(args);
@@ -60,6 +61,8 @@ public class Main extends Application {
         System.out.println("Loaded "+apps.size()+" apps");
 
         appIndex = 0;
+        dApp = new FXApp(gc);
+        launchHomeScreen();
         drawDefaultApp(gc);
 
         //apps.get(0).launch();
@@ -123,6 +126,7 @@ public class Main extends Application {
                 case Q: {
                     if (!onHomeScreen) {
                         onHomeScreen = true;
+                        launchHomeScreen();
                     }
                     break;
                 }
@@ -215,13 +219,17 @@ public class Main extends Application {
         stage.show();
     }
 
-    private void drawDefaultApp(GraphicsContext gc) {
+    private void launchHomeScreen() {
         gc.save();
-        FXApp dApp = new FXApp(gc);
         dApp.fullScreen();
+        gc.restore();
+    }
+
+    private void drawDefaultApp(GraphicsContext gc) {
+
+        gc.save();
         dApp.updateTime();
         dApp.background(0);
-
         int dispNum = 5;
         int pageNum = (int) (appIndex / dispNum);
         int pageTtl = (int) Math.ceil(apps.size() / (double) dispNum);
@@ -290,7 +298,7 @@ public class Main extends Application {
         dApp.textSize(70);
         dApp.text("RaspberryPiFX",(rectX/2),100);
         dApp.textSize(40);
-        dApp.text("V2.4.4",(rectX/2),200);
+        dApp.text("V2.4.6",(rectX/2),200);
         gc.restore();
     }
 

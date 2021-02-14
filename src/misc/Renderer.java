@@ -131,13 +131,14 @@ public class Renderer {
     
     double prevRots = 0;
 
-	public void rotate(double amt) {
-        prevRots += amt;
+	public void rotate(double amount) {
+        resetMatrix();
+        prevRots += amount;
         double sideA = GraphicState.offsetX;
         double sideB = GraphicState.offsetY;
         double sideC = sqrt(sq(sideA)+sq(sideB));
         double anglB = degrees(acos((sq(sideA)+sq(sideC)-sq(sideB))/(2*sideA*sideC)));
-        double finalAmt = degrees(amt) + anglB;
+        double finalAmt = degrees(prevRots) + anglB;
         double rtsdA = sideC*sin(radians(finalAmt));
         double rtsdB = sideC*cos(radians(finalAmt));
         double diffX = sideA - rtsdB;
