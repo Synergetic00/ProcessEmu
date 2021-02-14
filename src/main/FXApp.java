@@ -3,6 +3,7 @@ package main;
 import javafx.scene.canvas.*;
 import javafx.scene.input.*;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Affine;
 import misc.*;
 
 import static utils.Constants.*;
@@ -37,6 +38,7 @@ public class FXApp {
 
         g = new PGraphics(gc, this);
         g.isPrimary = true;
+        g.resetMatrix();
         size(100,100);
         fill(255);
         stroke(0);
@@ -335,13 +337,19 @@ public class FXApp {
         frameCount++;
     }
 
+    @SuppressWarnings("unused")
     private void coverEdges() {
+
+        Affine savedAffine =  gc.getTransform();
+        g.resetMatrix();
+        //save transformations
         gc.save();
         gc.setFill(Color.rgb(40, 40, 40));
         gc.fillRect(0, 0, screenW, GraphicState.offsetY); // top
         gc.fillRect(0, screenH - GraphicState.offsetY, screenW, GraphicState.offsetY); // bottom
         gc.fillRect(0, 0, GraphicState.offsetX, screenH); // left
         gc.fillRect(screenW - GraphicState.offsetX, 0, GraphicState.offsetX, screenH); // right
+        gc.setTransform(savedAffine);
         gc.restore();
     }
 

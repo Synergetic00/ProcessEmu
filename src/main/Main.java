@@ -26,6 +26,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.input.*;
+import javafx.scene.transform.Affine;
 import javafx.stage.Stage;
 import main.DynLoader.CompiledClassLoader;
 import main.DynLoader.SimpleJavaFileManager;
@@ -134,7 +135,7 @@ public class Main extends Application {
                 case R: {
                     if (!onHomeScreen) {
                         try {
-                            apps.get(appIndex).launch();
+                            apps.get(appIndex).launch(gc);
                         } catch (Exception e) {
                         }
                     }
@@ -159,7 +160,7 @@ public class Main extends Application {
                     if (onHomeScreen) {
                         try {
                             onHomeScreen = false;
-                            apps.get(appIndex).launch();
+                            apps.get(appIndex).launch(gc);
                         } catch (Exception e) {
                         }
                     }
@@ -228,6 +229,7 @@ public class Main extends Application {
     private void drawDefaultApp(GraphicsContext gc) {
 
         gc.save();
+        dApp.g.resetMatrix();
         dApp.updateTime();
         dApp.background(0);
         int dispNum = 5;
@@ -298,7 +300,7 @@ public class Main extends Application {
         dApp.textSize(70);
         dApp.text("RaspberryPiFX",(rectX/2),100);
         dApp.textSize(40);
-        dApp.text("V2.4.6",(rectX/2),200);
+        dApp.text("V2.4.7",(rectX/2),200);
         gc.restore();
     }
 
@@ -421,7 +423,8 @@ class App {
         description = d;
     }
 
-    public void launch() throws Exception {
+    public void launch(GraphicsContext gc) throws Exception {
+        gc.setTransform(new Affine());
         Main.loadProgram("src/programs/"+title+".pde");
     }
 

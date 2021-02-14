@@ -11,7 +11,6 @@ import com.sun.javafx.geom.*;
 import static utils.Constants.*;
 import static utils.MathUtils.*;
 
-@SuppressWarnings("unused")
 public class Renderer {
 
     GraphicsContext gc;
@@ -57,14 +56,11 @@ public class Renderer {
         if (pg.hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
 	}
 
-    public void background(Color backgroundColour) {
-        gc.save();
-        //Affine savedAffine =  gc.getTransform();
-        //resetMatrix();
-        gc.setFill(backgroundColour);
-        gc.fillRect(GraphicState.offsetX+renderX, GraphicState.offsetY+renderY, gs.width, gs.height);
-        //gc.setTransform(savedAffine);
-        gc.restore();
+    public void background(Color backgroundColour) {	
+        gc.save();	
+        gc.setFill(backgroundColour);	
+        gc.fillRect(GraphicState.offsetX+renderX, GraphicState.offsetY+renderY, gs.width, gs.height);	
+        gc.restore();	
     }
     
     public void fill(Color fillColour) {
@@ -150,8 +146,6 @@ public class Renderer {
 	public void scale(double amtX, double amtY) {
         gc.scale(amtX, amtY);
 	}
-    
-    double prevTransX = 0, prevTransY;
 
 	public void translate(double amtX, double amtY) {
         gc.translate(amtX, amtY);
