@@ -1,5 +1,7 @@
 package utils;
 
+import java.text.NumberFormat;
+
 public class DataUtils {
 
     // [Data | Conversion]
@@ -36,24 +38,58 @@ public class DataUtils {
         return "";
     }
 
+    // String conversion (primatives)
+
     public static String str(boolean value) {
-        return "";
+        return String.valueOf(value);
     }
 
     public static String str(byte value) {
-        return "";
+        return String.valueOf(value);
     }
 
     public static String str(char value) {
-        return "";
+        return String.valueOf(value);
     }
 
     public static String str(int value) {
-        return "";
+        return String.valueOf(value);
     }
 
     public static String str(double value) {
-        return "";
+        return String.valueOf(value);
+    }
+
+    // String conversion (arrays)
+
+    public static String[] str(boolean[] values) {
+        String[] s = new String[values.length];
+        for (int i = 0; i < values.length; i++) s[i] = str(values[i]);
+        return s;
+    }
+
+    public static String[] str(byte[] values) {
+        String[] s = new String[values.length];
+        for (int i = 0; i < values.length; i++) s[i] = str(values[i]);
+        return s;
+    }
+
+    public static String[] str(char[] values) {
+        String[] s = new String[values.length];
+        for (int i = 0; i < values.length; i++) s[i] = str(values[i]);
+        return s;
+    }
+
+    public static String[] str(int[] values) {
+        String[] s = new String[values.length];
+        for (int i = 0; i < values.length; i++) s[i] = str(values[i]);
+        return s;
+    }
+
+    public static String[] str(double[] values) {
+        String[] s = new String[values.length];
+        for (int i = 0; i < values.length; i++) s[i] = str(values[i]);
+        return s;
     }
 
     public static int unbinary(String value) {
@@ -84,52 +120,80 @@ public class DataUtils {
 
     // [Data | String Functions | nf()]
 
-    public static String nf(double num) {
-        return "";
-    }
+    static private NumberFormat int_nf;
+    static private int int_nf_digits;
+    static private boolean int_nf_commas;
 
-    public static String nf(int num) {
-        return "";
+    static private NumberFormat float_nf;
+    static private int float_nf_left, float_nf_right;
+    static private boolean float_nf_commas;
+
+    public static String nf(double num) {
+        int inum = (int) num;
+        if (num == inum) return str(inum);
+        return str(num);
     }
 
     public static String nf(double num, int digits) {
-        return "";
+        return nf(num, 0, digits);
     }
 
     public static String nf(int num, int digits) {
-        return "";
+        if ((int_nf != null) && (int_nf_digits == digits) && !int_nf_commas) {
+            return int_nf.format(num);
+        }
+    
+        int_nf = NumberFormat.getInstance();
+        int_nf.setGroupingUsed(false); // no commas
+        int_nf_commas = false;
+        int_nf.setMinimumIntegerDigits(digits);
+        int_nf_digits = digits;
+        return int_nf.format(num);
     }
 
     public static String nf(double num, int left, int right) {
-        return "";
-    }
-
-    public static String nf(int num, int left, int right) {
-        return "";
+        if ((float_nf != null) && (float_nf_left == left) && (float_nf_right == right) && !float_nf_commas) {
+            return float_nf.format(num);
+        }
+    
+        float_nf = NumberFormat.getInstance();
+        float_nf.setGroupingUsed(false);
+        float_nf_commas = false;
+    
+        if (left != 0) float_nf.setMinimumIntegerDigits(left);
+        if (right != 0) {
+            float_nf.setMinimumFractionDigits(right);
+            float_nf.setMaximumFractionDigits(right);
+        }
+        float_nf_left = left;
+        float_nf_right = right;
+        return float_nf.format(num);
     }
 
     public static String[] nf(double[] nums) {
-        return null;
-    }
-
-    public static String[] nf(int[] nums) {
-        return null;
+        String[] outgoing = new String[nums.length];
+        for (int i = 0; i < nums.length; i++) outgoing[i] = nf(nums[i]);
+        return outgoing;
     }
 
     public static String[] nf(double[] nums, int digits) {
-        return null;
+        return nf(nums, 0, digits);
     }
 
     public static String[] nf(int[] nums, int digits) {
-        return null;
+        String[] formatted = new String[nums.length];
+        for (int i = 0; i < formatted.length; i++) {
+            formatted[i] = nf(nums[i], digits);
+        }
+        return formatted;
     }
 
     public static String[] nf(double[] nums, int left, int right) {
-        return null;
-    }
-
-    public static String[] nf(int[] nums, int left, int right) {
-        return null;
+        String[] formatted = new String[nums.length];
+        for (int i = 0; i < formatted.length; i++) {
+            formatted[i] = nf(nums[i], left, right);
+        }
+        return formatted;
     }
 
     // [Data | String Functions | nfc()]

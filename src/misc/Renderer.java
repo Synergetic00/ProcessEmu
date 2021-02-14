@@ -150,6 +150,8 @@ public class Renderer {
 	public void scale(double amtX, double amtY) {
         gc.scale(amtX, amtY);
 	}
+    
+    double prevTransX = 0, prevTransY;
 
 	public void translate(double amtX, double amtY) {
         gc.translate(amtX, amtY);
