@@ -1,12 +1,13 @@
 package main;
 
-import static main.DynLoader.*;
+import misc.*;
+
+import static misc.DynLoader.*;
 import static utils.Constants.*;
 
 import java.io.File;
 import java.util.ArrayList;
 
-import javafx.animation.Animation;
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.scene.Group;
@@ -15,30 +16,25 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
-import javafx.scene.transform.Affine;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
     public static GraphicsContext gc;
-    public static ArrayList<App> apps;
-    public static Stage stageObj;
-    public static Animation animation;
-    public static float frameRate = 60;
+    public static ArrayList<AppTemplate> apps;
+    public static Stage stage;
 
-    public static void main(String[] args) {
-        launch(args);
-    }
+    public static void main(String[] args) { launch(args); }
 
     @Override
     public void start(Stage stage) throws Exception {
-        stageObj = stage;
+        Main.stage = stage;
         Group root = new Group();
         Scene scene = new Scene(root, Color.BLACK);
         Canvas canvas = new Canvas(WIDTH, HEIGHT);
         root.getChildren().add(canvas);
         gc = canvas.getGraphicsContext2D();
-        apps = new ArrayList<App>();
+        apps = new ArrayList<AppTemplate>();
         loadFolder(new File("src/programs"));
 
         scene.setOnKeyPressed(event -> { handleKeyPressed(event); });
@@ -61,19 +57,4 @@ public class Main extends Application {
         stage.setResizable(false);
         stage.show();
     }
-}
-
-class App {
-
-    String title, authour, description;
-
-    public App(String t, String a, String d) {
-        title = t; authour = a; description = d;
-    }
-
-    public void launch(GraphicsContext gc) throws Exception {
-        gc.setTransform(new Affine());
-        loadProgram("src/programs/"+title+".pde");
-    }
-
 }

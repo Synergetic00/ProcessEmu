@@ -1,4 +1,4 @@
-package main;
+package misc;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -30,6 +30,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
+import main.Main;
 
 public class DynLoader {
 
@@ -198,7 +199,7 @@ public class DynLoader {
         String appDescription = br.readLine().substring(2);
         br.close();
         fr.close();
-        Main.apps.add(new App(appTitle, appAuthour, appDescription));
+        Main.apps.add(new AppTemplate(appTitle, appAuthour, appDescription));
     }
     
     public static class StringJavaFileObject extends SimpleJavaFileObject {
