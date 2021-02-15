@@ -37,32 +37,6 @@ public class ColourUtils {
         }
     }
 
-    /*
-    public Color getColor(double rh, double gs, double bb, double alpha) {
-        switch (colorMode) {
-            case RGB: {
-                int red = (int) map(rh, 0, maxRH, 0, 255);
-                int green = (int) map(gs, 0, maxGS, 0, 255);
-                int blue = (int) map(bb, 0, maxBB, 0, 255);
-                double opacity = map(alpha, 0, maxAO, 0, 1);
-                return Color.rgb(red, green, blue, opacity);
-            }
-
-            case HSB: {
-                double hue = map(rh, 0, maxRH, 0, 359);
-                double saturation = map(gs, 0, maxGS, 0, 1);
-                double brightness = map(bb, 0, maxBB, 0, 1);
-                double opacity = map(alpha, 0, maxAO, 0, 1);
-                return Color.hsb(hue, saturation, brightness, opacity);
-            }
-
-            default: {
-                return Color.WHITE;
-            }
-        }
-    }
-    */
-
     public static double alpha(int encodedValue) {
         return (encodedValue >> 24) & 255;
     }

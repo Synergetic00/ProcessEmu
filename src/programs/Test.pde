@@ -1,19 +1,8 @@
-//talive
-//toTest
-
-PGraphics pg;
+//John Smith
+//Test description
 
 void setup() {
-  size(100, 100);
-  pg = createGraphics(40, 40);
-}
-
-void draw() {
-  pg.beginDraw();
-  pg.background(100,0,0);
-  pg.stroke(255);
-  pg.line(20, 20, mouseX, mouseY);
-  pg.endDraw();
-  image(pg, 9, 30); 
-  image(pg, 51, 30);
+    size(400,400);
+    fill(255,0,0);
+    rect(50,50,300,300);
 }
