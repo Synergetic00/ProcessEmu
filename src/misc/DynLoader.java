@@ -30,7 +30,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
-import main.Main;
+import main.*;
 
 public class DynLoader {
 

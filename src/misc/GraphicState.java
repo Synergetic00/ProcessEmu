@@ -3,7 +3,6 @@ package misc;
 public class GraphicState {
     
     public static double offsetX, offsetY;
-    public double screenW, screenH;
     public int width, height;
 
     public GraphicState() {}
@@ -12,5 +11,10 @@ public class GraphicState {
         offsetX = x;
         offsetY = y;
     }
+
+	public void setSize(int w, int h) {
+        width = w;
+        height = h;
+	}
 
 }

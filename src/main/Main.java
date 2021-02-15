@@ -23,6 +23,7 @@ public class Main extends Application {
     public static GraphicsContext gc;
     public static ArrayList<AppTemplate> apps;
     public static Stage stage;
+    public static int index = 0;
 
     public static void main(String[] args) { launch(args); }
 
@@ -36,6 +37,8 @@ public class Main extends Application {
         gc = canvas.getGraphicsContext2D();
         apps = new ArrayList<AppTemplate>();
         loadFolder(new File("src/programs"));
+        //apps.get(index).launch(gc);
+        apps.get(index).launch(gc);
 
         scene.setOnKeyPressed(event -> { handleKeyPressed(event); });
         scene.setOnKeyReleased(event -> { handleKeyReleased(event); });
