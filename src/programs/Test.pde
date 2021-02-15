@@ -1,10 +1,19 @@
-//A
-//A
+//talive
+//toTest
+
+PGraphics pg;
 
 void setup() {
-    color c = color(30,228,19);
-    size(640,360);
-    fill(c);
-    stroke(205,0,25);
-    rect(125,54,125,100);
+  size(100, 100);
+  pg = createGraphics(40, 40);
+}
+
+void draw() {
+  pg.beginDraw();
+  pg.background(100,0,0);
+  pg.stroke(255);
+  pg.line(20, 20, mouseX, mouseY);
+  pg.endDraw();
+  image(pg, 9, 30); 
+  image(pg, 51, 30);
 }

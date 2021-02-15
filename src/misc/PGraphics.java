@@ -569,11 +569,13 @@ public class PGraphics {
 
 	public void render(double x, double y) {
         gc.save();
+        pushMatrix();
         //System.out.println("Renderering");
         r.renderPos(x, y);
         for (CommandNode command : commands) {
             command.execute(r, x, y);
         }
+        popMatrix();
         gc.restore();
 	}
 
