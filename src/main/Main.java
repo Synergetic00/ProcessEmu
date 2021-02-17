@@ -37,7 +37,6 @@ public class Main extends Application {
         gc = canvas.getGraphicsContext2D();
         apps = new ArrayList<AppTemplate>();
         loadFolder(new File("src/programs"));
-        //apps.get(index).launch(gc);
         apps.get(index).launch(gc);
 
         scene.setOnKeyPressed(event -> { handleKeyPressed(event); });

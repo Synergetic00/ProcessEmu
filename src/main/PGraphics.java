@@ -35,6 +35,7 @@ public class PGraphics {
     }
 
     public void fill(int rh, int gs, int bb) {
+        System.out.println("filled");
         setFill(encodeColour(rh, gs, bb, 255));
     }
 

@@ -15,15 +15,15 @@ public class FXApp {
         this.gc = gc;
         g = new PGraphics(gc, this);
         size(100,100);
-        fill(255);
-        stroke(0);
+        //fill(255);
+        //stroke(0);
     }
 
     public void size(int w, int h) {
-        g.size(w, h);
+        //g.size(w, h);
         width = g.gs.width;
         height = g.gs.height; 
-        background(204);
+        //background(204);
     }
 
     public void fill(int rh, int gs, int bb) {

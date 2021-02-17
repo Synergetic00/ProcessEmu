@@ -162,7 +162,7 @@ public class DynLoader {
     public static String loadFile(String path) throws IOException {
 
         // Read the contents of the desired file into a complete java 'file'
-        byte[] header = Files.readAllBytes(Paths.get("src/main/Header.txt"));
+        byte[] header = Files.readAllBytes(Paths.get("src/misc/Header.txt"));
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         Charset charset = Charset.forName("UTF-8");
         String program = new String(header, charset).concat(new String(bytes, charset)).concat("\n\n}");
