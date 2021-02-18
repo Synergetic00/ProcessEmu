@@ -391,6 +391,8 @@ public class PGraphics extends PImage {
         if (primaryGraphics) {
             format = RGB;
         }
+
+        surface = new PSurface(this);
     }
 
     public void setContext(GraphicsContext context) {  // ignore
@@ -448,7 +450,7 @@ public class PGraphics extends PImage {
 		flush();
 
 		if (!primaryGraphics) {
-			loadPixels();
+			loadPixels(); //Hereeeee
 		}
 	}
 
@@ -3665,7 +3667,7 @@ public class PGraphics extends PImage {
 				sp = new SnapshotParameters();
 				sp.setTransform(Transform.scale(pixelDensity, pixelDensity));
 			}
-			snapshotImage = ((PSurface) surface).canvas.snapshot(sp, snapshotImage);
+			snapshotImage = surface.canvas.snapshot(sp, snapshotImage);
 			PixelReader pr = snapshotImage.getPixelReader();
 			pr.getPixels(0, 0, pixelWidth, pixelHeight, argbFormat, pixels, 0, pixelWidth);
 

@@ -8,8 +8,8 @@ import types.*;
 public class Renderer {
 
     GraphicsContext gc;
+    GraphicState gs;
     PGraphics pg;
-    public GraphicState gs;
     double rdrX, rdrY;
 
 	public Renderer(GraphicsContext gc, GraphicState gs, PGraphics pg) {

@@ -15,12 +15,16 @@ import types.*;
 public class FXApp {
 
     public static int platform;
+	public static String javaVersionName;
 	GraphicsContext gc;
     public PGraphics g;
     public int width, height;
 	public boolean keyRepeatEnabled;
 	public int frameCount;
 	public int pixelDensity;
+	public boolean focused;
+	public int displayWidth;
+	public int displayHeight;
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
@@ -93,9 +97,9 @@ public class FXApp {
     }
 
     public void handleMouseWheel(ScrollEvent scrollEvent) {
-        int count = (int) -(scrollEvent.getDeltaY() / scrollEvent.getMultiplierY());
-        MouseEvent event = new MouseEvent(count);
-        mouseWheel(event);
+        //int count = (int) -(scrollEvent.getDeltaY() / scrollEvent.getMultiplierY());
+        //MouseEvent event = new MouseEvent(count);
+        //mouseWheel(event);
     }
 
     public void handleKeyPressed(KeyEvent event) {
@@ -190,6 +194,69 @@ public class FXApp {
 
 	public static Object subset(String[] pathTokens, int i, int i2) {
 		return null;
+	}
+
+    public PGraphics createGraphics(int w, int h) {
+        PGraphics pg = new PGraphics(gc, this);
+        pg.setPrimary(false);
+        pg.setSize(w, h);
+        return pg;
+    }
+
+    public void image(PImage img, float a, float b) {
+        g.image(img, a, b);
+    }
+
+    public void image(PImage img, float a, float b, float c, float d) {
+        img.set(1, 1, 0xff00ff00);
+        g.image(img, a, b, c, d);
+    }
+
+	public void focusGained() {
+	}
+
+	public void focusLost() {
+	}
+
+	public void setSize(int intValue, int height2) {
+	}
+
+	public int sketchWidth() {
+		return 0;
+	}
+
+	public int sketchHeight() {
+		return 0;
+	}
+
+	public int sketchDisplay() {
+		return 0;
+	}
+
+	public boolean exitCalled() {
+		return false;
+	}
+
+	public void exit() {
+	}
+
+	public void frameMoved(int intValue, int intValue2) {
+	}
+
+	public static void hideMenuBar() {
+	}
+
+	public boolean sketchFullScreen() {
+		return false;
+	}
+
+	public void dispose() {
+	}
+
+	public void postEvent(MouseEvent mouseEvent) {
+	}
+
+	public void postEvent(event.KeyEvent keyEvent) {
 	}
 
 }
