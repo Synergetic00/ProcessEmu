@@ -9,6 +9,7 @@ import event.MouseEvent;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
+import javafx.scene.paint.Color;
 import types.*;
 
 public class FXApp {
@@ -23,25 +24,24 @@ public class FXApp {
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
-        //g = new PGraphics(gc, this);
-        size(100,100);
+        g = new PGraphics(gc, this);
+        g.setPrimary(true);
         //fill(255);
         //stroke(0);
     }
 
     public void size(int w, int h) {
-        //g.size(w, h);
-        //width = g.gs.width;
-        //height = g.gs.height; 
-        //background(204);
+        g.setSize(w, h);
     }
 
     public void fill(int rh, int gs, int bb) {
-        g.fill(rh, gs, bb);
+        gc.setFill(Color.rgb(rh, gs, bb));
+        //g.fill(rh, gs, bb);
     }
 
     public void rect(int x, int y, int w, int h) {
-        System.out.println("called rect");
+        //gc.fillRect(x, y, w, h);
+        g.rect(x, y, w, h);
     }
 
     // Methods to be overwritten

@@ -2,10 +2,11 @@ package programs;
 
 import javafx.stage.Stage;
 import javafx.scene.canvas.GraphicsContext;
-import java.util.*;
-import main.FXApp;
 import javafx.scene.paint.Color;
+import java.util.*;
+import main.*;
 import utils.*;
+import data.*;
 import misc.*;
 import types.*;
 import event.*;

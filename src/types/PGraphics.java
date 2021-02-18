@@ -192,6 +192,8 @@ public class PGraphics extends PImage {
     public int ellipseMode;
     public int shapeMode;
     public int imageMode = CORNER;
+
+    boolean hasFill;
     
     public PFont textFont;
     public int textAlign = LEFT;
@@ -371,7 +373,11 @@ public class PGraphics extends PImage {
 
     // End Variables
 
-    public PGraphics() {}
+    public PGraphics(GraphicsContext gc, FXApp parent) {
+        context = gc;
+        this.parent = parent;
+        defaultSettings();
+    }
 
     public void setParent(FXApp parent) {  // ignore
         this.parent = parent;
@@ -385,6 +391,10 @@ public class PGraphics extends PImage {
         if (primaryGraphics) {
             format = RGB;
         }
+    }
+
+    public void setContext(GraphicsContext context) {  // ignore
+        this.context = context;
     }
 
     public void setPath(String path) {  // ignore
@@ -503,6 +513,8 @@ public class PGraphics extends PImage {
 
     protected void defaultSettings() {  // ignore
         colorMode(RGB, 255);
+        fill = true;
+        stroke = true;
         fill(255);
         stroke(0);
 
@@ -1378,13 +1390,15 @@ public class PGraphics extends PImage {
     }
 
     protected void rectImpl(float x1, float y1, float x2, float y2) {
-		beforeContextDraw();
+        System.out.println(x1+" "+y1+" "+(x2 - x1)+" "+(y2 - y1)+" ");
+		/*beforeContextDraw();
 		if (drawingThinLines()) {
 			x1 += 0.5f;
 			x2 += 0.5f;
 			y1 += 0.5f;
 			y2 += 0.5f;
-		}
+		}*/
+        System.out.println(fill);
 		if (fill) context.fillRect(x1, y1, x2 - x1, y2 - y1);
 		if (stroke) context.strokeRect(x1, y1, x2 - x1, y2 - y1);
 	}
@@ -3318,6 +3332,7 @@ public class PGraphics extends PImage {
     }
 
     protected void strokeFromCalc() {
+        stroke = true;
 		strokeFromCalcSuper();
 		context.setStroke(new Color(strokeR, strokeG, strokeB, strokeA));
 	}
@@ -3393,6 +3408,7 @@ public class PGraphics extends PImage {
     }
 
 	public void fill(int rgb) {
+        fill = true;
         colorCalc(rgb);
         fillFromCalc();
     }
@@ -3423,6 +3439,7 @@ public class PGraphics extends PImage {
     }
 
     protected void fillFromCalc() {
+        fill = true;
 		fillFromCalcSuper();
 		context.setFill(new Color(fillR, fillG, fillB, fillA));
 	}
