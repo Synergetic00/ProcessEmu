@@ -21,6 +21,8 @@ import com.sun.javafx.geom.Path2D;
 import com.sun.javafx.geom.PathIterator;
 import com.sun.javafx.geom.Shape;
 
+import static java.awt.Font.*;
+
 import java.nio.IntBuffer;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -39,7 +41,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.text.Font;
+import javafx.scene.text.java.awt.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
@@ -1357,7 +1359,7 @@ public class PGraphics extends PImage {
             float temp = b; b = d; d = temp;
         }
 
-        float maxRounding = FXApp.min((c - a) / 2, (d - b) / 2);
+        float maxRounding = (float) min((c - a) / 2, (d - b) / 2);
         if (tl > maxRounding) tl = maxRounding;
         if (tr > maxRounding) tr = maxRounding;
         if (br > maxRounding) br = maxRounding;
@@ -1523,10 +1525,10 @@ public class PGraphics extends PImage {
 		}
 
 		if (fill) {
-			context.fillArc(x, y, w, h, degrees(start), FXApp.degrees(sweep), fillMode);
+			context.fillArc(x, y, w, h, degrees(start), degrees(sweep), fillMode);
 		}
 		if (stroke) {
-			context.strokeArc(x, y, w, h, degrees(start), FXApp.degrees(sweep), strokeMode);
+			context.strokeArc(x, y, w, h, degrees(start), degrees(sweep), strokeMode);
 		}
 	}
 
@@ -2082,17 +2084,17 @@ public class PGraphics extends PImage {
     }
 
 	protected PFont createDefaultFont(float size) {
-        Font baseFont = new Font("Lucida Sans", Font.PLAIN, 1);
+        java.awt.Font baseFont = new java.awt.Font("Lucida Sans", java.awt.Font.PLAIN, 1);
         return createFont(baseFont, size, true, null, false);
     }
 
-	protected FontCache fontCache = new FontCache();
+    protected FontCache fontCache = new FontCache();
 
 	protected FontInfo textFontInfo;
 
     static final class FontInfo {
 		static final int MAX_CACHED_COLORS_PER_FONT = 1 << 16;
-		Font font;
+		java.awt.Font font;
 		float ascent;
 		float descent;
 		Map<Integer, PImage[]> tintCache;
@@ -2135,7 +2137,7 @@ public class PGraphics extends PImage {
 			cache.put(key, fontInfo);
 		}
 
-		FontInfo createFontInfo(Font font) {
+		FontInfo createFontInfo(java.awt.Font font) {
 			FontInfo result = new FontInfo();
 			result.font = font;
 			if (font != null) {
@@ -2173,14 +2175,44 @@ public class PGraphics extends PImage {
 
     protected PFont createFont(String name, float size,
 			boolean smooth, char[] charset) {
-		PFont font = super.createFont(name, size, smooth, charset);
+		PFont font = createFontSuper(name, size, smooth, charset);
 		if (font.isStream()) {
 			fontCache.nameToFilename.put(font.getName(), name);
 		}
 		return font;
 	}
 
-    private PFont createFont(Font baseFont, float size,
+    protected PFont createFontSuper(String name, float size,
+                             boolean smooth, char[] charset) {
+    String lowerName = name.toLowerCase();
+    java.awt.Font baseFont = null;
+
+    try {
+      InputStream stream = null;
+      if (lowerName.endsWith(".otf") || lowerName.endsWith(".ttf")) {
+        stream = parent.createInput(name);
+        if (stream == null) {
+          System.err.println("The font \"" + name + "\" " +
+                             "is missing or inaccessible, make sure " +
+                             "the URL is valid or that the file has been " +
+                             "added to your sketch and is readable.");
+          return null;
+        }
+        baseFont = java.awt.Font.createFont(java.awt.Font.TRUETYPE_FONT, parent.createInput(name));
+
+      } else {
+        baseFont = PFont.findFont(name);
+      }
+      return createFont(baseFont, size, smooth, charset, stream != null);
+
+    } catch (Exception e) {
+      System.err.println("Problem with createFont(\"" + name + "\")");
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+    private PFont createFont(java.awt.Font baseFont, float size,
             boolean smooth, char[] charset, boolean stream) {
         return new PFont(baseFont.deriveFont(size * parent.pixelDensity),
                 smooth, charset, stream,
@@ -2293,18 +2325,18 @@ public class PGraphics extends PImage {
 
 		textFontInfo = fontCache.get(fontName, size);
 		if (textFontInfo == null) {
-			Font font = null;
+			java.awt.Font font = null;
 
 			if (which.isStream()) {
 				String filename = fontCache.nameToFilename.get(fontName);
-				font = Font.loadFont(parent.createInput(filename), size);
+				font = java.awt.Font.loadFont(parent.createInput(filename), size);
 			}
 
 			if (font == null) {
 				// Look up font name
-				font = new Font(fontName, size);
+				font = new java.awt.Font(fontName, size);
 				if (!fontName.equalsIgnoreCase(font.getName())) {
-					font = new Font(fontPsName, size);
+					font = new java.awt.Font(fontPsName, size);
 					if (!fontPsName.equalsIgnoreCase(font.getName())) {
 						font = null; // Done with it
 					}
@@ -2312,7 +2344,7 @@ public class PGraphics extends PImage {
 			}
 
 			if (font == null && which.getNative() != null) {
-				font = new Font(size);
+				font = new java.awt.Font(size);
 			}
 
 			textFontInfo = fontCache.createFontInfo(font);
@@ -3114,12 +3146,16 @@ public class PGraphics extends PImage {
     }
 
 	public void strokeWeight(float weight) {
-		super.strokeWeight(weight);
+		strokeWeightSuper(weight);
 		context.setLineWidth(weight);
 	}
 
+    public void strokeWeightSuper(float weight) {
+        strokeWeight = weight;
+    }
+
 	public void strokeJoin(int join) {
-		super.strokeJoin(join);
+		strokeJoinSuper(join);
 		if (strokeJoin == MITER) {
 			context.setLineJoin(StrokeLineJoin.MITER);
 		} else if (strokeJoin == ROUND) {
@@ -3129,8 +3165,12 @@ public class PGraphics extends PImage {
 		}
 	}
 
+    public void strokeJoinSuper(int join) {
+        strokeJoin = join;
+    }
+
 	public void strokeCap(int cap) {
-		super.strokeCap(cap);
+		strokeCapSuper(cap);
 		if (strokeCap == ROUND) {
 			context.setLineCap(StrokeLineCap.ROUND);
 		} else if (strokeCap == PROJECT) {
@@ -3139,6 +3179,10 @@ public class PGraphics extends PImage {
 			context.setLineCap(StrokeLineCap.BUTT);
 		}
 	}
+
+    public void strokeCapSuper(int cap) {
+        strokeCap = cap;
+    }
 
 	public void noStroke() {
         stroke = false;
@@ -3505,7 +3549,7 @@ public class PGraphics extends PImage {
 				sp = new SnapshotParameters();
 				sp.setTransform(Transform.scale(pixelDensity, pixelDensity));
 			}
-			snapshotImage = ((PSurfaceFX) surface).canvas.snapshot(sp, snapshotImage);
+			snapshotImage = ((PSurface) surface).canvas.snapshot(sp, snapshotImage);
 			PixelReader pr = snapshotImage.getPixelReader();
 			pr.getPixels(0, 0, pixelWidth, pixelHeight, argbFormat, pixels, 0, pixelWidth);
 
@@ -3778,7 +3822,7 @@ public class PGraphics extends PImage {
 
 	public final float hue(int rgb) {
         if (rgb != cacheHsbKey) {
-            Color.RGBtoHSB((rgb >> 16) & 0xff, (rgb >> 8) & 0xff,
+            java.awt.Color.RGBtoHSB((rgb >> 16) & 0xff, (rgb >> 8) & 0xff,
                     rgb & 0xff, cacheHsbValue);
             cacheHsbKey = rgb;
         }
@@ -3787,7 +3831,7 @@ public class PGraphics extends PImage {
 
 	public final float saturation(int rgb) {
         if (rgb != cacheHsbKey) {
-            Color.RGBtoHSB((rgb >> 16) & 0xff, (rgb >> 8) & 0xff,
+            java.awt.Color.RGBtoHSB((rgb >> 16) & 0xff, (rgb >> 8) & 0xff,
                     rgb & 0xff, cacheHsbValue);
             cacheHsbKey = rgb;
         }
@@ -3796,7 +3840,7 @@ public class PGraphics extends PImage {
 
 	public final float brightness(int rgb) {
         if (rgb != cacheHsbKey) {
-            Color.RGBtoHSB((rgb >> 16) & 0xff, (rgb >> 8) & 0xff,
+            java.awt.Color.RGBtoHSB((rgb >> 16) & 0xff, (rgb >> 8) & 0xff,
                     rgb & 0xff, cacheHsbValue);
             cacheHsbKey = rgb;
         }
@@ -3824,10 +3868,10 @@ public class PGraphics extends PImage {
             float g2 = (c2 >> 8) & 0xff;
             float b2 = c2 & 0xff;
 
-            return ((FXApp.round(a1 + (a2-a1)*amt) << 24) |
-                    (FXApp.round(r1 + (r2-r1)*amt) << 16) |
-                    (FXApp.round(g1 + (g2-g1)*amt) << 8) |
-                    (FXApp.round(b1 + (b2-b1)*amt)));
+            return ((round(a1 + (a2-a1)*amt) << 24) |
+                    (round(r1 + (r2-r1)*amt) << 16) |
+                    (round(g1 + (g2-g1)*amt) << 8) |
+                    (round(b1 + (b2-b1)*amt)));
 
         } else if (mode == HSB) {
             if (lerpColorHSB1 == null) {
@@ -3837,18 +3881,18 @@ public class PGraphics extends PImage {
 
             float a1 = (c1 >> 24) & 0xff;
             float a2 = (c2 >> 24) & 0xff;
-            int alfa = (FXApp.round(a1 + (a2-a1)*amt)) << 24;
+            int alfa = (round(a1 + (a2-a1)*amt)) << 24;
 
-            Color.RGBtoHSB((c1 >> 16) & 0xff, (c1 >> 8) & 0xff, c1 & 0xff,
+            java.awt.Color.RGBtoHSB((c1 >> 16) & 0xff, (c1 >> 8) & 0xff, c1 & 0xff,
                     lerpColorHSB1);
-            Color.RGBtoHSB((c2 >> 16) & 0xff, (c2 >> 8) & 0xff, c2 & 0xff,
+            java.awt.Color.RGBtoHSB((c2 >> 16) & 0xff, (c2 >> 8) & 0xff, c2 & 0xff,
                     lerpColorHSB2);
         
-            float ho = FXApp.lerp(lerpColorHSB1[0], lerpColorHSB2[0], amt);
-            float so = FXApp.lerp(lerpColorHSB1[1], lerpColorHSB2[1], amt);
-            float bo = FXApp.lerp(lerpColorHSB1[2], lerpColorHSB2[2], amt);
+            float ho = (float) lerp(lerpColorHSB1[0], lerpColorHSB2[0], amt);
+            float so = (float) lerp(lerpColorHSB1[1], lerpColorHSB2[1], amt);
+            float bo = (float) lerp(lerpColorHSB1[2], lerpColorHSB2[2], amt);
 
-            return alfa | (Color.HSBtoRGB(ho, so, bo) & 0xFFFFFF);
+            return alfa | (java.awt.Color.HSBtoRGB(ho, so, bo) & 0xFFFFFF);
         }
         return 0;
     }
@@ -3986,7 +4030,7 @@ public class PGraphics extends PImage {
         PImage target = asyncImageSaver.getAvailableTarget(pixelWidth, pixelHeight,
                 format);
         if (target == null) return false;
-        int count = FXApp.min(pixels.length, target.pixels.length);
+        int count = min(pixels.length, target.pixels.length);
         System.arraycopy(pixels, 0, target.pixels, 0, count);
         asyncImageSaver.saveTargetAsync(this, target, parent.sketchFile(filename));
 
@@ -4080,7 +4124,7 @@ public class PGraphics extends PImage {
                 // 8 cores - 7 save threads - wait 1/6 of save time
                 long avgTimePerFrame = avgNanos / (Math.max(1, TARGET_COUNT - 1));
                 long now = System.nanoTime();
-                long delay = FXApp.round((lastTime + avgTimePerFrame - now) / 1e6f);
+                long delay = round((lastTime + avgTimePerFrame - now) / 1e6f);
                 try {
                     if (delay > 0) Thread.sleep(delay);
                 } catch (InterruptedException e) { }
@@ -4139,4 +4183,7 @@ public class PGraphics extends PImage {
             }
         }
     }
+
+	public void box(float f) {
+	}
 }

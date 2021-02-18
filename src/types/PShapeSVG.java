@@ -28,6 +28,10 @@ import static java.awt.Font.BOLD;
 import static java.awt.Font.ITALIC;
 import static java.awt.Font.PLAIN;
 
+import static utils.DataUtils.*;
+import static utils.MathUtils.*;
+import static utils.Constants.*;
+
 // TODO replace these with PMatrix2D
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
@@ -36,6 +40,10 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
+import data.IntDict;
+import data.XML;
+import main.FXApp;
 
 
 /**
@@ -146,7 +154,7 @@ public class PShapeSVG extends PShape {
 
       String viewBoxStr = properties.getString("viewBox");
       if (viewBoxStr != null) {
-        float[] viewBox = PApplet.parseFloat(PApplet.splitTokens(viewBoxStr));
+        float[] viewBox = parseFloat(splitTokens(viewBoxStr));
         if (unitWidth == null || unitHeight == null) {
           // Not proper parsing of the viewBox, but will cover us for cases where
           // the width and height of the object is not specified.
@@ -181,7 +189,7 @@ public class PShapeSVG extends PShape {
 
       svgWidth = width;
       svgHeight = height;
-      svgSizeXY = PApplet.sqrt((svgWidth*svgWidth + svgHeight*svgHeight)/2.0f);
+      svgSizeXY = (float) sqrt((svgWidth * svgWidth + svgHeight * svgHeight) / 2.0f);
     }
 
     element = properties;
@@ -189,9 +197,9 @@ public class PShapeSVG extends PShape {
     // @#$(* adobe illustrator mangles names of objects when re-saving
     if (name != null) {
       while (true) {
-        String[] m = PApplet.match(name, "_x([A-Za-z0-9]{2})_");
+        String[] m = match(name, "_x([A-Za-z0-9]{2})_");
         if (m == null) break;
-        char repair = (char) PApplet.unhex(m[1]);
+        char repair = (char) unhex(m[1]);
         name = name.replace(m[0], "" + repair);
       }
     }
@@ -227,8 +235,8 @@ public class PShapeSVG extends PShape {
       stroke = false;
       strokeColor = 0xff000000;
       strokeWeight = 1;
-      strokeCap = PConstants.SQUARE;  // equivalent to BUTT in svg spec
-      strokeJoin = PConstants.MITER;
+      strokeCap = SQUARE;  // equivalent to BUTT in svg spec
+      strokeJoin = MITER;
       strokeGradient = null;
 //      strokeGradientPaint = null;
       strokeName = null;
@@ -293,7 +301,7 @@ public class PShapeSVG extends PShape {
       PShape kid = parseChild(elem);
       if (kid != null) addChild(kid);
     }
-    children = (PShape[]) PApplet.subset(children, 0, childCount);
+    children = (PShape[]) subset(children, 0, childCount);
   }
 
 
@@ -490,11 +498,11 @@ public class PShapeSVG extends PShape {
         vertices[i][X] = Float.parseFloat(matcher.group(1));
         vertices[i][Y] = Float.parseFloat(matcher.group(5));
       }
-//      String[] pointsBuffer = PApplet.splitTokens(pointsAttr);
+//      String[] pointsBuffer = splitTokens(pointsAttr);
 //      vertexCount = pointsBuffer.length;
 //      vertices = new float[vertexCount][2];
 //      for (int i = 0; i < vertexCount; i++) {
-//        String pb[] = PApplet.splitTokens(pointsBuffer[i], ", \t\r\n");
+//        String pb[] = splitTokens(pointsBuffer[i], ", \t\r\n");
 //        vertices[i][X] = Float.parseFloat(pb[0]);
 //        vertices[i][Y] = Float.parseFloat(pb[1]);
 //      }
@@ -507,7 +515,7 @@ public class PShapeSVG extends PShape {
     kind = 0;
 
     String pathData = element.getString("d");
-    if (pathData == null || PApplet.trim(pathData).length() == 0) {
+    if (pathData == null || trim(pathData).length() == 0) {
       return;
     }
     char[] pathDataChars = pathData.toCharArray();
@@ -556,7 +564,7 @@ public class PShapeSVG extends PShape {
 
     // use whitespace constant to get rid of extra spaces and CR or LF
     String[] pathTokens =
-      PApplet.splitTokens(pathBuffer.toString(), "|" + WHITESPACE);
+      splitTokens(pathBuffer.toString(), "|" + WHITESPACE);
     vertices = new float[pathTokens.length][2];
     vertexCodes = new int[pathTokens.length];
 
@@ -583,8 +591,8 @@ public class PShapeSVG extends PShape {
       switch (c) {
 
       case 'M':  // M - move to (absolute)
-        cx = PApplet.parseFloat(pathTokens[i + 1]);
-        cy = PApplet.parseFloat(pathTokens[i + 2]);
+        cx = parseFloat(pathTokens[i + 1]);
+        cy = parseFloat(pathTokens[i + 2]);
         movetoX = cx;
         movetoY = cy;
         parsePathMoveto(cx, cy);
@@ -593,8 +601,8 @@ public class PShapeSVG extends PShape {
         break;
 
       case 'm':  // m - move to (relative)
-        cx = cx + PApplet.parseFloat(pathTokens[i + 1]);
-        cy = cy + PApplet.parseFloat(pathTokens[i + 2]);
+        cx = cx + parseFloat(pathTokens[i + 1]);
+        cy = cy + parseFloat(pathTokens[i + 2]);
         movetoX = cx;
         movetoY = cy;
         parsePathMoveto(cx, cy);
@@ -603,53 +611,53 @@ public class PShapeSVG extends PShape {
         break;
 
       case 'L':
-        cx = PApplet.parseFloat(pathTokens[i + 1]);
-        cy = PApplet.parseFloat(pathTokens[i + 2]);
+        cx = parseFloat(pathTokens[i + 1]);
+        cy = parseFloat(pathTokens[i + 2]);
         parsePathLineto(cx, cy);
         i += 3;
         break;
 
       case 'l':
-        cx = cx + PApplet.parseFloat(pathTokens[i + 1]);
-        cy = cy + PApplet.parseFloat(pathTokens[i + 2]);
+        cx = cx + parseFloat(pathTokens[i + 1]);
+        cy = cy + parseFloat(pathTokens[i + 2]);
         parsePathLineto(cx, cy);
         i += 3;
         break;
 
         // horizontal lineto absolute
       case 'H':
-        cx = PApplet.parseFloat(pathTokens[i + 1]);
+        cx = parseFloat(pathTokens[i + 1]);
         parsePathLineto(cx, cy);
         i += 2;
         break;
 
         // horizontal lineto relative
       case 'h':
-        cx = cx + PApplet.parseFloat(pathTokens[i + 1]);
+        cx = cx + parseFloat(pathTokens[i + 1]);
         parsePathLineto(cx, cy);
         i += 2;
         break;
 
       case 'V':
-        cy = PApplet.parseFloat(pathTokens[i + 1]);
+        cy = parseFloat(pathTokens[i + 1]);
         parsePathLineto(cx, cy);
         i += 2;
         break;
 
       case 'v':
-        cy = cy + PApplet.parseFloat(pathTokens[i + 1]);
+        cy = cy + parseFloat(pathTokens[i + 1]);
         parsePathLineto(cx, cy);
         i += 2;
         break;
 
         // C - curve to (absolute)
       case 'C': {
-        float ctrlX1 = PApplet.parseFloat(pathTokens[i + 1]);
-        float ctrlY1 = PApplet.parseFloat(pathTokens[i + 2]);
-        float ctrlX2 = PApplet.parseFloat(pathTokens[i + 3]);
-        float ctrlY2 = PApplet.parseFloat(pathTokens[i + 4]);
-        float endX = PApplet.parseFloat(pathTokens[i + 5]);
-        float endY = PApplet.parseFloat(pathTokens[i + 6]);
+        float ctrlX1 = parseFloat(pathTokens[i + 1]);
+        float ctrlY1 = parseFloat(pathTokens[i + 2]);
+        float ctrlX2 = parseFloat(pathTokens[i + 3]);
+        float ctrlY2 = parseFloat(pathTokens[i + 4]);
+        float endX = parseFloat(pathTokens[i + 5]);
+        float endY = parseFloat(pathTokens[i + 6]);
         parsePathCurveto(ctrlX1, ctrlY1, ctrlX2, ctrlY2, endX, endY);
         cx = endX;
         cy = endY;
@@ -660,12 +668,12 @@ public class PShapeSVG extends PShape {
 
         // c - curve to (relative)
       case 'c': {
-        float ctrlX1 = cx + PApplet.parseFloat(pathTokens[i + 1]);
-        float ctrlY1 = cy + PApplet.parseFloat(pathTokens[i + 2]);
-        float ctrlX2 = cx + PApplet.parseFloat(pathTokens[i + 3]);
-        float ctrlY2 = cy + PApplet.parseFloat(pathTokens[i + 4]);
-        float endX = cx + PApplet.parseFloat(pathTokens[i + 5]);
-        float endY = cy + PApplet.parseFloat(pathTokens[i + 6]);
+        float ctrlX1 = cx + parseFloat(pathTokens[i + 1]);
+        float ctrlY1 = cy + parseFloat(pathTokens[i + 2]);
+        float ctrlX2 = cx + parseFloat(pathTokens[i + 3]);
+        float ctrlY2 = cy + parseFloat(pathTokens[i + 4]);
+        float endX = cx + parseFloat(pathTokens[i + 5]);
+        float endY = cy + parseFloat(pathTokens[i + 6]);
         parsePathCurveto(ctrlX1, ctrlY1, ctrlX2, ctrlY2, endX, endY);
         cx = endX;
         cy = endY;
@@ -699,10 +707,10 @@ public class PShapeSVG extends PShape {
           ctrlX = px + (px - ppx);
           ctrlY = py + (py - ppy);
         }
-        float ctrlX2 = PApplet.parseFloat(pathTokens[i + 1]);
-        float ctrlY2 = PApplet.parseFloat(pathTokens[i + 2]);
-        float endX = PApplet.parseFloat(pathTokens[i + 3]);
-        float endY = PApplet.parseFloat(pathTokens[i + 4]);
+        float ctrlX2 = parseFloat(pathTokens[i + 1]);
+        float ctrlY2 = parseFloat(pathTokens[i + 2]);
+        float endX = parseFloat(pathTokens[i + 3]);
+        float endY = parseFloat(pathTokens[i + 4]);
         parsePathCurveto(ctrlX, ctrlY, ctrlX2, ctrlY2, endX, endY);
         cx = endX;
         cy = endY;
@@ -724,10 +732,10 @@ public class PShapeSVG extends PShape {
           ctrlX = px + (px - ppx);
           ctrlY = py + (py - ppy);
         }
-        float ctrlX2 = cx + PApplet.parseFloat(pathTokens[i + 1]);
-        float ctrlY2 = cy + PApplet.parseFloat(pathTokens[i + 2]);
-        float endX = cx + PApplet.parseFloat(pathTokens[i + 3]);
-        float endY = cy + PApplet.parseFloat(pathTokens[i + 4]);
+        float ctrlX2 = cx + parseFloat(pathTokens[i + 1]);
+        float ctrlY2 = cy + parseFloat(pathTokens[i + 2]);
+        float endX = cx + parseFloat(pathTokens[i + 3]);
+        float endY = cy + parseFloat(pathTokens[i + 4]);
         parsePathCurveto(ctrlX, ctrlY, ctrlX2, ctrlY2, endX, endY);
         cx = endX;
         cy = endY;
@@ -744,10 +752,10 @@ public class PShapeSVG extends PShape {
       // to draw a polybézier. At the end of the command, the new current point
       // becomes the final (x,y) coordinate pair used in the polybézier.
       case 'Q': {
-        ctrlX = PApplet.parseFloat(pathTokens[i + 1]);
-        ctrlY = PApplet.parseFloat(pathTokens[i + 2]);
-        float endX = PApplet.parseFloat(pathTokens[i + 3]);
-        float endY = PApplet.parseFloat(pathTokens[i + 4]);
+        ctrlX = parseFloat(pathTokens[i + 1]);
+        ctrlY = parseFloat(pathTokens[i + 2]);
+        float endX = parseFloat(pathTokens[i + 3]);
+        float endY = parseFloat(pathTokens[i + 4]);
         //parsePathQuadto(cx, cy, ctrlX, ctrlY, endX, endY);
         parsePathQuadto(ctrlX, ctrlY, endX, endY);
         cx = endX;
@@ -759,10 +767,10 @@ public class PShapeSVG extends PShape {
 
       // q - quadratic curve to (relative)
       case 'q': {
-        ctrlX = cx + PApplet.parseFloat(pathTokens[i + 1]);
-        ctrlY = cy + PApplet.parseFloat(pathTokens[i + 2]);
-        float endX = cx + PApplet.parseFloat(pathTokens[i + 3]);
-        float endY = cy + PApplet.parseFloat(pathTokens[i + 4]);
+        ctrlX = cx + parseFloat(pathTokens[i + 1]);
+        ctrlY = cy + parseFloat(pathTokens[i + 2]);
+        float endX = cx + parseFloat(pathTokens[i + 3]);
+        float endY = cy + parseFloat(pathTokens[i + 4]);
         //parsePathQuadto(cx, cy, ctrlX, ctrlY, endX, endY);
         parsePathQuadto(ctrlX, ctrlY, endX, endY);
         cx = endX;
@@ -790,8 +798,8 @@ public class PShapeSVG extends PShape {
           ctrlX = px + (px - ppx);
           ctrlY = py + (py - ppy);
         }
-        float endX = PApplet.parseFloat(pathTokens[i + 1]);
-        float endY = PApplet.parseFloat(pathTokens[i + 2]);
+        float endX = parseFloat(pathTokens[i + 1]);
+        float endY = parseFloat(pathTokens[i + 2]);
         //parsePathQuadto(cx, cy, ctrlX, ctrlY, endX, endY);
         parsePathQuadto(ctrlX, ctrlY, endX, endY);
         cx = endX;
@@ -814,8 +822,8 @@ public class PShapeSVG extends PShape {
           ctrlX = px + (px - ppx);
           ctrlY = py + (py - ppy);
         }
-        float endX = cx + PApplet.parseFloat(pathTokens[i + 1]);
-        float endY = cy + PApplet.parseFloat(pathTokens[i + 2]);
+        float endX = cx + parseFloat(pathTokens[i + 1]);
+        float endY = cy + parseFloat(pathTokens[i + 2]);
         //parsePathQuadto(cx, cy, ctrlX, ctrlY, endX, endY);
         parsePathQuadto(ctrlX, ctrlY, endX, endY);
         cx = endX;
@@ -827,13 +835,13 @@ public class PShapeSVG extends PShape {
 
       // A - elliptical arc to (absolute)
       case 'A': {
-        float rx = PApplet.parseFloat(pathTokens[i + 1]);
-        float ry = PApplet.parseFloat(pathTokens[i + 2]);
-        float angle = PApplet.parseFloat(pathTokens[i + 3]);
-        boolean fa = PApplet.parseFloat(pathTokens[i + 4]) != 0;
-        boolean fs = PApplet.parseFloat(pathTokens[i + 5]) != 0;
-        float endX = PApplet.parseFloat(pathTokens[i + 6]);
-        float endY = PApplet.parseFloat(pathTokens[i + 7]);
+        float rx = parseFloat(pathTokens[i + 1]);
+        float ry = parseFloat(pathTokens[i + 2]);
+        float angle = parseFloat(pathTokens[i + 3]);
+        boolean fa = parseFloat(pathTokens[i + 4]) != 0;
+        boolean fs = parseFloat(pathTokens[i + 5]) != 0;
+        float endX = parseFloat(pathTokens[i + 6]);
+        float endY = parseFloat(pathTokens[i + 7]);
         parsePathArcto(cx, cy, rx, ry, angle, fa, fs, endX, endY);
         cx = endX;
         cy = endY;
@@ -844,13 +852,13 @@ public class PShapeSVG extends PShape {
 
       // a - elliptical arc to (relative)
       case 'a': {
-        float rx = PApplet.parseFloat(pathTokens[i + 1]);
-        float ry = PApplet.parseFloat(pathTokens[i + 2]);
-        float angle = PApplet.parseFloat(pathTokens[i + 3]);
-        boolean fa = PApplet.parseFloat(pathTokens[i + 4]) != 0;
-        boolean fs = PApplet.parseFloat(pathTokens[i + 5]) != 0;
-        float endX = cx + PApplet.parseFloat(pathTokens[i + 6]);
-        float endY = cy + PApplet.parseFloat(pathTokens[i + 7]);
+        float rx = parseFloat(pathTokens[i + 1]);
+        float ry = parseFloat(pathTokens[i + 2]);
+        float angle = parseFloat(pathTokens[i + 3]);
+        boolean fa = parseFloat(pathTokens[i + 4]) != 0;
+        boolean fs = parseFloat(pathTokens[i + 5]) != 0;
+        float endX = cx + parseFloat(pathTokens[i + 6]);
+        float endY = cy + parseFloat(pathTokens[i + 7]);
         parsePathArcto(cx, cy, rx, ry, angle, fa, fs, endX, endY);
         cx = endX;
         cy = endY;
@@ -872,9 +880,9 @@ public class PShapeSVG extends PShape {
 
       default:
         String parsed =
-          PApplet.join(PApplet.subset(pathTokens, 0, i), ",");
+          join(subset(pathTokens, 0, i), ",");
         String unparsed =
-          PApplet.join(PApplet.subset(pathTokens, i), ",");
+          join(subset(pathTokens, i), ",");
         System.err.println("parsed: " + parsed);
         System.err.println("unparsed: " + unparsed);
         throw new RuntimeException("shape command not handled: " + pathTokens[i]);
@@ -886,7 +894,7 @@ public class PShapeSVG extends PShape {
 
 //      private void parsePathCheck(int num) {
 //        if (vertexCount + num-1 >= vertices.length) {
-//          //vertices = (float[][]) PApplet.expand(vertices);
+//          //vertices = (float[][]) (float) expand(vertices);
 //          float[][] temp = new float[vertexCount << 1][2];
 //          System.arraycopy(vertices, 0, temp, 0, vertexCount);
 //          vertices = temp;
@@ -895,7 +903,7 @@ public class PShapeSVG extends PShape {
 
   private void parsePathVertex(float x, float y) {
     if (vertexCount == vertices.length) {
-      //vertices = (float[][]) PApplet.expand(vertices);
+      //vertices = (float[][]) (float) expand(vertices);
       float[][] temp = new float[vertexCount << 1][2];
       System.arraycopy(vertices, 0, temp, 0, vertexCount);
       vertices = temp;
@@ -908,7 +916,7 @@ public class PShapeSVG extends PShape {
 
   private void parsePathCode(int what) {
     if (vertexCodeCount == vertexCodes.length) {
-      vertexCodes = PApplet.expand(vertexCodes);
+      vertexCodes = expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = what;
   }
@@ -976,10 +984,10 @@ public class PShapeSVG extends PShape {
     if (x1 == x2 && y1 == y2) return;
     if (rx == 0 || ry == 0) { parsePathLineto(x2, y2);  return; }
 
-    rx = PApplet.abs(rx);  ry = PApplet.abs(ry);
+    rx = (float) abs(rx);  ry = (float) abs(ry);
 
-    float phi = PApplet.radians(((angle % 360) + 360) % 360);
-    float cosPhi = PApplet.cos(phi),  sinPhi = PApplet.sin(phi);
+    float phi = (float) radians(((angle % 360) + 360) % 360);
+    float cosPhi = (float) cos(phi),  sinPhi = (float) sin(phi);
 
     float x1r = ( cosPhi * (x1 - x2) + sinPhi * (y1 - y2)) / 2;
     float y1r = (-sinPhi * (x1 - x2) + cosPhi * (y1 - y2)) / 2;
@@ -989,12 +997,12 @@ public class PShapeSVG extends PShape {
       float A = (x1r*x1r) / (rx*rx) + (y1r*y1r) / (ry*ry);
       if (A > 1) {
         // No solution, scale ellipse up according to SVG standard
-        float sqrtA = PApplet.sqrt(A);
+        float sqrtA = (float) sqrt(A);
         rx *= sqrtA;  cxr = 0;
         ry *= sqrtA;  cyr = 0;
       } else {
         float k = ((fa == fs) ? -1f : 1f) *
-          PApplet.sqrt((rx*rx * ry*ry) / ((rx*rx * y1r*y1r) + (ry*ry * x1r*x1r)) - 1f);
+          (float) sqrt((rx*rx * ry*ry) / ((rx*rx * y1r*y1r) + (ry*ry * x1r*x1r)) - 1f);
         cxr =  k * rx * y1r / ry;
         cyr = -k * ry * x1r / rx;
       }
@@ -1007,20 +1015,20 @@ public class PShapeSVG extends PShape {
     {
       float sx = ( x1r - cxr) / rx,  sy = ( y1r - cyr) / ry;
       float tx = (-x1r - cxr) / rx,  ty = (-y1r - cyr) / ry;
-      phi1 = PApplet.atan2(sy, sx);
-      phiDelta = (((PApplet.atan2(ty, tx) - phi1) % TWO_PI) + TWO_PI) % TWO_PI;
+      phi1 = (float) atan2(sy, sx);
+      phiDelta = ((((float) atan2(ty, tx) - phi1) % TWO_PI) + TWO_PI) % TWO_PI;
       if (!fs) phiDelta -= TWO_PI;
     }
 
     // One segment can not cover more that PI, less than PI/2 is
     // recommended to avoid visible inaccuracies caused by rounding errors
-    int segmentCount = PApplet.ceil(PApplet.abs(phiDelta) / TWO_PI * 4);
+    int segmentCount = ceil((float) abs(phiDelta) / TWO_PI * 4);
 
     float inc = phiDelta / segmentCount;
-    float a = PApplet.sin(inc) *
-      (PApplet.sqrt(4 + 3 * PApplet.sq(PApplet.tan(inc / 2))) - 1) / 3;
+    float a = (float) sin(inc) *
+      ((float) sqrt(4 + 3 * (float) sq((float) tan(inc / 2))) - 1) / 3;
 
-    float sinPhi1 = PApplet.sin(phi1),  cosPhi1 = PApplet.cos(phi1);
+    float sinPhi1 = (float) sin(phi1),  cosPhi1 = (float) cos(phi1);
 
     float p1x = x1;
     float p1y = y1;
@@ -1029,7 +1037,7 @@ public class PShapeSVG extends PShape {
 
     for (int i = 0; i < segmentCount; i++) {
       float eta = phi1 + (i + 1) * inc;
-      float sinEta = PApplet.sin(eta),  cosEta = PApplet.cos(eta);
+      float sinEta = (float) sin(eta),  cosEta = (float) cos(eta);
 
       float p2x = cx + rx * cosPhi * cosEta - ry * sinPhi * sinEta;
       float p2y = cy + rx * sinPhi * cosEta + ry * cosPhi * sinEta;
@@ -1077,13 +1085,13 @@ public class PShapeSVG extends PShape {
 
 
   static protected PMatrix2D parseSingleTransform(String matrixStr) {
-    //String[] pieces = PApplet.match(matrixStr, "^\\s*(\\w+)\\((.*)\\)\\s*$");
-    String[] pieces = PApplet.match(matrixStr, "[,\\s]*(\\w+)\\((.*)\\)");
+    //String[] pieces = (float) match(matrixStr, "^\\s*(\\w+)\\((.*)\\)\\s*$");
+    String[] pieces = match(matrixStr, "[,\\s]*(\\w+)\\((.*)\\)");
     if (pieces == null) {
       System.err.println("Could not parse transform " + matrixStr);
       return null;
     }
-    float[] m = PApplet.parseFloat(PApplet.splitTokens(pieces[2], ", "));
+    float[] m = parseFloat(splitTokens(pieces[2], ", "));
     if (pieces[1].equals("matrix")) {
       return new PMatrix2D(m[0], m[2], m[4], m[1], m[3], m[5]);
 
@@ -1101,8 +1109,8 @@ public class PShapeSVG extends PShape {
       float angle = m[0];
 
       if (m.length == 1) {
-        float c = PApplet.cos(angle);
-        float s = PApplet.sin(angle);
+        float c = (float) cos(angle);
+        float s = (float) sin(angle);
         // SVG version is cos(a) sin(a) -sin(a) cos(a) 0 0
         return new PMatrix2D(c, -s, 0, s, c, 0);
 
@@ -1114,10 +1122,10 @@ public class PShapeSVG extends PShape {
       }
 
     } else if (pieces[1].equals("skewX")) {
-      return new PMatrix2D(1, 0, 1,  PApplet.tan(m[0]), 0, 0);
+      return new PMatrix2D(1, 0, 1,  (float) tan(m[0]), 0, 0);
 
     } else if (pieces[1].equals("skewY")) {
-      return new PMatrix2D(1, 0, 1,  0, PApplet.tan(m[0]), 0);
+      return new PMatrix2D(1, 0, 1,  0, (float) tan(m[0]), 0);
     }
     return null;
   }
@@ -1169,14 +1177,14 @@ public class PShapeSVG extends PShape {
 
     if (properties.hasAttribute("style")) {
       String styleText = properties.getString("style");
-      String[] styleTokens = PApplet.splitTokens(styleText, ";");
+      String[] styleTokens = splitTokens(styleText, ";");
 
-      //PApplet.println(styleTokens);
+      //(float) println(styleTokens);
       for (int i = 0; i < styleTokens.length; i++) {
-        String[] tokens = PApplet.splitTokens(styleTokens[i], ":");
-        //PApplet.println(tokens);
+        String[] tokens = splitTokens(styleTokens[i], ":");
+        //(float) println(tokens);
 
-        tokens[0] = PApplet.trim(tokens[0]);
+        tokens[0] = trim(tokens[0]);
 
         if (tokens[0].equals("fill")) {
           setColor(tokens[1], true);
@@ -1211,7 +1219,7 @@ public class PShapeSVG extends PShape {
 
 
   void setOpacity(String opacityText) {
-    opacity = PApplet.parseFloat(opacityText);
+    opacity = parseFloat(opacityText);
     strokeColor = ((int) (opacity * 255)) << 24 | strokeColor & 0xFFFFFF;
     fillColor = ((int) (opacity * 255)) << 24 | fillColor & 0xFFFFFF;
   }
@@ -1223,7 +1231,7 @@ public class PShapeSVG extends PShape {
 
 
   void setStrokeOpacity(String opacityText) {
-    strokeOpacity = PApplet.parseFloat(opacityText);
+    strokeOpacity = parseFloat(opacityText);
     strokeColor = ((int) (strokeOpacity * 255)) << 24 | strokeColor & 0xFFFFFF;
   }
 
@@ -1233,13 +1241,13 @@ public class PShapeSVG extends PShape {
       // do nothing, will inherit automatically
 
     } else if (linejoin.equals("miter")) {
-      strokeJoin = PConstants.MITER;
+      strokeJoin = MITER;
 
     } else if (linejoin.equals("round")) {
-      strokeJoin = PConstants.ROUND;
+      strokeJoin = ROUND;
 
     } else if (linejoin.equals("bevel")) {
-      strokeJoin = PConstants.BEVEL;
+      strokeJoin = BEVEL;
     }
   }
 
@@ -1249,19 +1257,19 @@ public class PShapeSVG extends PShape {
       // do nothing, will inherit automatically
 
     } else if (linecap.equals("butt")) {
-      strokeCap = PConstants.SQUARE;
+      strokeCap = SQUARE;
 
     } else if (linecap.equals("round")) {
-      strokeCap = PConstants.ROUND;
+      strokeCap = ROUND;
 
     } else if (linecap.equals("square")) {
-      strokeCap = PConstants.PROJECT;
+      strokeCap = PROJECT;
     }
   }
 
 
   void setFillOpacity(String opacityText) {
-    fillOpacity = PApplet.parseFloat(opacityText);
+    fillOpacity = parseFloat(opacityText);
     fillColor = ((int) (fillOpacity * 255)) << 24 | fillColor & 0xFFFFFF;
   }
 
@@ -1324,7 +1332,7 @@ public class PShapeSVG extends PShape {
         colorText = colorText.replaceAll("^#(.)(.)(.)$", "#$1$1$2$2$3$3");
       }
       return (Integer.parseInt(colorText.substring(1), 16)) & 0xFFFFFF;
-      //System.out.println("hex for fill is " + PApplet.hex(fillColor));
+      //System.out.println("hex for fill is " + (float) hex(fillColor));
     } else if (colorText.startsWith("rgb")) {
       return parseRGB(colorText);
     } else {
@@ -1386,16 +1394,16 @@ public class PShapeSVG extends PShape {
     int leftParen = what.indexOf('(') + 1;
     int rightParen = what.indexOf(')');
     String sub = what.substring(leftParen, rightParen);
-    String[] values = PApplet.splitTokens(sub, ", ");
+    String[] values = splitTokens(sub, ", ");
     int rgbValue = 0;
     if (values.length == 3) {
       // Color spec allows for rgb values to be percentages.
       for (int i = 0; i < 3; i++) {
         rgbValue <<= 8;
         if (values[i].endsWith("%")) {
-          rgbValue |= (int)(PApplet.constrain(255*parseFloatOrPercent(values[i]), 0, 255));
+          rgbValue |= (int)(constrain(255*parseFloatOrPercent(values[i]), 0, 255));
         } else {
-          rgbValue |= PApplet.constrain(PApplet.parseInt(values[i]), 0, 255);
+          rgbValue |= constrain(parseInt(values[i]), 0, 255);
         }
       }
     } else System.err.println("Could not read color \"" + what + "\".");
@@ -1456,21 +1464,21 @@ public class PShapeSVG extends PShape {
     int len = text.length() - 2;
 
     if (text.endsWith("pt")) {
-      return PApplet.parseFloat(text.substring(0, len)) * 1.25f;
+      return parseFloat(text.substring(0, len)) * 1.25f;
     } else if (text.endsWith("pc")) {
-      return PApplet.parseFloat(text.substring(0, len)) * 15;
+      return parseFloat(text.substring(0, len)) * 15;
     } else if (text.endsWith("mm")) {
-      return PApplet.parseFloat(text.substring(0, len)) * 3.543307f;
+      return parseFloat(text.substring(0, len)) * 3.543307f;
     } else if (text.endsWith("cm")) {
-      return PApplet.parseFloat(text.substring(0, len)) * 35.43307f;
+      return parseFloat(text.substring(0, len)) * 35.43307f;
     } else if (text.endsWith("in")) {
-      return PApplet.parseFloat(text.substring(0, len)) * 90;
+      return parseFloat(text.substring(0, len)) * 90;
     } else if (text.endsWith("px")) {
-      return PApplet.parseFloat(text.substring(0, len));
+      return parseFloat(text.substring(0, len));
     } else if (text.endsWith("%")) {
       return relativeTo * parseFloatOrPercent(text);
     } else {
-      return PApplet.parseFloat(text);
+      return parseFloat(text);
     }
   }
 
@@ -1524,14 +1532,14 @@ public class PShapeSVG extends PShape {
             opacityStr = elem.getString("stop-opacity");
             if (opacityStr == null) opacityStr = "1";
           }
-          int tupacity = PApplet.constrain(
-                          (int)(PApplet.parseFloat(opacityStr) * 255), 0, 255);
+          int tupacity = constrain(
+                          (int)(parseFloat(opacityStr) * 255), 0, 255);
           color[count] = (tupacity << 24) | parseSimpleColor(colorStr);
           count++;
         }
       }
-      offset = PApplet.subset(offset, 0, count);
-      color = PApplet.subset(color, 0, count);
+      offset = subset(offset, 0, count);
+      color = subset(color, 0, count);
     }
   }
 
@@ -1613,30 +1621,30 @@ public class PShapeSVG extends PShape {
 
     if (properties.hasAttribute("style")) {
       String styleText = properties.getString("style");
-      String[] styleTokens = PApplet.splitTokens(styleText, ";");
+      String[] styleTokens = splitTokens(styleText, ";");
 
-      //PApplet.println(styleTokens);
+      //(float) println(styleTokens);
       for (int i = 0; i < styleTokens.length; i++) {
-        String[] tokens = PApplet.splitTokens(styleTokens[i], ":");
-        //PApplet.println(tokens);
+        String[] tokens = splitTokens(styleTokens[i], ":");
+        //(float) println(tokens);
 
-        tokens[0] = PApplet.trim(tokens[0]);
+        tokens[0] = trim(tokens[0]);
 
         if (tokens[0].equals("font-style")) {
-          // PApplet.println("font-style: " + tokens[1]);
+          // (float) println("font-style: " + tokens[1]);
           if (tokens[1].contains("italic")) {
             italic = ITALIC;
           }
         } else if (tokens[0].equals("font-variant")) {
-          // PApplet.println("font-variant: " + tokens[1]);
+          // (float) println("font-variant: " + tokens[1]);
           // setFillOpacity(tokens[1]);
 
         } else if (tokens[0].equals("font-weight")) {
-          // PApplet.println("font-weight: " + tokens[1]);
+          // (float) println("font-weight: " + tokens[1]);
 
           if (tokens[1].contains("bold")) {
             weight = BOLD;
-            // PApplet.println("Bold weight ! ");
+            // (float) println("Bold weight ! ");
           }
 
 
@@ -1644,14 +1652,14 @@ public class PShapeSVG extends PShape {
           // not supported.
 
         } else if (tokens[0].equals("font-size")) {
-          // PApplet.println("font-size: " + tokens[1]);
+          // (float) println("font-size: " + tokens[1]);
           size = Float.parseFloat(tokens[1].split("px")[0]);
-          // PApplet.println("font-size-parsed: " + size);
+          // (float) println("font-size-parsed: " + size);
         } else if (tokens[0].equals("line-height")) {
                 // not supported
 
         } else if (tokens[0].equals("font-family")) {
-          // PApplet.println("Font-family: " + tokens[1]);
+          // (float) println("Font-family: " + tokens[1]);
           fontFamily = tokens[1];
 
         } else if (tokens[0].equals("text-align")) {
@@ -1998,6 +2006,6 @@ public class PShapeSVG extends PShape {
    * Prints out the SVG document. Useful for parsing.
    */
   public void print() {
-    PApplet.println(element.toString());
+    println(element.toString());
   }
 }

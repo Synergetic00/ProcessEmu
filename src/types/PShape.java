@@ -1,25 +1,3 @@
-/* -*- mode: java; c-basic-offset: 2; indent-tabs-mode: nil -*- */
-
-/*
-  Part of the Processing project - http://processing.org
-
-  Copyright (c) 2006-10 Ben Fry and Casey Reas
-
-  This library is free software; you can redistribute it and/or
-  modify it under the terms of the GNU Lesser General Public
-  License version 2.1 as published by the Free Software Foundation.
-
-  This library is distributed in the hope that it will be useful,
-  but WITHOUT ANY WARRANTY; without even the implied warranty of
-  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-  Lesser General Public License for more details.
-
-  You should have received a copy of the GNU Lesser General
-  Public License along with this library; if not, write to the
-  Free Software Foundation, Inc., 59 Temple Place, Suite 330,
-  Boston, MA  02111-1307  USA
-*/
-
 package types;
 
 import java.awt.Image;
@@ -31,58 +9,12 @@ import java.util.Map;
 import javax.swing.ImageIcon;
 import javax.xml.bind.DatatypeConverter;
 
+import main.FXApp;
+
 import static utils.Constants.*;
+import static utils.MathUtils.*;
+import static utils.DataUtils.*;
 
-
-/**
- * ( begin auto-generated from PShape.xml )
- *
- * Datatype for storing shapes. Processing can currently load and display
- * SVG (Scalable Vector Graphics) shapes. Before a shape is used, it must
- * be loaded with the <b>loadShape()</b> function. The <b>shape()</b>
- * function is used to draw the shape to the display window. The
- * <b>PShape</b> object contain a group of methods, linked below, that can
- * operate on the shape data.
- * <br /><br />
- * The <b>loadShape()</b> function supports SVG files created with Inkscape
- * and Adobe Illustrator. It is not a full SVG implementation, but offers
- * some straightforward support for handling vector data.
- *
- * ( end auto-generated )
- * <h3>Advanced</h3>
- *
- * In-progress class to handle shape data, currently to be considered of
- * alpha or beta quality. Major structural work may be performed on this class
- * after the release of Processing 1.0. Such changes may include:
- *
- * <ul>
- * <li> addition of proper accessors to read shape vertex and coloring data
- * (this is the second most important part of having a PShape class after all).
- * <li> a means of creating PShape objects ala beginShape() and endShape().
- * <li> load(), update(), and cache methods ala PImage, so that shapes can
- * have renderer-specific optimizations, such as vertex arrays in OpenGL.
- * <li> splitting this class into multiple classes to handle different
- * varieties of shape data (primitives vs collections of vertices vs paths)
- * <li> change of package declaration, for instance moving the code into
- * package processing.shape (if the code grows too much).
- * </ul>
- *
- * <p>For the time being, this class and its shape() and loadShape() friends in
- * PApplet exist as placeholders for more exciting things to come. If you'd
- * like to work with this class, make a subclass (see how PShapeSVG works)
- * and you can play with its internal methods all you like.</p>
- *
- * <p>Library developers are encouraged to create PShape objects when loading
- * shape data, so that they can eventually hook into the bounty that will be
- * the PShape interface, and the ease of loadShape() and shape().</p>
- *
- * @webref shape
- * @usage Web &amp; Application
- * @see PApplet#loadShape(String)
- * @see PApplet#createShape()
- * @see PApplet#shapeMode(int)
- * @instanceName sh any variable of type PShape
- */
 public class PShape {
   protected String name;
   protected Map<String,PShape> nameTable;
@@ -651,7 +583,7 @@ public class PShape {
     if (vertexCodes == null) {
       vertexCodes = new int[10];
     } else if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = PApplet.expand(vertexCodes);
+      vertexCodes = FXApp.expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = BREAK;
   }
@@ -690,14 +622,14 @@ public class PShape {
     if (vertices == null) {
       vertices = new float[10][2];
     } else if (vertices.length == vertexCount) {
-      vertices = (float[][]) PApplet.expand(vertices);
+      vertices = (float[][]) FXApp.expand(vertices);
     }
     vertices[vertexCount++] = new float[] { x, y };
 
     if (vertexCodes == null) {
       vertexCodes = new int[10];
     } else if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = PApplet.expand(vertexCodes);
+      vertexCodes = FXApp.expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = VERTEX;
 
@@ -753,7 +685,7 @@ public class PShape {
   /**
    * @webref pshape:method
    * @brief Starts the creation of a new PShape
-   * @see PApplet#endShape()
+   * @see FXApp#endShape()
    */
   public void beginShape() {
     beginShape(POLYGON);
@@ -768,7 +700,7 @@ public class PShape {
   /**
    * @webref pshape:method
    * @brief Finishes the creation of a new PShape
-   * @see PApplet#beginShape()
+   * @see FXApp#beginShape()
    */
   public void endShape() {
     endShape(OPEN);
@@ -1265,7 +1197,7 @@ public class PShape {
     if (vertices == null) {
       vertices = new float[10][];
     } else if (vertexCount + 2 >= vertices.length) {
-      vertices = (float[][]) PApplet.expand(vertices);
+      vertices = (float[][]) FXApp.expand(vertices);
     }
     vertices[vertexCount++] = new float[] { x2, y2 };
     vertices[vertexCount++] = new float[] { x3, y3 };
@@ -1273,7 +1205,7 @@ public class PShape {
 
     // vertexCodes must be allocated because a vertex() call is required
     if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = PApplet.expand(vertexCodes);
+      vertexCodes = FXApp.expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = BEZIER_VERTEX;
 
@@ -1297,14 +1229,14 @@ public class PShape {
     if (vertices == null) {
       vertices = new float[10][];
     } else if (vertexCount + 1 >= vertices.length) {
-      vertices = (float[][]) PApplet.expand(vertices);
+      vertices = (float[][]) FXApp.expand(vertices);
     }
     vertices[vertexCount++] = new float[] { cx, cy };
     vertices[vertexCount++] = new float[] { x3, y3 };
 
     // vertexCodes must be allocated because a vertex() call is required
     if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = PApplet.expand(vertexCodes);
+      vertexCodes = FXApp.expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = QUADRATIC_VERTEX;
 
@@ -1402,7 +1334,7 @@ public class PShape {
     }
 
     if (fill) {
-      //System.out.println("filling " + PApplet.hex(fillColor));
+      //System.out.println("filling " + FXApp.hex(fillColor));
       g.fill(fillColor);
     } else {
       g.noFill();
@@ -1445,7 +1377,7 @@ public class PShape {
 
 
   // TODO unapproved
-  static protected PShape createShape(PApplet parent, PShape src) {
+  static protected PShape createShape(FXApp parent, PShape src) {
     PShape dest = null;
     if (src.family == GROUP) {
       dest = parent.createShape(GROUP);
@@ -1466,7 +1398,7 @@ public class PShape {
 
 
   // TODO unapproved
-  static protected void copyGroup(PApplet parent, PShape src, PShape dest) {
+  static protected void copyGroup(FXApp parent, PShape src, PShape dest) {
     copyMatrix(src, dest);
     copyStyles(src, dest);
     copyImage(src, dest);
@@ -1508,7 +1440,7 @@ public class PShape {
 //        dest.emissive(vert[PGraphics.ER] * 255, vert[PGraphics.EG] * 255, vert[PGraphics.EB] * 255);
 //        dest.shininess(vert[PGraphics.SHINE]);
 
-        if (0 < PApplet.dist(vert[PGraphics.NX],
+        if (0 < dist(vert[PGraphics.NX],
                              vert[PGraphics.NY],
                              vert[PGraphics.NZ], 0, 0, 0)) {
           dest.normal(vert[PGraphics.NX],
@@ -1968,7 +1900,7 @@ public class PShape {
   protected void crop() {
     // https://github.com/processing/processing/issues/3347
     if (children.length != childCount) {
-      children = (PShape[]) PApplet.subset(children, 0, childCount);
+      children = (PShape[]) FXApp.subset(children, 0, childCount);
     }
   }
 
@@ -2042,7 +1974,7 @@ public class PShape {
       children = new PShape[1];
     }
     if (childCount == children.length) {
-      children = (PShape[]) PApplet.expand(children);
+      children = (PShape[]) FXApp.expand(children);
     }
     children[childCount++] = who;
     who.parent = this;
@@ -2060,7 +1992,7 @@ public class PShape {
   public void addChild(PShape who, int idx) {
     if (idx < childCount) {
       if (childCount == children.length) {
-        children = (PShape[]) PApplet.expand(children);
+        children = (PShape[]) FXApp.expand(children);
       }
 
       // Copy [idx, childCount - 1] to [idx + 1, childCount]
@@ -2156,7 +2088,7 @@ public class PShape {
     if (target == null || target.length != params.length) {
       target = new float[params.length];
     }
-    PApplet.arrayCopy(params, target);
+    arrayCopy(params, target);
     return target;
   }
 
@@ -2174,7 +2106,7 @@ public class PShape {
       PGraphics.showWarning("Wrong number of parameters");
       return;
     }
-    PApplet.arrayCopy(source, params);
+    arrayCopy(source, params);
   }
 
 
@@ -2191,13 +2123,13 @@ public class PShape {
     vertexCount = vcount;
     vertices = new float[vertexCount][ndim];
     for (int i = 0; i < vertexCount; i++) {
-      PApplet.arrayCopy(verts[i], vertices[i]);
+      arrayCopy(verts[i], vertices[i]);
     }
 
     vertexCodeCount = ccount;
     if (0 < vertexCodeCount) {
       vertexCodes = new int[vertexCodeCount];
-      PApplet.arrayCopy(codes, vertexCodes, vertexCodeCount);
+      arrayCopy(codes, vertexCodes, vertexCodeCount);
     }
   }
 
@@ -2305,11 +2237,11 @@ public class PShape {
       return;
     }
 
-    vertices[index][X] = vec.x;
-    vertices[index][Y] = vec.y;
+    vertices[index][X] = (float) vec.x;
+    vertices[index][Y] = (float) vec.y;
 
     if (vertices[index].length > 2) {
-      vertices[index][Z] = vec.z;
+      vertices[index][Z] = (float) vec.z;
     } else if (vec.z != 0 && vec.z == vec.z) {
       throw new IllegalArgumentException("Cannot set a z-coordinate on a 2D shape");
     }
@@ -2932,7 +2864,7 @@ public class PShape {
       return null;
     }
     if (vertexCodes.length != vertexCodeCount) {
-      vertexCodes = PApplet.subset(vertexCodes, 0, vertexCodeCount);
+      vertexCodes = FXApp.subset(vertexCodes, 0, vertexCodeCount);
     }
     return vertexCodes;
   }
@@ -3194,7 +3126,7 @@ public class PShape {
     float norm2 = v0 * v0 + v1 * v1 + v2 * v2;
     if (Math.abs(norm2 - 1) > EPSILON) {
       // The rotation vector is not normalized.
-      float norm = PApplet.sqrt(norm2);
+      float norm = (float) sqrt(norm2);
       v0 /= norm;
       v1 /= norm;
       v2 /= norm;

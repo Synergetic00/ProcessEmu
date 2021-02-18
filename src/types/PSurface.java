@@ -1,8 +1,17 @@
 package types;
 
+import javafx.scene.canvas.Canvas;
+import javafx.stage.Stage;
+import main.FXApp;
+
 public class PSurface {
 
-    public PSurface(PGraphics pGraphics) {
+    FXApp sketch;
+    PGraphics fx;
+    Stage stage;
+    Canvas canvas;
+
+	public PSurface(PGraphics pGraphics) {
 	}
 
 	public void setLocation(int x, int y) {

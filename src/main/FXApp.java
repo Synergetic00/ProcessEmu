@@ -1,8 +1,10 @@
 package main;
 
 import java.io.File;
+import java.io.InputStream;
 import java.io.OutputStream;
 
+import data.XML;
 import event.MouseEvent;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
@@ -15,6 +17,8 @@ public class FXApp {
     public PGraphics g;
     public int width, height;
 	public boolean keyRepeatEnabled;
+	public int frameCount;
+	public int pixelDensity;
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
@@ -128,7 +132,62 @@ public class FXApp {
 		return null;
 	}
 
-	public Object loadXML(String filename) {
+	public XML loadXML(String filename) {
+		return null;
+	}
+
+	public static int[] expand(int[] vertexCodes) {
+		return null;
+	}
+
+	public static float[][] expand(float[][] vertices) {
+		return null;
+	}
+
+	public PShape createShape(int group) {
+		return null;
+	}
+
+	public PShape createShape(int kind, float[] params) {
+		return null;
+	}
+
+	public static File createReader(File file) {
+		return null;
+	}
+
+	public void smooth(int quality) {
+	}
+
+	public File sketchFile(String filename) {
+		return null;
+	}
+
+	public static PStyle[] expand(PStyle[] styleStack) {
+		return null;
+	}
+
+	public InputStream createInput(String name) {
+		return null;
+	}
+
+	public PImage loadImage(String imagePath) {
+		return null;
+	}
+
+	public static PShape[] subset(PShape[] children, int i, int childCount) {
+		return null;
+	}
+
+	public static PShape[] expand(PShape[] children) {
+		return null;
+	}
+
+	public static int[] subset(int[] vertexCodes, int i, int vertexCodeCount) {
+		return null;
+	}
+
+	public static Object subset(String[] pathTokens, int i, int i2) {
 		return null;
 	}
 
