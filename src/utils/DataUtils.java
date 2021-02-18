@@ -1207,7 +1207,8 @@ public class DataUtils {
 
 			// Workaround for bug in Java for OS X from Oracle (7u51)
 			// https://github.com/processing/processing/issues/2181
-			if (FXApp.platform == MACOSX) {
+			//if (FXApp.platform == MACOSX) {
+			if (MACOSX == MACOSX) {
 				if (jarPath.contains("Contents/Java/")) {
 					String appPath = jarPath.substring(0, jarPath.indexOf(".app") + 4);
 					File containingFolder = new File(appPath).getParentFile();

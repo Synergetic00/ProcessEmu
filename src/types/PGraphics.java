@@ -260,16 +260,16 @@ public class PGraphics extends PImage {
     protected float[][] curveVertices;
     protected int curveVertexCount;
 
-    static final protected float[] sinLUT;
-    static final protected float[] cosLUT;
-    static final protected float SINCOS_PRECISION = 0.5f;
-    static final protected int SINCOS_LENGTH = (int) (360f / SINCOS_PRECISION);
+    public static final double[] sinLUT;
+    public static final double[] cosLUT;
+    static final protected double SINCOS_PRECISION = 0.5f;
+    public static final int SINCOS_LENGTH = (int) (360f / SINCOS_PRECISION);
     static {
-        sinLUT = new float[SINCOS_LENGTH];
-        cosLUT = new float[SINCOS_LENGTH];
+        sinLUT = new double[SINCOS_LENGTH];
+        cosLUT = new double[SINCOS_LENGTH];
         for (int i = 0; i < SINCOS_LENGTH; i++) {
-            sinLUT[i] = (float) Math.sin(i * DEG_TO_RAD * SINCOS_PRECISION);
-            cosLUT[i] = (float) Math.cos(i * DEG_TO_RAD * SINCOS_PRECISION);
+            sinLUT[i] = Math.sin(i * DEG_TO_RAD * SINCOS_PRECISION);
+            cosLUT[i] = Math.cos(i * DEG_TO_RAD * SINCOS_PRECISION);
         }
     }
     

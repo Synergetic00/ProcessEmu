@@ -4,6 +4,7 @@ import misc.*;
 
 import static misc.DynLoader.*;
 import static utils.Constants.*;
+import static utils.MathUtils.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,7 +38,8 @@ public class Main extends Application {
         gc = canvas.getGraphicsContext2D();
         apps = new ArrayList<AppTemplate>();
         loadFolder(new File("src/programs"));
-        apps.get(index).launch(gc);
+        //apps.get(index).launch(gc);
+        runTestCode();
 
         scene.setOnKeyPressed(event -> { handleKeyPressed(event); });
         scene.setOnKeyReleased(event -> { handleKeyReleased(event); });
@@ -58,5 +60,13 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
+    }
+
+    public void runTestCode() {
+        String osName = System.getProperty("os.name");
+        System.out.println(osName);
+        int u = 4;
+        int v = sqrt(u);
+        System.out.println(v);
     }
 }
