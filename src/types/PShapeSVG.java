@@ -42,9 +42,8 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import data.IntDict;
+import data.StringDict;
 import data.XML;
-import main.FXApp;
-
 
 /**
  * This class is not part of the Processing API and should not be used
@@ -2006,6 +2005,6 @@ public class PShapeSVG extends PShape {
    * Prints out the SVG document. Useful for parsing.
    */
   public void print() {
-    println(element.toString());
+    //println(element.toString());
   }
 }

@@ -31,6 +31,7 @@ import org.w3c.dom.*;
 import org.xml.sax.*;
 
 import main.FXApp;
+import utils.DataUtils;
 
 import javax.xml.transform.*;
 import javax.xml.transform.dom.*;
@@ -38,6 +39,8 @@ import javax.xml.transform.stream.*;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpression;
 import javax.xml.xpath.XPathFactory;
+
+import static utils.DataUtils.*;
 
 
 /**
@@ -49,6 +52,7 @@ import javax.xml.xpath.XPathFactory;
  * @see FXApp#parseXML(String)
  * @see FXApp#saveXML(XML, String)
  */
+@SuppressWarnings("serial")
 public class XML implements Serializable {
 
   /** The internal representation, a DOM node. */
@@ -101,7 +105,7 @@ public class XML implements Serializable {
    * @nowebref
    */
   public XML(File file, String options) throws IOException, ParserConfigurationException, SAXException {
-    this(FXApp.createReader(file), options);
+    this(createReader(file), options);
   }
 
   /**
@@ -279,7 +283,7 @@ public class XML implements Serializable {
 
 
   public boolean save(File file, String options) {
-    PrintWriter writer = FXApp.createWriter(file);
+    PrintWriter writer = createWriter(file);
     boolean result = write(writer);
     writer.flush();
     writer.close();
@@ -461,7 +465,7 @@ public class XML implements Serializable {
       throw new IllegalArgumentException("getChild() should not begin with a slash");
     }
     if (name.indexOf('/') != -1) {
-      return getChildRecursive(FXApp.split(name, '/'), 0);
+      return getChildRecursive(split(name, '/'), 0);
     }
     int childCount = getChildCount();
     for (int i = 0; i < childCount; i++) {
@@ -522,7 +526,7 @@ public class XML implements Serializable {
       throw new IllegalArgumentException("getChildren() should not begin with a slash");
     }
     if (name.indexOf('/') != -1) {
-      return getChildrenRecursive(FXApp.split(name, '/'), 0);
+      return getChildrenRecursive(split(name, '/'), 0);
     }
     // if it's a number, do an index instead
     // (returns a single element array, since this will be a single match
@@ -539,7 +543,7 @@ public class XML implements Serializable {
         matches[matchCount++] = kid;
       }
     }
-    return (XML[]) FXApp.subset(matches, 0, matchCount);
+    return (XML[]) subset(matches, 0, matchCount);
   }
 
 
@@ -551,7 +555,7 @@ public class XML implements Serializable {
     XML[] outgoing = new XML[0];
     for (int i = 0; i < matches.length; i++) {
       XML[] kidMatches = matches[i].getChildrenRecursive(items, offset+1);
-      outgoing = (XML[]) FXApp.concat(outgoing, kidMatches);
+      outgoing = (XML[]) concat(outgoing, kidMatches);
     }
     return outgoing;
   }
@@ -580,7 +584,7 @@ public class XML implements Serializable {
     node.appendChild(newNode);
     XML newbie = new XML(this, newNode);
     if (children != null) {
-      children = (XML[]) FXApp.concat(children, new XML[] { newbie });
+      children = (XML[]) concat(children, new XML[] { newbie });
     }
     return newbie;
   }
@@ -647,7 +651,7 @@ public class XML implements Serializable {
 //      }
 //    }
 //    if (index != children.length) {
-//      children = (XML[]) FXApp.subset(children, 0, index);
+//      children = (XML[]) subset(children, 0, index);
 //    }
 //
 //    // possibility, but would have to re-parse the object
@@ -910,7 +914,7 @@ public class XML implements Serializable {
    * @param defaultValue the default value of the attribute
    */
   public int getIntContent(int defaultValue) {
-    return FXApp.parseInt(node.getTextContent(), defaultValue);
+    return parseInt(node.getTextContent(), defaultValue);
   }
 
 
@@ -930,7 +934,7 @@ public class XML implements Serializable {
    * @param defaultValue the default value of the attribute
    */
   public float getFloatContent(float defaultValue) {
-    return FXApp.parseFloat(node.getTextContent(), defaultValue);
+    return parseFloat(node.getTextContent(), defaultValue);
   }
 
 
@@ -1071,7 +1075,7 @@ public class XML implements Serializable {
       StringWriter tempWriter = new StringWriter();
       StreamResult tempResult = new StreamResult(tempWriter);
       transformer.transform(new DOMSource(node), tempResult);
-      String[] tempLines = FXApp.split(tempWriter.toString(), sep);
+      String[] tempLines = split(tempWriter.toString(), sep);
 //      FXApp.println(tempLines);
       if (tempLines[0].startsWith("<?xml")) {
         // Remove XML declaration from the top before slamming into one line
@@ -1080,7 +1084,7 @@ public class XML implements Serializable {
         if (tempLines[0].length() == declEnd) {
           // If it's all the XML declaration, remove it
 //          FXApp.println("removing first line");
-          tempLines = FXApp.subset(tempLines, 1);
+          tempLines = subset(tempLines, 1);
         } else {
 //          FXApp.println("removing part of first line");
           // If the first node has been moved to this line, be more careful
@@ -1088,7 +1092,7 @@ public class XML implements Serializable {
           tempLines[0] = tempLines[0].substring(declEnd);
         }
       }
-      String singleLine = FXApp.join(FXApp.trim(tempLines), "");
+      String singleLine = join(DataUtils.trim(tempLines), "");
       if (indent == -1) {
         return singleLine;
       }
@@ -1135,7 +1139,7 @@ public class XML implements Serializable {
 
 
   public void print() {
-    FXApp.println(format(2));
+    //println(format(2));
   }
 
 

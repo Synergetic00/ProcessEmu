@@ -1,12 +1,93 @@
 package types;
 
+import static utils.Constants.ADD;
+import static utils.Constants.ALPHA;
+import static utils.Constants.ARC;
+import static utils.Constants.ARGB;
+import static utils.Constants.BASELINE;
+import static utils.Constants.BLEND;
+import static utils.Constants.BOTTOM;
+import static utils.Constants.BOX;
+import static utils.Constants.BURN;
+import static utils.Constants.CENTER;
+import static utils.Constants.CHORD;
+import static utils.Constants.CLOSE;
+import static utils.Constants.CORNER;
+import static utils.Constants.CORNERS;
+import static utils.Constants.DARKEST;
+import static utils.Constants.DEG_TO_RAD;
+import static utils.Constants.DIAMETER;
+import static utils.Constants.DIFFERENCE;
+import static utils.Constants.DISABLE_ASYNC_SAVEFRAME;
+import static utils.Constants.DISABLE_KEY_REPEAT;
+import static utils.Constants.DISABLE_NATIVE_FONTS;
+import static utils.Constants.DODGE;
+import static utils.Constants.ELLIPSE;
+import static utils.Constants.ENABLE_KEY_REPEAT;
+import static utils.Constants.ENABLE_NATIVE_FONTS;
+import static utils.Constants.EPSILON;
+import static utils.Constants.EXCLUSION;
+import static utils.Constants.GROUP;
+import static utils.Constants.HARD_LIGHT;
+import static utils.Constants.HINT_COUNT;
+import static utils.Constants.HSB;
+import static utils.Constants.IMAGE;
+import static utils.Constants.LEFT;
+import static utils.Constants.LIGHTEST;
+import static utils.Constants.LINE;
+import static utils.Constants.LINES;
+import static utils.Constants.MITER;
+import static utils.Constants.MODEL;
+import static utils.Constants.MULTIPLY;
+import static utils.Constants.NORMAL;
+import static utils.Constants.OPAQUE;
+import static utils.Constants.OPEN;
+import static utils.Constants.OVERLAY;
+import static utils.Constants.PIE;
+import static utils.Constants.POINT;
+import static utils.Constants.POINTS;
+import static utils.Constants.POLYGON;
+import static utils.Constants.PROJECT;
+import static utils.Constants.QUAD;
+import static utils.Constants.QUADS;
+import static utils.Constants.QUAD_STRIP;
+import static utils.Constants.RADIUS;
+import static utils.Constants.RECT;
+import static utils.Constants.REPLACE;
+import static utils.Constants.RGB;
+import static utils.Constants.RIGHT;
+import static utils.Constants.ROUND;
+import static utils.Constants.SCREEN;
+import static utils.Constants.SHAPE;
+import static utils.Constants.SOFT_LIGHT;
+import static utils.Constants.SPHERE;
+import static utils.Constants.SUBTRACT;
+import static utils.Constants.TOP;
+import static utils.Constants.TRIANGLE;
+import static utils.Constants.TRIANGLES;
+import static utils.Constants.TRIANGLE_FAN;
+import static utils.Constants.TRIANGLE_STRIP;
+import static utils.Constants.TWO_PI;
+import static utils.Constants.X;
+import static utils.Constants.Y;
+import static utils.DataUtils.hex;
+import static utils.DataUtils.nfs;
+import static utils.MathUtils.constrain;
+import static utils.MathUtils.degrees;
+import static utils.MathUtils.floor;
+import static utils.MathUtils.lerp;
+import static utils.MathUtils.min;
+import static utils.MathUtils.round;
+
 // Used for the 'image' object that's been here forever
 import java.awt.Image;
-
 import java.io.File;
 import java.io.InputStream;
-import java.util.Map;
+import java.nio.IntBuffer;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.WeakHashMap;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -21,14 +102,6 @@ import com.sun.javafx.geom.Path2D;
 import com.sun.javafx.geom.PathIterator;
 import com.sun.javafx.geom.Shape;
 
-import static java.awt.Font.*;
-
-import java.nio.IntBuffer;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedHashMap;
-import java.util.Map;
-
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.effect.BlendMode;
@@ -41,16 +114,12 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
-import javafx.scene.text.java.awt.Font;
 import javafx.scene.text.Text;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import main.FXApp;
 
-import static utils.DataUtils.*;
-import static utils.Constants.*;
-import static utils.MathUtils.*;
-
+@SuppressWarnings("serial")
 public class PGraphics extends PImage {
 
     // Variables --> JavaFX
@@ -499,7 +568,6 @@ public class PGraphics extends PImage {
         reapplySettings = false;
     }
 
-    @SuppressWarnings("deprecation")
     public void hint(int which) {
         if (which == ENABLE_NATIVE_FONTS || which == DISABLE_NATIVE_FONTS) {
             showWarning("hint(ENABLE_NATIVE_FONTS) no longer supported. " + "Use createFont() instead.");
@@ -2094,7 +2162,7 @@ public class PGraphics extends PImage {
 
     static final class FontInfo {
 		static final int MAX_CACHED_COLORS_PER_FONT = 1 << 16;
-		java.awt.Font font;
+		javafx.scene.text.Font font;
 		float ascent;
 		float descent;
 		Map<Integer, PImage[]> tintCache;
@@ -2137,7 +2205,7 @@ public class PGraphics extends PImage {
 			cache.put(key, fontInfo);
 		}
 
-		FontInfo createFontInfo(java.awt.Font font) {
+		FontInfo createFontInfo(javafx.scene.text.Font font) {
 			FontInfo result = new FontInfo();
 			result.font = font;
 			if (font != null) {
@@ -2233,20 +2301,34 @@ public class PGraphics extends PImage {
 			defaultFontOrDeath("textAscent");
 		}
 		if (textFontInfo.font == null) {
-			return super.textAscent();
+			return textAscentSuper();
 		}
 		return textFontInfo.ascent;
 	}
+
+    public float textAscentSuper() {
+        if (textFont == null) {
+          defaultFontOrDeath("textAscent");
+        }
+        return textFont.ascent() * textSize;
+    }
 
     public float textDescent() {
 		if (textFont == null) {
 			defaultFontOrDeath("textDescent");
 		}
 		if (textFontInfo.font == null) {
-			return super.textDescent();
+			return textDescentSuper();
 		}
 		return textFontInfo.descent;
 	}
+
+    public float textDescentSuper() {
+        if (textFont == null) {
+          defaultFontOrDeath("textDescent");
+        }
+        return textFont.descent() * textSize;
+    }
 
 	public void textFont(PFont which) {
         if (which == null) {
@@ -2325,18 +2407,18 @@ public class PGraphics extends PImage {
 
 		textFontInfo = fontCache.get(fontName, size);
 		if (textFontInfo == null) {
-			java.awt.Font font = null;
+			javafx.scene.text.Font font = null;
 
 			if (which.isStream()) {
 				String filename = fontCache.nameToFilename.get(fontName);
-				font = java.awt.Font.loadFont(parent.createInput(filename), size);
+				font = javafx.scene.text.Font.loadFont(parent.createInput(filename), size);
 			}
 
 			if (font == null) {
 				// Look up font name
-				font = new java.awt.Font(fontName, size);
+				font = new javafx.scene.text.Font(fontName, size);
 				if (!fontName.equalsIgnoreCase(font.getName())) {
-					font = new java.awt.Font(fontPsName, size);
+					font = new javafx.scene.text.Font(fontPsName, size);
 					if (!fontPsName.equalsIgnoreCase(font.getName())) {
 						font = null; // Done with it
 					}
@@ -2344,7 +2426,7 @@ public class PGraphics extends PImage {
 			}
 
 			if (font == null && which.getNative() != null) {
-				font = new java.awt.Font(size);
+				font = new javafx.scene.text.Font(size);
 			}
 
 			textFontInfo = fontCache.createFontInfo(font);
@@ -2402,13 +2484,22 @@ public class PGraphics extends PImage {
 		}
 
 		if (textFontInfo.font == null) {
-			return super.textWidthImpl(buffer, start, stop);
+			return textWidthImplSuper(buffer, start, stop);
 		}
 
 		fontCache.measuringText.setFont(textFontInfo.font);
 		fontCache.measuringText.setText(new String(buffer, start, stop - start));
 		return (float) fontCache.measuringText.getLayoutBounds().getWidth();
 	}
+
+    protected float textWidthImplSuper(char[] buffer, int start, int stop) {
+        float wide = 0;
+        for (int i = start; i < stop; i++) {
+          // could add kerning here, but it just ain't implemented
+          wide += textFont.width(buffer[i]) * textSize;
+        }
+        return wide;
+    }
 
 	public void text(char c, float x, float y) {
         if (textFont == null) {
@@ -2556,7 +2647,7 @@ public class PGraphics extends PImage {
 
         float boxHeight = y2 - y1;
         float topAndBottom = textAscent() + textDescent();
-        int lineFitCount = 1 + FXApp.floor((boxHeight - topAndBottom) / textLeading);
+        int lineFitCount = 1 + floor((boxHeight - topAndBottom) / textLeading);
         int lineCount = Math.min(textBreakCount, lineFitCount);
 
         if (textAlignY == CENTER) {
@@ -2677,11 +2768,11 @@ public class PGraphics extends PImage {
     }
 
 	public void text(float num, float x, float y) {
-        text(FXApp.nfs(num, 0, 3), x, y);
+        text(nfs(num, 0, 3), x, y);
     }
 
     public void text(float num, float x, float y, float z) {
-        text(FXApp.nfs(num, 0, 3), x, y, z);
+        text(nfs(num, 0, 3), x, y, z);
     }
 
 	protected void textLineAlignImpl(char[] buffer, int start, int stop,
@@ -2698,11 +2789,18 @@ public class PGraphics extends PImage {
 
 	protected void textLineImpl(char[] buffer, int start, int stop, float x, float y) {
 		if (textFontInfo.font == null) {
-			super.textLineImpl(buffer, start, stop, x, y);
+			textLineImplSuper(buffer, start, stop, x, y);
 		} else {
 			context.fillText(new String(buffer, start, stop - start), x, y);
 		}
 	}
+
+    protected void textLineImplSuper(char[] buffer, int start, int stop, float x, float y) {
+        for (int index = start; index < stop; index++) {
+            textCharImpl(buffer[index], x, y);
+            x += textWidth(buffer[index]);
+        }
+    }
 
     protected PImage getTintedGlyphImage(PFont.Glyph glyph, int tintColor) {
 		if (textFontInfo.tintCache == null) {
@@ -2754,7 +2852,7 @@ public class PGraphics extends PImage {
 			}
 		} else if (ch != ' ' && ch != 127) {
 			showWarning("No glyph found for the " + ch +
-					" (\\u" + FXApp.hex(ch, 4) + ") character");
+					" (\\u" + hex(ch, 4) + ") character");
 		}
 	}
 
@@ -2816,7 +2914,7 @@ public class PGraphics extends PImage {
     }
 
 	public void rotate(float angle) {
-		context.rotate(FXApp.degrees(angle));
+		context.rotate(degrees(angle));
 	}
 
     public void rotateX(float angle) {
@@ -2900,13 +2998,14 @@ public class PGraphics extends PImage {
 	}
 
     public PMatrix2D getMatrix(PMatrix2D target) {
-		if (target == null) {
-			target = new PMatrix2D();
-		}
-		target.set((float) t.getMxx(), (float) t.getMxy(), (float) t.getTx(),
-				(float) t.getMyx(), (float) t.getMyy(), (float) t.getTy());
-		return target;
-	}
+        if (target == null) {
+          target = new PMatrix2D();
+        }
+        Affine t = context.getTransform();
+        target.set((float) t.getMxx(), (float) t.getMxy(), (float) t.getTx(),
+                   (float) t.getMyx(), (float) t.getMyy(), (float) t.getTy());
+        return target;
+      }
 
     public PMatrix3D getMatrix(PMatrix3D target) {
 		showVariationWarning("getMatrix");
@@ -3738,7 +3837,7 @@ public class PGraphics extends PImage {
             calcAi = (argb >> 24) & 0xff;
             calcColor = argb;
         } else {
-            calcAi = (int) (((argb >> 24) & 0xff) * FXApp.constrain((alpha / colorModeA), 0, 1));
+            calcAi = (int) (((argb >> 24) & 0xff) * constrain((alpha / colorModeA), 0, 1));
             calcColor = (calcAi << 24) | (argb & 0xFFFFFF);
         }
         calcRi = (argb >> 16) & 0xff;

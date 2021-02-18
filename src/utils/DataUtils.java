@@ -5,14 +5,11 @@ import java.lang.reflect.*;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.text.*;
-import java.util.*;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.ThreadFactory;
-import java.util.regex.*;
 import java.util.zip.*;
+
+import static utils.Constants.*;
+
+import main.FXApp;
 
 public class DataUtils {
 
@@ -114,7 +111,7 @@ public class DataUtils {
 
 	// [Data | String Functions]
 
-    static public String join(String[] list, char separator) {
+	static public String join(String[] list, char separator) {
 		return join(list, String.valueOf(separator));
 	}
 
@@ -333,13 +330,31 @@ public class DataUtils {
 		return null;
 	}
 
-	public static String trim(String str) {
-		return "";
-	}
+	
 
-	public static String[] trim(String[] array) {
-		return null;
-	}
+    static public String trim(String str) {
+        if (str == null) {
+          return null;
+        }
+        return str.replace('\u00A0', ' ').trim();
+      }
+    
+    
+     /**
+      * @param array a String array
+      */
+      static public String[] trim(String[] array) {
+        if (array == null) {
+          return null;
+        }
+        String[] outgoing = new String[array.length];
+        for (int i = 0; i < array.length; i++) {
+          if (array[i] != null) {
+            outgoing[i] = trim(array[i]);
+          }
+        }
+        return outgoing;
+      }
 
 	static public void arrayCopy(Object src, int srcPosition,
 			Object dst, int dstPosition,
@@ -438,7 +453,7 @@ public class DataUtils {
 		return output;
 	}
 
-    static public boolean[] subset(boolean[] list, int start) {
+	static public boolean[] subset(boolean[] list, int start) {
 		return subset(list, start, list.length - start);
 	}
 
@@ -568,8 +583,8 @@ public class DataUtils {
 		System.arraycopy(list, start, outgoing, 0, count);
 		return outgoing;
 	}
-    
-    static public boolean[] expand(boolean[] list) {
+
+	static public boolean[] expand(boolean[] list) {
 		return expand(list, list.length > 0 ? list.length << 1 : 1);
 	}
 
@@ -669,7 +684,7 @@ public class DataUtils {
 		return temp;
 	}
 
-    static final public int parseInt(boolean what) {
+	static final public int parseInt(boolean what) {
 		return what ? 1 : 0;
 	}
 
@@ -788,7 +803,7 @@ public class DataUtils {
 		return output;
 	}
 
-    static public String[] loadStrings(File file) {
+	static public String[] loadStrings(File file) {
 		if (!file.exists()) {
 			System.err.println(file + " does not exist, loadStrings() will return null");
 			return null;
@@ -800,7 +815,7 @@ public class DataUtils {
 			try {
 				is.close();
 			} catch (IOException e) {
-				e.//printStackTrace();
+				//e.printStackTrace();
 			}
 			return outgoing;
 		}
@@ -825,7 +840,7 @@ public class DataUtils {
 				"added to your sketch and is readable.");
 		return null;
 	}
-	
+
 	static public String[] loadStrings(InputStream input) {
 		try {
 			BufferedReader reader =
@@ -869,204 +884,496 @@ public class DataUtils {
 		return null;
 	}
 
-    public InputStream createInput(String filename) {
-        InputStream input = createInputRaw(filename);
-        if (input != null) {
-          // if it's gzip-encoded, automatically decode
-          final String lower = filename.toLowerCase();
-          if (lower.endsWith(".gz") || lower.endsWith(".svgz")) {
-            try {
-              // buffered has to go *around* the GZ, otherwise 25x slower
-              return new BufferedInputStream(new GZIPInputStream(input));
-    
-            } catch (IOException e) {
-              //printStackTrace(e);
-            }
-          } else {
-            return new BufferedInputStream(input);
-          }
-        }
-        return null;
-      }
+	public InputStream createInput(String filename) {
+		InputStream input = createInputRaw(filename);
+		if (input != null) {
+			// if it's gzip-encoded, automatically decode
+			final String lower = filename.toLowerCase();
+			if (lower.endsWith(".gz") || lower.endsWith(".svgz")) {
+				try {
+					// buffered has to go *around* the GZ, otherwise 25x slower
+					return new BufferedInputStream(new GZIPInputStream(input));
 
-      public InputStream createInputRaw(String filename) {
-        if (filename == null) return null;
-    
-        if (sketchPath == null) {
-          System.err.println("The sketch path is not set.");
-          throw new RuntimeException("Files must be loaded inside setup() or after it has been called.");
-        }
-    
-        if (filename.length() == 0) {
-          // an error will be called by the parent function
-          //System.err.println("The filename passed to openStream() was empty.");
+				} catch (IOException e) {
+					//printStackTrace(e);
+				}
+			} else {
+				return new BufferedInputStream(input);
+			}
+		}
+		return null;
+	}
+
+	public InputStream createInputRaw(String filename) {
+		if (filename == null) return null;
+
+		if (sketchPath == null) {
+			System.err.println("The sketch path is not set.");
+			throw new RuntimeException("Files must be loaded inside setup() or after it has been called.");
+		}
+
+		if (filename.length() == 0) {
+			// an error will be called by the parent function
+			//System.err.println("The filename passed to openStream() was empty.");
+			return null;
+		}
+
+		// First check whether this looks like a URL
+		if (filename.contains(":")) {  // at least smells like URL
+			try {
+				URL url = new URL(filename);
+				URLConnection conn = url.openConnection();
+
+				if (conn instanceof HttpURLConnection) {
+					HttpURLConnection httpConn = (HttpURLConnection) conn;
+					// Will not handle a protocol change (see below)
+					httpConn.setInstanceFollowRedirects(true);
+					int response = httpConn.getResponseCode();
+					// Default won't follow HTTP -> HTTPS redirects for security reasons
+					// http://stackoverflow.com/a/1884427
+					if (response >= 300 && response < 400) {
+						String newLocation = httpConn.getHeaderField("Location");
+						return createInputRaw(newLocation);
+					}
+					return conn.getInputStream();
+				} else if (conn instanceof JarURLConnection) {
+					return url.openStream();
+				}
+			} catch (MalformedURLException mfue) {
+				// not a url, that's fine
+
+			} catch (FileNotFoundException fnfe) {
+				// Added in 0119 b/c Java 1.5 throws FNFE when URL not available.
+				// http://dev.processing.org/bugs/show_bug.cgi?id=403
+
+			} catch (IOException e) {
+				// changed for 0117, shouldn't be throwing exception
+				//printStackTrace(e);
+				//System.err.println("Error downloading from URL " + filename);
+				return null;
+				//throw new RuntimeException("Error downloading from URL " + filename);
+			}
+		}
+
+		InputStream stream = null;
+
+		// Moved this earlier than the getResourceAsStream() checks, because
+		// calling getResourceAsStream() on a directory lists its contents.
+		// http://dev.processing.org/bugs/show_bug.cgi?id=716
+		try {
+			// First see if it's in a data folder. This may fail by throwing
+			// a SecurityException. If so, this whole block will be skipped.
+			File file = new File(dataPath(filename));
+			if (!file.exists()) {
+				// next see if it's just in the sketch folder
+				file = sketchFile(filename);
+			}
+
+			if (file.isDirectory()) {
+				return null;
+			}
+			if (file.exists()) {
+				try {
+					// handle case sensitivity check
+					String filePath = file.getCanonicalPath();
+					String filenameActual = new File(filePath).getName();
+					// make sure there isn't a subfolder prepended to the name
+					String filenameShort = new File(filename).getName();
+					// if the actual filename is the same, but capitalized
+					// differently, warn the user.
+					//if (filenameActual.equalsIgnoreCase(filenameShort) &&
+					//!filenameActual.equals(filenameShort)) {
+					if (!filenameActual.equals(filenameShort)) {
+						throw new RuntimeException("This file is named " +
+								filenameActual + " not " +
+								filename + ". Rename the file " +
+								"or change your code.");
+					}
+				} catch (IOException e) { }
+			}
+
+			// if this file is ok, may as well just load it
+			stream = new FileInputStream(file);
+			if (stream != null) return stream;
+
+			// have to break these out because a general Exception might
+			// catch the RuntimeException being thrown above
+		} catch (IOException ioe) {
+		} catch (SecurityException se) { }
+
+		// Using getClassLoader() prevents java from converting dots
+		// to slashes or requiring a slash at the beginning.
+		// (a slash as a prefix means that it'll load from the root of
+		// the jar, rather than trying to dig into the package location)
+		ClassLoader cl = getClass().getClassLoader();
+
+		// by default, data files are exported to the root path of the jar.
+		// (not the data folder) so check there first.
+		stream = cl.getResourceAsStream("data/" + filename);
+		if (stream != null) {
+			String cn = stream.getClass().getName();
+			// this is an irritation of sun's java plug-in, which will return
+			// a non-null stream for an object that doesn't exist. like all good
+			// things, this is probably introduced in java 1.5. awesome!
+			// http://dev.processing.org/bugs/show_bug.cgi?id=359
+			if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
+				return stream;
+			}
+		}
+
+		// When used with an online script, also need to check without the
+		// data folder, in case it's not in a subfolder called 'data'.
+		// http://dev.processing.org/bugs/show_bug.cgi?id=389
+		stream = cl.getResourceAsStream(filename);
+		if (stream != null) {
+			String cn = stream.getClass().getName();
+			if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
+				return stream;
+			}
+		}
+
+		try {
+			// attempt to load from a local file, used when running as
+			// an application, or as a signed applet
+			try {  // first try to catch any security exceptions
+				try {
+					stream = new FileInputStream(dataPath(filename));
+					if (stream != null) return stream;
+				} catch (IOException e2) { }
+
+				try {
+					stream = new FileInputStream(sketchPath(filename));
+					if (stream != null) return stream;
+				} catch (Exception e) { }  // ignored
+
+				try {
+					stream = new FileInputStream(filename);
+					if (stream != null) return stream;
+				} catch (IOException e1) { }
+
+			} catch (SecurityException se) { }  // online, whups
+
+		} catch (Exception e) {
+			//printStackTrace(e);
+		}
+
+		return null;
+	}
+
+
+	static public InputStream createInput(File file) {
+		if (file == null) {
+			throw new IllegalArgumentException("File passed to createInput() was null");
+		}
+		if (!file.exists()) {
+			System.err.println(file + " does not exist, createInput() will return null");
+			return null;
+		}
+		try {
+			InputStream input = new FileInputStream(file);
+			final String lower = file.getName().toLowerCase();
+			if (lower.endsWith(".gz") || lower.endsWith(".svgz")) {
+				return new BufferedInputStream(new GZIPInputStream(input));
+			}
+			return new BufferedInputStream(input);
+
+		} catch (IOException e) {
+			System.err.println("Could not createInput() for " + file);
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
+	public PrintWriter createWriter(String filename) {
+		return createWriter(saveFile(filename));
+	}
+
+
+	/**
+	 * @nowebref
+	 * I want to print lines to a file. I have RSI from typing these
+	 * eight lines of code so many times.
+	 */
+	static public PrintWriter createWriter(File file) {
+		if (file == null) {
+			throw new RuntimeException("File passed to createWriter() was null");
+		}
+		try {
+			createPath(file);  // make sure in-between folders exist
+			OutputStream output = new FileOutputStream(file);
+			if (file.getName().toLowerCase().endsWith(".gz")) {
+				output = new GZIPOutputStream(output);
+			}
+			return createWriter(output);
+
+		} catch (Exception e) {
+			throw new RuntimeException("Couldn't create a writer for " +
+					file.getAbsolutePath(), e);
+		}
+	}
+
+	public String dataPath(String where) {
+		return dataFile(where).getAbsolutePath();
+	}
+
+	public File dataFile(String where) {
+		// isAbsolute() could throw an access exception, but so will writing
+		// to the local disk using the sketch path, so this is safe here.
+		File why = new File(where);
+		if (why.isAbsolute()) return why;
+
+		URL jarURL = getClass().getProtectionDomain().getCodeSource().getLocation();
+		// Decode URL
+		String jarPath;
+		try {
+			jarPath = jarURL.toURI().getPath();
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			return null;
+		}
+		if (jarPath.contains("Contents/Java/")) {
+			File containingFolder = new File(jarPath).getParentFile();
+			File dataFolder = new File(containingFolder, "data");
+			return new File(dataFolder, where);
+		}
+		// Windows, Linux, or when not using a Mac OS X .app file
+		File workingDirItem =
+				new File(sketchPath + File.separator + "data" + File.separator + where);
+		//    if (workingDirItem.exists()) {
+		return workingDirItem;
+		//    }
+		//    // In some cases, the current working directory won't be set properly.
+	}
+
+
+	/**
+	 * @nowebref
+	 * I want to print lines to a file. Why am I always explaining myself?
+	 * It's the JavaSoft API engineers who need to explain themselves.
+	 */
+	static public PrintWriter createWriter(OutputStream output) {
+		BufferedOutputStream bos = new BufferedOutputStream(output, 8192);
+		OutputStreamWriter osw =
+				new OutputStreamWriter(bos, StandardCharsets.UTF_8);
+		return new PrintWriter(osw);
+	}
+
+	public String savePath(String where) {
+		if (where == null) return null;
+		String filename = sketchPath(where);
+		createPath(filename);
+		return filename;
+	}
+
+
+	/**
+	 * Identical to savePath(), but returns a File object.
+	 */
+	public File saveFile(String where) {
+		return new File(savePath(where));
+	}
+
+	static public void createPath(String path) {
+		createPath(new File(path));
+	}
+
+
+	static public void createPath(File file) {
+		try {
+			String parent = file.getParent();
+			if (parent != null) {
+				File unit = new File(parent);
+				if (!unit.exists()) unit.mkdirs();
+			}
+		} catch (SecurityException se) {
+			System.err.println("You don't have permissions to create " +
+					file.getAbsolutePath());
+		}
+	}
+
+	static protected String calcSketchPath() {
+		// try to get the user folder. if running under java web start,
+		// this may cause a security exception if the code is not signed.
+		// http://processing.org/discourse/yabb_beta/YaBB.cgi?board=Integrate;action=display;num=1159386274
+		String folder = null;
+		try {
+			folder = System.getProperty("user.dir");
+
+			URL jarURL =
+					FXApp.class.getProtectionDomain().getCodeSource().getLocation();
+			// Decode URL
+			String jarPath = jarURL.toURI().getSchemeSpecificPart();
+
+			// Workaround for bug in Java for OS X from Oracle (7u51)
+			// https://github.com/processing/processing/issues/2181
+			if (FXApp.platform == MACOSX) {
+				if (jarPath.contains("Contents/Java/")) {
+					String appPath = jarPath.substring(0, jarPath.indexOf(".app") + 4);
+					File containingFolder = new File(appPath).getParentFile();
+					folder = containingFolder.getAbsolutePath();
+				}
+			} else {
+				// Working directory may not be set properly, try some options
+				// https://github.com/processing/processing/issues/2195
+				if (jarPath.contains("/lib/")) {
+					// Windows or Linux, back up a directory to get the executable
+					folder = new File(jarPath, "../..").getCanonicalPath();
+				}
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return folder;
+	}
+
+	private String sketchPath;
+
+	public String sketchPath() {
+		if (sketchPath == null) {
+			sketchPath = calcSketchPath();
+		}
+		return sketchPath;
+	}
+
+
+	/**
+	 * Prepend the sketch folder path to the filename (or path) that is
+	 * passed in. External libraries should use this function to save to
+	 * the sketch folder.
+	 * <p/>
+	 * Note that when running as an applet inside a web browser,
+	 * the sketchPath will be set to null, because security restrictions
+	 * prevent applets from accessing that information.
+	 * <p/>
+	 * This will also cause an error if the sketch is not inited properly,
+	 * meaning that init() was never called on the PApplet when hosted
+	 * my some other main() or by other code. For proper use of init(),
+	 * see the examples in the main description text for PApplet.
+	 */
+	public String sketchPath(String where) {
+		if (sketchPath() == null) {
+			return where;
+		}
+		// isAbsolute() could throw an access exception, but so will writing
+		// to the local disk using the sketch path, so this is safe here.
+		// for 0120, added a try/catch anyways.
+		try {
+			if (new File(where).isAbsolute()) return where;
+		} catch (Exception e) { }
+
+		return sketchPath() + File.separator + where;
+	}
+
+
+	public File sketchFile(String where) {
+		return new File(sketchPath(where));
+	}
+
+    public BufferedReader createReader(String filename) {
+        InputStream is = createInput(filename);
+        if (is == null) {
+          System.err.println("The file \"" + filename + "\" " +
+                           "is missing or inaccessible, make sure " +
+                           "the URL is valid or that the file has been " +
+                           "added to your sketch and is readable.");
           return null;
         }
-    
-        // First check whether this looks like a URL
-        if (filename.contains(":")) {  // at least smells like URL
-          try {
-            URL url = new URL(filename);
-            URLConnection conn = url.openConnection();
-    
-            if (conn instanceof HttpURLConnection) {
-              HttpURLConnection httpConn = (HttpURLConnection) conn;
-              // Will not handle a protocol change (see below)
-              httpConn.setInstanceFollowRedirects(true);
-              int response = httpConn.getResponseCode();
-              // Default won't follow HTTP -> HTTPS redirects for security reasons
-              // http://stackoverflow.com/a/1884427
-              if (response >= 300 && response < 400) {
-                String newLocation = httpConn.getHeaderField("Location");
-                return createInputRaw(newLocation);
-              }
-              return conn.getInputStream();
-            } else if (conn instanceof JarURLConnection) {
-              return url.openStream();
-            }
-          } catch (MalformedURLException mfue) {
-            // not a url, that's fine
-    
-          } catch (FileNotFoundException fnfe) {
-            // Added in 0119 b/c Java 1.5 throws FNFE when URL not available.
-            // http://dev.processing.org/bugs/show_bug.cgi?id=403
-    
-          } catch (IOException e) {
-            // changed for 0117, shouldn't be throwing exception
-            //printStackTrace(e);
-            //System.err.println("Error downloading from URL " + filename);
-            return null;
-            //throw new RuntimeException("Error downloading from URL " + filename);
-          }
-        }
-    
-        InputStream stream = null;
-    
-        // Moved this earlier than the getResourceAsStream() checks, because
-        // calling getResourceAsStream() on a directory lists its contents.
-        // http://dev.processing.org/bugs/show_bug.cgi?id=716
-        try {
-          // First see if it's in a data folder. This may fail by throwing
-          // a SecurityException. If so, this whole block will be skipped.
-          File file = new File(dataPath(filename));
-          if (!file.exists()) {
-            // next see if it's just in the sketch folder
-            file = sketchFile(filename);
-          }
-    
-          if (file.isDirectory()) {
-            return null;
-          }
-          if (file.exists()) {
-            try {
-              // handle case sensitivity check
-              String filePath = file.getCanonicalPath();
-              String filenameActual = new File(filePath).getName();
-              // make sure there isn't a subfolder prepended to the name
-              String filenameShort = new File(filename).getName();
-              // if the actual filename is the same, but capitalized
-              // differently, warn the user.
-              //if (filenameActual.equalsIgnoreCase(filenameShort) &&
-              //!filenameActual.equals(filenameShort)) {
-              if (!filenameActual.equals(filenameShort)) {
-                throw new RuntimeException("This file is named " +
-                                           filenameActual + " not " +
-                                           filename + ". Rename the file " +
-                                           "or change your code.");
-              }
-            } catch (IOException e) { }
-          }
-    
-          // if this file is ok, may as well just load it
-          stream = new FileInputStream(file);
-          if (stream != null) return stream;
-    
-          // have to break these out because a general Exception might
-          // catch the RuntimeException being thrown above
-        } catch (IOException ioe) {
-        } catch (SecurityException se) { }
-    
-        // Using getClassLoader() prevents java from converting dots
-        // to slashes or requiring a slash at the beginning.
-        // (a slash as a prefix means that it'll load from the root of
-        // the jar, rather than trying to dig into the package location)
-        ClassLoader cl = getClass().getClassLoader();
-    
-        // by default, data files are exported to the root path of the jar.
-        // (not the data folder) so check there first.
-        stream = cl.getResourceAsStream("data/" + filename);
-        if (stream != null) {
-          String cn = stream.getClass().getName();
-          // this is an irritation of sun's java plug-in, which will return
-          // a non-null stream for an object that doesn't exist. like all good
-          // things, this is probably introduced in java 1.5. awesome!
-          // http://dev.processing.org/bugs/show_bug.cgi?id=359
-          if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
-            return stream;
-          }
-        }
-    
-        // When used with an online script, also need to check without the
-        // data folder, in case it's not in a subfolder called 'data'.
-        // http://dev.processing.org/bugs/show_bug.cgi?id=389
-        stream = cl.getResourceAsStream(filename);
-        if (stream != null) {
-          String cn = stream.getClass().getName();
-          if (!cn.equals("sun.plugin.cache.EmptyInputStream")) {
-            return stream;
-          }
-        }
-    
-        try {
-          // attempt to load from a local file, used when running as
-          // an application, or as a signed applet
-          try {  // first try to catch any security exceptions
-            try {
-              stream = new FileInputStream(dataPath(filename));
-              if (stream != null) return stream;
-            } catch (IOException e2) { }
-    
-            try {
-              stream = new FileInputStream(sketchPath(filename));
-              if (stream != null) return stream;
-            } catch (Exception e) { }  // ignored
-    
-            try {
-              stream = new FileInputStream(filename);
-              if (stream != null) return stream;
-            } catch (IOException e1) { }
-    
-          } catch (SecurityException se) { }  // online, whups
-    
-        } catch (Exception e) {
-          //printStackTrace(e);
-        }
-    
-        return null;
+        return createReader(is);
       }
     
-
-      static public InputStream createInput(File file) {
-        if (file == null) {
-          throw new IllegalArgumentException("File passed to createInput() was null");
-        }
-        if (!file.exists()) {
-          System.err.println(file + " does not exist, createInput() will return null");
-          return null;
-        }
+    
+      /**
+       * @nowebref
+       */
+      static public BufferedReader createReader(File file) {
         try {
-          InputStream input = new FileInputStream(file);
-          final String lower = file.getName().toLowerCase();
-          if (lower.endsWith(".gz") || lower.endsWith(".svgz")) {
-            return new BufferedInputStream(new GZIPInputStream(input));
+          InputStream is = new FileInputStream(file);
+          if (file.getName().toLowerCase().endsWith(".gz")) {
+            is = new GZIPInputStream(is);
           }
-          return new BufferedInputStream(input);
+          return createReader(is);
     
         } catch (IOException e) {
-          System.err.println("Could not createInput() for " + file);
-          e.printStackTrace();
-          return null;
+          // Re-wrap rather than forcing novices to learn about exceptions
+          throw new RuntimeException(e);
         }
       }
+    
+    
+      /**
+       * @nowebref
+       * I want to read lines from a stream. If I have to type the
+       * following lines any more I'm gonna send Sun my medical bills.
+       */
+      static public BufferedReader createReader(InputStream input) {
+        InputStreamReader isr =
+          new InputStreamReader(input, StandardCharsets.UTF_8);
+    
+        BufferedReader reader = new BufferedReader(isr);
+        // consume the Unicode BOM (byte order marker) if present
+        try {
+          reader.mark(1);
+          int c = reader.read();
+          // if not the BOM, back up to the beginning again
+          if (c != '\uFEFF') {
+            reader.reset();
+          }
+        } catch (IOException e) {
+          e.printStackTrace();
+        }
+        return reader;
+      }
 
+      static public boolean[] concat(boolean[] a, boolean[] b) {
+        boolean[] c = new boolean[a.length + b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+      }
+    
+      static public byte[] concat(byte[] a, byte[] b) {
+        byte[] c = new byte[a.length + b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+      }
+    
+      static public char[] concat(char[] a, char[] b) {
+        char[] c = new char[a.length + b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+      }
+    
+      static public int[] concat(int[] a, int[] b) {
+        int[] c = new int[a.length + b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+      }
+    
+      static public float[] concat(float[] a, float[] b) {
+        float[] c = new float[a.length + b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+      }
+    
+      static public String[] concat(String[] a, String[] b) {
+        String[] c = new String[a.length + b.length];
+        System.arraycopy(a, 0, c, 0, a.length);
+        System.arraycopy(b, 0, c, a.length, b.length);
+        return c;
+      }
+    
+      static public Object concat(Object a, Object b) {
+        Class<?> type = a.getClass().getComponentType();
+        int alength = Array.getLength(a);
+        int blength = Array.getLength(b);
+        Object outgoing = Array.newInstance(type, alength + blength);
+        System.arraycopy(a, 0, outgoing, 0, alength);
+        System.arraycopy(b, 0, outgoing, alength, blength);
+        return outgoing;
+      }
 }

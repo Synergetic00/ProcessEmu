@@ -13,7 +13,8 @@ import types.*;
 
 public class FXApp {
 
-    GraphicsContext gc;
+    public static int platform;
+	GraphicsContext gc;
     public PGraphics g;
     public int width, height;
 	public boolean keyRepeatEnabled;
