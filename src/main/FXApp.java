@@ -1,19 +1,24 @@
 package main;
 
+import java.io.File;
+import java.io.OutputStream;
+
 import event.MouseEvent;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.ScrollEvent;
+import types.*;
 
 public class FXApp {
 
     GraphicsContext gc;
     public PGraphics g;
     public int width, height;
+	public boolean keyRepeatEnabled;
 
     public FXApp(GraphicsContext gc) {
         this.gc = gc;
-        g = new PGraphics(gc, this);
+        //g = new PGraphics(gc, this);
         size(100,100);
         //fill(255);
         //stroke(0);
@@ -21,8 +26,8 @@ public class FXApp {
 
     public void size(int w, int h) {
         //g.size(w, h);
-        width = g.gs.width;
-        height = g.gs.height; 
+        //width = g.gs.width;
+        //height = g.gs.height; 
         //background(204);
     }
 
@@ -99,5 +104,32 @@ public class FXApp {
     public void handleKeyTyped(KeyEvent event) {
         keyTyped();
     }
+
+	public static void createPath(File file) {
+	}
+
+	public String savePath(String filename) {
+		return null;
+	}
+
+	public static OutputStream createOutput(File file) {
+		return null;
+	}
+
+	public int sketchSmooth() {
+		return 0;
+	}
+
+	public int sketchPixelDensity() {
+		return 0;
+	}
+
+	public static String getExtension(String filename) {
+		return null;
+	}
+
+	public Object loadXML(String filename) {
+		return null;
+	}
 
 }

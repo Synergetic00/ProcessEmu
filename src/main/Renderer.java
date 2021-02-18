@@ -3,6 +3,7 @@ package main;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import misc.GraphicState;
+import types.*;
 
 public class Renderer {
 

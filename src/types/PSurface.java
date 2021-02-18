@@ -2,7 +2,10 @@ package types;
 
 public class PSurface {
 
-    public void setLocation(int x, int y) {
+    public PSurface(PGraphics pGraphics) {
+	}
+
+	public void setLocation(int x, int y) {
         
     }
 

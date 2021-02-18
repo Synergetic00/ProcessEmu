@@ -8,6 +8,8 @@ public class PVector {
 
     public double x, y, z;
 
+    public PVector() {}
+
     public PVector(double x, double y) {
         this.x = x;
         this.y = y;
