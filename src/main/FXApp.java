@@ -2,7 +2,7 @@ package main;
 
 import java.util.*;
 
-import types.PGraphics;
+import types.*;
 
 public class FXApp {
 
@@ -11,6 +11,7 @@ public class FXApp {
     public String[] args;
     protected boolean keyRepeatEnabled = false;
     public boolean focused = false;
+    protected PSurface surface;
 
     public static final int DEFAULT_WIDTH = 100;
     public static final int DEFAULT_HEIGHT = 100;
@@ -35,6 +36,7 @@ public class FXApp {
     protected boolean looping = true;
     protected boolean redraw = true;
     public volatile boolean finished;
+    static Throwable uncaughtThrowable;
     protected boolean exitCalled;
 
 }

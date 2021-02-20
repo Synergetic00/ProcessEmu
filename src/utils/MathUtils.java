@@ -265,6 +265,12 @@ public class MathUtils {
         abs(x); abs(y); abs(z);
 
         int xi = (int) x, yi = (int) y, zi = (int) z;
+        double xd = x - xi;
+        double yd = y - yi;
+        double zd = z - zi;
+        double rxd, ryd;
+        double r = 0, ampl = 0.5;
+        double n1, n2, n3;
 
 	}
 
