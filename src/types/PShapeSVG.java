@@ -32,7 +32,7 @@ import static utils.DataUtils.*;
 import static utils.MathUtils.*;
 import static utils.Constants.*;
 
-// TODO replace these with PMatrix2D
+
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 
@@ -161,7 +161,7 @@ public class PShapeSVG extends PShape {
           height = viewBox[3];
         } else {
           // http://www.w3.org/TR/SVG/coords.html#ViewBoxAttribute
-          // TODO: preserveAspectRatio.
+          
           if (matrix == null) matrix = new PMatrix2D();
           matrix.scale(width/viewBox[2], height/viewBox[3]);
           matrix.translate(-viewBox[0], -viewBox[1]);
@@ -1733,7 +1733,7 @@ public class PShapeSVG extends PShape {
     PFont font;
 
     public LineOfText(PShapeSVG parent, XML properties) {
-      // TODO: child should ideally be parsed too for inline content.
+      
       super(parent, properties, false);
 
       //get location
@@ -1962,7 +1962,7 @@ public class PShapeSVG extends PShape {
     }
 
 
-    protected boolean isLegit() {  // TODO need a better way to handle this...
+    protected boolean isLegit() {  
       return vertexCount != 0;
     }
   }

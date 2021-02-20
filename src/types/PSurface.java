@@ -524,7 +524,7 @@ public class PSurface {
 
     //setCanvasSize();
 
-    // TODO add window closing behavior
+    
 //    frame.addWindowListener(new WindowAdapter() {
 //      @Override
 //      public void windowClosing(WindowEvent e) {
@@ -532,7 +532,7 @@ public class PSurface {
 //      }
 //    });
 
-    // TODO handle frame resizing events
+    
 //    setupFrameResizeListener();
 
     if (sketch.getGraphics().displayable()) {
@@ -578,7 +578,7 @@ public class PSurface {
   // http://download.java.net/jdk8/jfxdocs/javafx/stage/Stage.html#setFullScreenExitHint-java.lang.String-
   // http://download.java.net/jdk8/jfxdocs/javafx/stage/Stage.html#setFullScreenExitKeyCombination-javafx.scene.input.KeyCombination-
   public void placePresent(int stopColor) {
-    // TODO Auto-generated method stub
+    
     FXApp.hideMenuBar();
   }
 
@@ -641,7 +641,7 @@ public class PSurface {
 
 
   public void setSmooth(int level) {
-    // TODO Auto-generated method stub
+    
 
   }
 

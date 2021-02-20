@@ -1011,7 +1011,7 @@ public class PImage implements Cloneable {
 
 		switch (kind) {
 		case BLUR:
-			// TODO write basic low-pass filter blur here
+			
 			// what does photoshop do on the edges with this guy?
 			// better yet.. why bother? just use gaussian with radius 1
 			filter(BLUR, 1);

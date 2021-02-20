@@ -733,7 +733,7 @@ public final class PMatrix3D implements PMatrix {
 
 
   protected void invRotate(float angle, float v0, float v1, float v2) {
-    //TODO should make sure this vector is normalized
+    
 
     float c = (float) cos(-angle);
     float s = (float) sin(-angle);

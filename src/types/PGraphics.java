@@ -302,7 +302,7 @@ public class PGraphics extends PImage {
 
     static public final int R = 3;  // actual rgb, after lighting
     static public final int G = 4;  // fill stored here, transform in place
-    static public final int B = 5;  // TODO don't do that anymore (?)
+    static public final int B = 5;
     static public final int A = 6;
   
     static public final int U = 7; // texture
@@ -346,7 +346,7 @@ public class PGraphics extends PImage {
     static public final int AB = 27;
   
     // Diffuse is shared with fill.
-    static public final int DR = 3;  // TODO needs to not be shared, this is a material property
+    static public final int DR = 3;  
     static public final int DG = 4;
     static public final int DB = 5;
     static public final int DA = 6;
@@ -4212,7 +4212,7 @@ public class PGraphics extends PImage {
                     target = targetPool.take();
                     if (target.pixelWidth != requestedWidth ||
                             target.pixelHeight != requestedHeight) {
-                        // TODO: this kills performance when saving different sizes
+                        
                         target = new PImage(requestedWidth, requestedHeight);
                     }
                 }

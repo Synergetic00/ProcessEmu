@@ -292,7 +292,7 @@ public class PShape {
     if (family == GROUP) {
       // GROUP shapes are always marked as ended.
 //      shapeCreated = true;
-      // TODO why was this commented out?
+      
     }
   }
 
@@ -457,7 +457,7 @@ public class PShape {
 
 
   /*
-  // TODO unapproved
+  
   protected PVector getTop() {
     return getTop(null);
   }
@@ -509,7 +509,7 @@ public class PShape {
 //  /**
 //   * Return true if this shape requires rendering through OpenGL. Defaults to false.
 //   */
-//  // TODO unapproved
+//  
 //  public boolean isGL() {
 //    return false;
 //  }
@@ -549,7 +549,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   protected void solid(boolean solid) {
   }
 
@@ -1348,7 +1348,7 @@ public class PShape {
 //    }
 
     /*
-    // TODO this is not sufficient, since not saving fillR et al.
+    
     g.stroke = strokeSaved;
     g.strokeColor = strokeColorSaved;
     g.strokeWeight = strokeWeightSaved;
@@ -1376,7 +1376,7 @@ public class PShape {
   // Shape copy
 
 
-  // TODO unapproved
+  
   static protected PShape createShape(FXApp parent, PShape src) {
     PShape dest = null;
     if (src.family == GROUP) {
@@ -1397,7 +1397,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   static protected void copyGroup(FXApp parent, PShape src, PShape dest) {
     copyMatrix(src, dest);
     copyStyles(src, dest);
@@ -1409,7 +1409,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   static protected void copyPrimitive(PShape src, PShape dest) {
     copyMatrix(src, dest);
     copyStyles(src, dest);
@@ -1417,7 +1417,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   static protected void copyGeometry(PShape src, PShape dest) {
     dest.beginShape(src.getKind());
 
@@ -1466,7 +1466,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   static protected void copyPath(PShape src, PShape dest) {
     copyMatrix(src, dest);
     copyStyles(src, dest);
@@ -1476,7 +1476,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   static protected void copyMatrix(PShape src, PShape dest) {
     if (src.matrix != null) {
       dest.applyMatrix(src.matrix);
@@ -1484,7 +1484,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   static protected void copyStyles(PShape src, PShape dest) {
     dest.ellipseMode = src.ellipseMode;
     dest.rectMode = src.rectMode;
@@ -1508,7 +1508,7 @@ public class PShape {
   }
 
 
-  // TODO unapproved
+  
   static protected void copyImage(PShape src, PShape dest) {
     if (src.image != null) {
       dest.texture(src.image);
@@ -2901,7 +2901,7 @@ public class PShape {
       if (matrix != null) {
         // apply the inverse transformation matrix to the point coordinates
         PMatrix inverseCoords = matrix.get();
-        // TODO why is this called twice? [fry 190724]
+        
         // commit was https://github.com/processing/processing/commit/027fc7a4f8e8d0a435366eae754304eea282512a
         inverseCoords.invert();  // maybe cache this?
         inverseCoords.invert();  // maybe cache this?
