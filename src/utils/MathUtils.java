@@ -254,10 +254,18 @@ public class MathUtils {
 
 	public double noise(double x, double y, double z) {
 		setupRandom(perlinRandom);
-        if (perlin == null) perlin = new double[PERLIN_SIZE + 1];
-        for (double i : perlin) i = perlinRandom.nextDouble();
-        perlinCosTable = PGraphics.cosLUT;
-        
+        if (perlin == null) {
+            perlin = new double[PERLIN_SIZE + 1];
+            for (double i : perlin) i = perlinRandom.nextDouble();
+            perlinCosTable = PGraphics.cosLUT;
+            perlinTwoPi = perlinPi = PGraphics.SINCOS_LENGTH;
+            perlinPi >>= 1;
+        }
+
+        abs(x); abs(y); abs(z);
+
+        int xi = (int) x, yi = (int) y, zi = (int) z;
+
 	}
 
 
