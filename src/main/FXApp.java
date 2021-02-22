@@ -1,6 +1,8 @@
 package main;
 
 import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.*;
 import java.nio.charset.StandardCharsets;
 import java.awt.image.BufferedImage;
@@ -51,9 +53,41 @@ public class FXApp {
 
     // draw()
 
-    public void draw() {}
+    public void draw() {
+        finished = true;
+    }
 
     // exit()
+
+    public void exit() {
+        if (surface.isStopped()) {
+            exitActual();
+        } else if (looping) {
+            finished = true;
+            exitCalled = true;
+        } else if (!looping) {
+            dispose();
+            exitActual();
+        }
+    }
+
+    public boolean exitCalled() {
+        return exitCalled;
+    }
+
+    public void exitActual() {
+        try {
+            System.exit(0);
+        } catch(SecurityException se) {}
+    }
+
+    public void dispose() {
+        finished = true;
+        if (surface.stopThread()) {
+            if (pg != null) pg.dispose();
+        }
+    }
+
     // loop()
     // noLoop()
     // pop()
@@ -69,6 +103,49 @@ public class FXApp {
     public void setup() {}
 
     // thread()
+
+    public void thread(final String name) {
+        Thread later = new Thread() {
+            @Override
+            public void run() {
+                method(name);
+            }
+        };
+        later.start();
+    }
+
+    public void method(String name) {
+        try {
+            Method method = getClass().getMethod(name, new Class[] {});
+            method.invoke(this, new Object[] { });
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.getTargetException().printStackTrace();
+        } catch (NoSuchMethodException nsme) {
+            System.err.println("There is no public " + name + "() method " + "in the class " + getClass().getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /////////////////
+    // Environment //
+    /////////////////
+
+    // cursor()
+    // delay()
+    // displayDensity()
+    // frameRate()
+    // fullScreen()
+    // noCursor()
+    // noSmooth()
+    // pixelDensity()
+    // settings()
+    // size()
+    // smooth()
 
     ///////////
     // Shape //
