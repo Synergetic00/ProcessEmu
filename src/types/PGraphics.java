@@ -2690,8 +2690,8 @@ public class PGraphics extends PImage {
 
     protected void textSentenceBreak(int start, int stop) {
         if (textBreakCount == textBreakStart.length) {
-            textBreakStart = FXApp.expand(textBreakStart);
-            textBreakStop = FXApp.expand(textBreakStop);
+            textBreakStart = expand(textBreakStart);
+            textBreakStop = expand(textBreakStop);
         }
         textBreakStart[textBreakCount] = start;
         textBreakStop[textBreakCount] = stop;
@@ -3047,7 +3047,7 @@ public class PGraphics extends PImage {
 
     public void pushStyle() {
         if (styleStackDepth == styleStack.length) {
-            styleStack = (PStyle[]) FXApp.expand(styleStack);
+            styleStack = (PStyle[]) expand(styleStack);
         }
         if (styleStack[styleStackDepth] == null) {
             styleStack[styleStackDepth] = new PStyle();

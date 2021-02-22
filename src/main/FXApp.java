@@ -45,6 +45,31 @@ public class FXApp {
         t.printStackTrace();
     }
 
+    ///////////////
+    // Structure //
+    ///////////////
+
+    // draw()
+
+    public void draw() {}
+
+    // exit()
+    // loop()
+    // noLoop()
+    // pop()
+    // popStyle()
+    // push()
+    // pushStyle()
+    // redraw()
+    // setLocation()
+    // setResizable()
+    // setTitle()
+    // setup()
+
+    public void setup() {}
+
+    // thread()
+
     ///////////
     // Shape //
     ///////////
@@ -1111,9 +1136,6 @@ public class FXApp {
 
     public PImage loadImage(String filename, String extension) { // , Object params) {
 
-        // awaitAsyncSaveCompletion() has to run on the main thread, because P2D
-        // and P3D call GL functions. If this runs on background, requestImage()
-        // already called awaitAsyncSaveCompletion() on the main thread.
         if (pg != null && !Thread.currentThread().getName().startsWith(REQUEST_IMAGE_THREAD_PREFIX)) {
             pg.awaitAsyncSaveCompletion(filename);
         }
@@ -1126,13 +1148,8 @@ public class FXApp {
 
             } else {
                 extension = lower.substring(dot + 1);
-
-                // check for, and strip any parameters on the url, i.e.
-                // filename.jpg?blah=blah&something=that
                 int question = extension.indexOf('?');
-                if (question != -1) {
-                    extension = extension.substring(0, question);
-                }
+                if (question != -1) extension = extension.substring(0, question);
             }
         }
 
@@ -1161,9 +1178,6 @@ public class FXApp {
             return image;
         }
 
-        // For jpeg, gif, and png, load them using createImage(),
-        // because the javax.imageio code was found to be much slower.
-        // http://dev.processing.org/bugs/show_bug.cgi?id=392
         try {
             if (extension.equals("jpg") || extension.equals("jpeg") || extension.equals("gif")
                     || extension.equals("png") || extension.equals("unknown")) {
@@ -1248,19 +1262,6 @@ public class FXApp {
             offset += count;
         } while (offset < 18);
 
-        /*
-         * header[2] image type code 2 (0x02) - Uncompressed, RGB images. 3 (0x03) -
-         * Uncompressed, black and white images. 10 (0x0A) - Run-length encoded RGB
-         * images. 11 (0x0B) - Compressed, black and white images. (grayscale?)
-         * 
-         * header[16] is the bit depth (8, 24, 32)
-         * 
-         * header[17] image descriptor (packed bits) 0x20 is 32 = origin upper-left 0x28
-         * is 32 + 8 = origin upper-left + 32 bits
-         * 
-         * 7 6 5 4 3 2 1 0 128 64 32 16 8 4 2 1
-         */
-
         int format = 0;
 
         if (((header[2] == 3) || (header[2] == 11)) && // B&W, plus RLE or not
@@ -1280,9 +1281,6 @@ public class FXApp {
 
         if (format == 0) {
             System.err.println("Unknown .tga file format for " + filename);
-            // " (" + header[2] + " " +
-            // (header[16] & 0xff) + " " +
-            // hex(header[17], 2) + ")");
             return null;
         }
 
