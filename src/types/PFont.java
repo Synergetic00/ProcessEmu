@@ -844,21 +844,6 @@ public class PFont {
 			0xFB01, 0xFB02
 	};
 
-
-	/**
-	 * The default Processing character set.
-	 * <P>
-	 * This is the union of the Mac Roman and Windows ANSI (CP1250)
-	 * character sets. ISO 8859-1 Latin 1 is Unicode characters 0x80 -> 0xFF,
-	 * and would seem a good standard, but in practice, most P5 users would
-	 * rather have characters that they expect from their platform's fonts.
-	 * <P>
-	 * This is more of an interim solution until a much better
-	 * font solution can be determined. (i.e. create fonts on
-	 * the fly from some sort of vector format).
-	 * <P>
-	 * Not that I expect that to happen.
-	 */
 	static public char[] CHARSET;
 	static {
 		CHARSET = new char[126-33+1 + EXTRA_CHARS.length];
