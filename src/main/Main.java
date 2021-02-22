@@ -4,7 +4,6 @@ import misc.*;
 
 import static misc.DynLoader.*;
 import static utils.Constants.*;
-import static utils.MathUtils.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -63,10 +62,6 @@ public class Main extends Application {
     }
 
     public void runTestCode() {
-        String osName = System.getProperty("os.name");
-        System.out.println(osName);
-        int u = 4;
-        int v = sqrt(u);
-        System.out.println(v);
+
     }
 }

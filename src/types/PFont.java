@@ -61,7 +61,7 @@ import static utils.DataUtils.*;
  * </PRE>
  * @webref typography
  * @see PApplet#loadFont(String)
- * @see PApplet#createFont(String, float, boolean, char[])
+ * @see PApplet#createFont(String, double, boolean, char[])
  * @see PGraphics#textFont(PFont)
  */
 public class PFont {
@@ -672,7 +672,7 @@ public class PFont {
    * Currently un-implemented for .vlw fonts,
    * but honored for layout in case subclasses use it.
    */
-  public float kern(char a, char b) {
+  public double kern(char a, char b) {
     return 0;
   }
 
@@ -681,8 +681,8 @@ public class PFont {
    * Returns the ascent of this font from the baseline.
    * The value is based on a font of size 1.
    */
-  public float ascent() {
-    return ((float) ascent / (float) size);
+  public double ascent() {
+    return ((double) ascent / (double) size);
   }
 
 
@@ -690,21 +690,21 @@ public class PFont {
    * Returns how far this font descends from the baseline.
    * The value is based on a font size of 1.
    */
-  public float descent() {
-    return ((float) descent / (float) size);
+  public double descent() {
+    return ((double) descent / (double) size);
   }
 
 
   /**
    * Width of this character for a font of size 1.
    */
-  public float width(char c) {
+  public double width(char c) {
     if (c == 32) return width('i');
 
     int cc = index(c);
     if (cc == -1) return 0;
 
-    return ((float) glyphs[cc].setWidth / (float) size);
+    return ((double) glyphs[cc].setWidth / (double) size);
   }
 
 
@@ -726,7 +726,7 @@ public class PFont {
   }
 
 
-  public PShape getShape(char ch, float detail) {
+  public PShape getShape(char ch, double detail) {
     Font font = (Font) getNative();
     if (font == null) {
       throw new IllegalArgumentException("getShape() only works on fonts loaded with createFont()");
@@ -735,7 +735,7 @@ public class PFont {
     PShape s = new PShape(PShape.PATH);
 
     // six element array received from the Java2D path iterator
-    float[] iterPoints = new float[6];
+    double[] iterPoints = new double[6];
     // array passed to createGylphVector
     char[] textArray = new char[] { ch };
 

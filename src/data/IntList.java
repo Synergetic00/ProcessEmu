@@ -26,7 +26,7 @@ import static utils.MathUtils.*;
  * a sorted copy, use list.copy().sort().
  *
  * @webref data:composite
- * @see FloatList
+ * @see DoubleList
  * @see StringList
  */
 public class IntList implements Iterable<Integer> {
@@ -434,9 +434,7 @@ public class IntList implements Iterable<Integer> {
     }
     return -1;
   }
-
-
-  // !!! TODO this is not yet correct, because it's not being reset when
+  
   // the rest of the entries are changed
 //  protected void cacheIndices() {
 //    indexCache = new HashMap<Integer, Integer>();
@@ -843,12 +841,12 @@ public class IntList implements Iterable<Integer> {
    * to returns a new list (because IntList/Dict can't do percentages or
    * normalization in place on int values).
    */
-  public FloatList getPercent() {
+  public DoubleList getPercent() {
     double sum = 0;
     for (float value : array()) {
       sum += value;
     }
-    FloatList outgoing = new FloatList(count);
+    DoubleList outgoing = new DoubleList(count);
     for (int i = 0; i < count; i++) {
       double percent = data[i] / sum;
       outgoing.set(i, (float) percent);
@@ -907,7 +905,7 @@ public class IntList implements Iterable<Integer> {
    * Save tab-delimited entries to a file (TSV format, UTF-8 encoding)
    */
   public void save(File file) {
-    PrintWriter writer = createWriter(file);
+    PrintWriter writer = FXApp.createWriter(file);
     write(writer);
     writer.close();
   }

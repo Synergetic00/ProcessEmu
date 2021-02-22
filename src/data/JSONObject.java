@@ -48,6 +48,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
 
+import main.FXApp;
+
 import static utils.DataUtils.*;
 
 /**
@@ -168,7 +170,7 @@ public class JSONObject {
 
     @Override
     public int hashCode() {
-      // TODO Auto-generated method stub
+      
       return super.hashCode();
     }
   }
@@ -320,10 +322,10 @@ public class JSONObject {
   /**
    * @nowebref
    */
-  public JSONObject(FloatDict dict) {
+  public JSONObject(DoubleDict dict) {
     map = new HashMap<>();
     for (int i = 0; i < dict.size(); i++) {
-      setFloat(dict.key(i), dict.value(i));
+      setDouble(dict.key(i), dict.value(i));
     }
   }
 
@@ -563,7 +565,7 @@ public class JSONObject {
    * @return A string which is the value.
    * @throws RuntimeException if there is no string value for the key.
    * @see JSONObject#getInt(String)
-   * @see JSONObject#getFloat(String)
+   * @see JSONObject#getDouble(String)
    * @see JSONObject#getBoolean(String)
    */
   public String getString(String key) {
@@ -602,7 +604,7 @@ public class JSONObject {
    * @return The integer value.
    * @throws RuntimeException if the key is not found or if the value cannot
    *  be converted to an integer.
-   * @see JSONObject#getFloat(String)
+   * @see JSONObject#getDouble(String)
    * @see JSONObject#getString(String)
    * @see JSONObject#getBoolean(String)
    */
@@ -678,27 +680,6 @@ public class JSONObject {
   }
 
 
-  /**
-   * @webref jsonobject:method
-   * @brief Gets the float value associated with a key
-   * @param key a key string
-   * @see JSONObject#getInt(String)
-   * @see JSONObject#getString(String)
-   * @see JSONObject#getBoolean(String)
-   */
-  public float getFloat(String key) {
-    return (float) getDouble(key);
-  }
-
-
-  public float getFloat(String key, float defaultValue) {
-    try {
-      return getFloat(key);
-    } catch (Exception e) {
-      return defaultValue;
-    }
-  }
-
 
   /**
    * Get the double value associated with a key.
@@ -747,7 +728,7 @@ public class JSONObject {
    * @return The truth.
    * @throws RuntimeException if the value is not a Boolean or the String "true" or "false".
    * @see JSONObject#getInt(String)
-   * @see JSONObject#getFloat(String)
+   * @see JSONObject#getDouble(String)
    * @see JSONObject#getString(String)
    */
   public boolean getBoolean(String key) {
@@ -888,11 +869,11 @@ public class JSONObject {
 //  /**
 //   * Increment a property of a JSONObject. If there is no such property,
 //   * create one with a value of 1. If there is such a property, and if
-//   * it is an Integer, Long, Double, or Float, then add one to it.
+//   * it is an Integer, Long, Double, or Double, then add one to it.
 //   * @param key  A key string.
 //   * @return this.
 //   * @throws JSONException If there is already a property with this name
-//   * that is not an Integer, Long, Double, or Float.
+//   * that is not an Integer, Long, Double, or Double.
 //   */
 //  public JSON increment(String key) {
 //    Object value = this.opt(key);
@@ -904,8 +885,8 @@ public class JSONObject {
 //      this.put(key, ((Long)value).longValue() + 1);
 //    } else if (value instanceof Double) {
 //      this.put(key, ((Double)value).doubleValue() + 1);
-//    } else if (value instanceof Float) {
-//      this.put(key, ((Float)value).floatValue() + 1);
+//    } else if (value instanceof Double) {
+//      this.put(key, ((Double)value).doubleValue() + 1);
 //    } else {
 //      throw new RuntimeException("Unable to increment [" + quote(key) + "].");
 //    }
@@ -1162,7 +1143,7 @@ public class JSONObject {
    * @param key a key string
    * @param value the value to assign
    * @see JSONObject#setInt(String, int)
-   * @see JSONObject#setFloat(String, float)
+   * @see JSONObject#setDouble(String, double)
    * @see JSONObject#setBoolean(String, boolean)
    */
   public JSONObject setString(String key, String value) {
@@ -1179,7 +1160,7 @@ public class JSONObject {
    * @param value the value to assign
    * @return this.
    * @throws RuntimeException If the key is null.
-   * @see JSONObject#setFloat(String, float)
+   * @see JSONObject#setDouble(String, double)
    * @see JSONObject#setString(String, String)
    * @see JSONObject#setBoolean(String, boolean)
    */
@@ -1202,20 +1183,6 @@ public class JSONObject {
     return this;
   }
 
-  /**
-   * @webref jsonobject:method
-   * @brief Put a key/float pair in the JSONObject
-   * @param key a key string
-   * @param value the value to assign
-   * @throws RuntimeException If the key is null or if the number is NaN or infinite.
-   * @see JSONObject#setInt(String, int)
-   * @see JSONObject#setString(String, String)
-   * @see JSONObject#setBoolean(String, boolean)
-   */
-  public JSONObject setFloat(String key, float value) {
-    this.put(key, Double.valueOf(value));
-    return this;
-  }
 
 
   /**
@@ -1242,7 +1209,7 @@ public class JSONObject {
    * @return this.
    * @throws RuntimeException If the key is null.
    * @see JSONObject#setInt(String, int)
-   * @see JSONObject#setFloat(String, float)
+   * @see JSONObject#setDouble(String, double)
    * @see JSONObject#setString(String, String)
    */
   public JSONObject setBoolean(String key, boolean value) {
@@ -1526,7 +1493,7 @@ public class JSONObject {
 
   /**
    * Throw an exception if the object is a NaN or infinite number.
-   * @param o The object to test. If not Float or Double, accepted without
+   * @param o The object to test. If not Double or Double, accepted without
    *    exceptions.
    * @throws RuntimeException If o is infinite or NaN.
    */
@@ -1537,8 +1504,8 @@ public class JSONObject {
           throw new RuntimeException(
             "JSON does not allow non-finite numbers.");
         }
-      } else if (o instanceof Float) {
-        if (((Float)o).isInfinite() || ((Float)o).isNaN()) {
+      } else if (o instanceof Double) {
+        if (((Double)o).isInfinite() || ((Double)o).isNaN()) {
           throw new RuntimeException(
             "JSON does not allow non-finite numbers.");
         }
@@ -1573,7 +1540,7 @@ public class JSONObject {
 
 
   public boolean save(File file, String options) {
-    PrintWriter writer = createWriter(file);
+    PrintWriter writer = FXApp.createWriter(file);
     boolean success = write(writer, options);
     writer.close();
     return success;
@@ -1720,7 +1687,7 @@ public class JSONObject {
         object instanceof Byte   || object instanceof Character  ||
         object instanceof Short  || object instanceof Integer    ||
         object instanceof Long   || object instanceof Boolean    ||
-        object instanceof Float  || object instanceof Double     ||
+        object instanceof Double  || object instanceof Double     ||
         object instanceof String) {
         return object;
       }

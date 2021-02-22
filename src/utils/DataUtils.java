@@ -35,12 +35,13 @@ public class DataUtils {
 
 	static final public String binary(int value, int digits) {
 		String stuff = Integer.toBinaryString(value);
-		if (digits > 32) digits = 32;
+		if (digits > 32)
+			digits = 32;
 		int length = stuff.length();
 		if (length > digits) {
 			return stuff.substring(length - digits);
 		} else if (length < digits) {
-			int offset = 32 - (digits-length);
+			int offset = 32 - (digits - length);
 			return "00000000000000000000000000000000".substring(offset) + stuff;
 		}
 		return stuff;
@@ -75,7 +76,7 @@ public class DataUtils {
 	// byte()
 
 	static final public byte parseByte(boolean what) {
-		return what ? (byte)1 : 0;
+		return what ? (byte) 1 : 0;
 	}
 
 	static final public byte parseByte(char what) {
@@ -93,7 +94,7 @@ public class DataUtils {
 	static final public byte[] parseByte(boolean[] what) {
 		byte[] outgoing = new byte[what.length];
 		for (int i = 0; i < what.length; i++) {
-			outgoing[i] = what[i] ? (byte)1 : 0;
+			outgoing[i] = what[i] ? (byte) 1 : 0;
 		}
 		return outgoing;
 	}
@@ -161,7 +162,8 @@ public class DataUtils {
 	static final public double parseDouble(String what, double otherwise) {
 		try {
 			return Double.parseDouble(what);
-		} catch (NumberFormatException e) { }
+		} catch (NumberFormatException e) {
+		}
 
 		return otherwise;
 	}
@@ -214,12 +216,13 @@ public class DataUtils {
 
 	static final public String hex(int value, int digits) {
 		String stuff = Integer.toHexString(value).toUpperCase();
-		if (digits > 8) digits = 8;
+		if (digits > 8)
+			digits = 8;
 		int length = stuff.length();
 		if (length > digits) {
 			return stuff.substring(length - digits);
 		} else if (length < digits) {
-			return "00000000".substring(8 - (digits-length)) + stuff;
+			return "00000000".substring(8 - (digits - length)) + stuff;
 		}
 		return stuff;
 	}
@@ -254,7 +257,8 @@ public class DataUtils {
 			} else {
 				return Integer.parseInt(what.substring(0, offset));
 			}
-		} catch (NumberFormatException e) { }
+		} catch (NumberFormatException e) {
+		}
 		return otherwise;
 	}
 
@@ -266,7 +270,7 @@ public class DataUtils {
 		return list;
 	}
 
-	static final public int[] parseInt(byte[] what) {  // unsigns
+	static final public int[] parseInt(byte[] what) { // unsigns
 		int[] list = new int[what.length];
 		for (int i = 0; i < what.length; i++) {
 			list[i] = (what[i] & 0xff);
@@ -282,19 +286,19 @@ public class DataUtils {
 		return list;
 	}
 
-	static public int[] parseInt(double[] what) {
+	public static final int[] parseInt(double[] what) {
 		int[] inties = new int[what.length];
 		for (int i = 0; i < what.length; i++) {
-			inties[i] = (int)what[i];
+			inties[i] = (int) what[i];
 		}
 		return inties;
 	}
 
-	static public int[] parseInt(String[] what) {
+	public static final int[] parseInt(String[] what) {
 		return parseInt(what, 0);
 	}
 
-	static public int[] parseInt(String[] what, int missing) {
+	public static final int[] parseInt(String[] what, int missing) {
 		int[] output = new int[what.length];
 		for (int i = 0; i < what.length; i++) {
 			try {
@@ -330,36 +334,41 @@ public class DataUtils {
 
 	static final public String[] str(boolean[] x) {
 		String[] s = new String[x.length];
-		for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+		for (int i = 0; i < x.length; i++)
+			s[i] = String.valueOf(x[i]);
 		return s;
 	}
 
 	static final public String[] str(byte[] x) {
 		String[] s = new String[x.length];
-		for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+		for (int i = 0; i < x.length; i++)
+			s[i] = String.valueOf(x[i]);
 		return s;
 	}
 
 	static final public String[] str(char[] x) {
 		String[] s = new String[x.length];
-		for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+		for (int i = 0; i < x.length; i++)
+			s[i] = String.valueOf(x[i]);
 		return s;
 	}
 
 	static final public String[] str(int[] x) {
 		String[] s = new String[x.length];
-		for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+		for (int i = 0; i < x.length; i++)
+			s[i] = String.valueOf(x[i]);
 		return s;
 	}
 
 	static final public String[] str(double[] x) {
 		String[] s = new String[x.length];
-		for (int i = 0; i < x.length; i++) s[i] = String.valueOf(x[i]);
+		for (int i = 0; i < x.length; i++)
+			s[i] = String.valueOf(x[i]);
 		return s;
 	}
 
 	// unbinary()
-	
+
 	static final public int unbinary(String value) {
 		return Integer.parseInt(value, 2);
 	}
@@ -386,22 +395,23 @@ public class DataUtils {
 
 	// join()
 
-	static public String join(String[] list, char separator) {
+	public static final String join(String[] list, char separator) {
 		return join(list, String.valueOf(separator));
 	}
 
-	static public String join(String[] list, String separator) {
+	public static final String join(String[] list, String separator) {
 		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < list.length; i++) {
-			if (i != 0) sb.append(separator);
+			if (i != 0)
+				sb.append(separator);
 			sb.append(list[i]);
 		}
 		return sb.toString();
 	}
-	
+
 	// match()
 
-	static public String[] match(String str, String regexp) {
+	public static final String[] match(String str, String regexp) {
 		Pattern p = matchPattern(regexp);
 		Matcher m = p.matcher(str);
 		if (m.find()) {
@@ -436,43 +446,49 @@ public class DataUtils {
 
 	// matchAll()
 
-	static public String[][] matchAll(String str, String regexp) {
+	public static final String[][] matchAll(String str, String regexp) {
 		Pattern p = matchPattern(regexp);
 		Matcher m = p.matcher(str);
 		List<String[]> results = new ArrayList<>();
 		int count = m.groupCount() + 1;
 		while (m.find()) {
 			String[] groups = new String[count];
-			for (int i = 0; i < count; i++) groups[i] = m.group(i);
+			for (int i = 0; i < count; i++)
+				groups[i] = m.group(i);
 			results.add(groups);
 		}
-		if (results.isEmpty()) return null;
+		if (results.isEmpty())
+			return null;
 		String[][] matches = new String[results.size()][count];
-		for (int i = 0; i < matches.length; i++) matches[i] = results.get(i);
+		for (int i = 0; i < matches.length; i++)
+			matches[i] = results.get(i);
 		return matches;
 	}
 
 	// nf()
 
-	static public String nf(double num) {
+	public static final String nf(double num) {
 		int inum = (int) num;
-		if (num == inum) return str(inum);
+		if (num == inum)
+			return str(inum);
 		return str(num);
 	}
 
-	static public String[] nf(double[] nums) {
+	public static final String[] nf(double[] nums) {
 		String[] outgoing = new String[nums.length];
-		for (int i = 0; i < nums.length; i++) outgoing[i] = nf(nums[i]);
+		for (int i = 0; i < nums.length; i++)
+			outgoing[i] = nf(nums[i]);
 		return outgoing;
 	}
 
-	static public String[] nf(int[] nums, int digits) {
+	public static final String[] nf(int[] nums, int digits) {
 		String[] formatted = new String[nums.length];
-		for (int i = 0; i < formatted.length; i++) formatted[i] = nf(nums[i], digits);
+		for (int i = 0; i < formatted.length; i++)
+			formatted[i] = nf(nums[i], digits);
 		return formatted;
 	}
 
-	static public String nf(int num, int digits) {
+	public static final String nf(int num, int digits) {
 		if ((int_nf != null) && (int_nf_digits == digits) && !int_nf_commas) {
 			return int_nf.format(num);
 		}
@@ -485,7 +501,7 @@ public class DataUtils {
 		return int_nf.format(num);
 	}
 
-	static public String[] nf(double[] nums, int left, int right) {
+	public static final String[] nf(double[] nums, int left, int right) {
 		String[] formatted = new String[nums.length];
 		for (int i = 0; i < formatted.length; i++) {
 			formatted[i] = nf(nums[i], left, right);
@@ -493,7 +509,7 @@ public class DataUtils {
 		return formatted;
 	}
 
-	static public String nf(double num, int left, int right) {
+	public static final String nf(double num, int left, int right) {
 		if ((double_nf != null) && (double_nf_left == left) && (double_nf_right == right) && !double_nf_commas) {
 			return double_nf.format(num);
 		}
@@ -502,7 +518,8 @@ public class DataUtils {
 		double_nf.setGroupingUsed(false);
 		double_nf_commas = false;
 
-		if (left != 0) double_nf.setMinimumIntegerDigits(left);
+		if (left != 0)
+			double_nf.setMinimumIntegerDigits(left);
 		if (right != 0) {
 			double_nf.setMinimumFractionDigits(right);
 			double_nf.setMaximumFractionDigits(right);
@@ -514,7 +531,7 @@ public class DataUtils {
 
 	// nfc()
 
-	static public String[] nfc(int[] nums) {
+	public static final String[] nfc(int[] nums) {
 		String[] formatted = new String[nums.length];
 		for (int i = 0; i < formatted.length; i++) {
 			formatted[i] = nfc(nums[i]);
@@ -522,10 +539,8 @@ public class DataUtils {
 		return formatted;
 	}
 
-	static public String nfc(int num) {
-		if ((int_nf != null) &&
-				(int_nf_digits == 0) &&
-				int_nf_commas) {
+	public static final String nfc(int num) {
+		if ((int_nf != null) && (int_nf_digits == 0) && int_nf_commas) {
 			return int_nf.format(num);
 		}
 
@@ -537,7 +552,7 @@ public class DataUtils {
 		return int_nf.format(num);
 	}
 
-	static public String[] nfc(double[] nums, int right) {
+	public static final String[] nfc(double[] nums, int right) {
 		String[] formatted = new String[nums.length];
 		for (int i = 0; i < formatted.length; i++) {
 			formatted[i] = nfc(nums[i], right);
@@ -545,7 +560,7 @@ public class DataUtils {
 		return formatted;
 	}
 
-	static public String nfc(double num, int right) {
+	public static final String nfc(double num, int right) {
 		if ((double_nf != null) && (double_nf_left == 0) && (double_nf_right == right) && double_nf_commas) {
 			return double_nf.format(num);
 		}
@@ -565,11 +580,11 @@ public class DataUtils {
 
 	// nfp()
 
-	static public String nfp(int num, int digits) {
+	public static final String nfp(int num, int digits) {
 		return (num < 0) ? nf(num, digits) : ('+' + nf(num, digits));
 	}
 
-	static public String[] nfp(int[] nums, int digits) {
+	public static final String[] nfp(int[] nums, int digits) {
 		String[] formatted = new String[nums.length];
 		for (int i = 0; i < formatted.length; i++) {
 			formatted[i] = nfp(nums[i], digits);
@@ -577,7 +592,7 @@ public class DataUtils {
 		return formatted;
 	}
 
-	static public String[] nfp(double[] nums, int left, int right) {
+	public static final String[] nfp(double[] nums, int left, int right) {
 		String[] formatted = new String[nums.length];
 		for (int i = 0; i < formatted.length; i++) {
 			formatted[i] = nfp(nums[i], left, right);
@@ -585,17 +600,17 @@ public class DataUtils {
 		return formatted;
 	}
 
-	static public String nfp(double num, int left, int right) {
-		return (num < 0) ? nf(num, left, right) :  ('+' + nf(num, left, right));
+	public static final String nfp(double num, int left, int right) {
+		return (num < 0) ? nf(num, left, right) : ('+' + nf(num, left, right));
 	}
 
 	// nfs()
 
-	static public String nfs(int num, int digits) {
+	public static final String nfs(int num, int digits) {
 		return (num < 0) ? nf(num, digits) : (' ' + nf(num, digits));
 	}
 
-	static public String[] nfs(int[] nums, int digits) {
+	public static final String[] nfs(int[] nums, int digits) {
 		String[] formatted = new String[nums.length];
 		for (int i = 0; i < formatted.length; i++) {
 			formatted[i] = nfs(nums[i], digits);
@@ -603,7 +618,7 @@ public class DataUtils {
 		return formatted;
 	}
 
-	static public String[] nfs(double[] nums, int left, int right) {
+	public static final String[] nfs(double[] nums, int left, int right) {
 		String[] formatted = new String[nums.length];
 		for (int i = 0; i < formatted.length; i++) {
 			formatted[i] = nfs(nums[i], left, right);
@@ -611,19 +626,21 @@ public class DataUtils {
 		return formatted;
 	}
 
-	static public String nfs(double num, int left, int right) {
-		return (num < 0) ? nf(num, left, right) :  (' ' + nf(num, left, right));
+	public static final String nfs(double num, int left, int right) {
+		return (num < 0) ? nf(num, left, right) : (' ' + nf(num, left, right));
 	}
 
 	// split()
 
-	static public String[] split(String value, char delim) {
-		if (value == null) return null;
+	public static final String[] split(String value, char delim) {
+		if (value == null)
+			return null;
 
 		char[] chars = value.toCharArray();
 		int splitCount = 0;
 		for (int i = 0; i < chars.length; i++) {
-			if (chars[i] == delim) splitCount++;
+			if (chars[i] == delim)
+				splitCount++;
 		}
 
 		if (splitCount == 0) {
@@ -637,17 +654,15 @@ public class DataUtils {
 		int startIndex = 0;
 		for (int i = 0; i < chars.length; i++) {
 			if (chars[i] == delim) {
-				splits[splitIndex++] =
-						new String(chars, startIndex, i-startIndex);
+				splits[splitIndex++] = new String(chars, startIndex, i - startIndex);
 				startIndex = i + 1;
 			}
 		}
-		splits[splitIndex] = new String(chars, startIndex, chars.length-startIndex);
+		splits[splitIndex] = new String(chars, startIndex, chars.length - startIndex);
 		return splits;
 	}
 
-
-	static public String[] split(String value, String delim) {
+	public static final String[] split(String value, String delim) {
 		List<String> items = new ArrayList<>();
 		int index;
 		int offset = 0;
@@ -663,11 +678,11 @@ public class DataUtils {
 
 	// splitTokens()
 
-	static public String[] splitTokens(String value) {
+	public static final String[] splitTokens(String value) {
 		return splitTokens(value, WHITESPACE);
 	}
-	
-	static public String[] splitTokens(String value, String delim) {
+
+	public static final String[] splitTokens(String value, String delim) {
 		StringTokenizer toker = new StringTokenizer(value, delim);
 		String[] pieces = new String[toker.countTokens()];
 
@@ -680,16 +695,19 @@ public class DataUtils {
 
 	// trim()
 
-	static public String trim(String str) {
-		if (str == null) return null;
+	public static final String trim(String str) {
+		if (str == null)
+			return null;
 		return str.replace('\u00A0', ' ').trim();
 	}
 
-	static public String[] trim(String[] array) {
-		if (array == null) return null;
+	public static final String[] trim(String[] array) {
+		if (array == null)
+			return null;
 		String[] outgoing = new String[array.length];
 		for (int i = 0; i < array.length; i++) {
-			if (array[i] != null) outgoing[i] = trim(array[i]);
+			if (array[i] != null)
+				outgoing[i] = trim(array[i]);
 		}
 		return outgoing;
 	}
@@ -702,31 +720,31 @@ public class DataUtils {
 
 	public static final byte[] append(byte[] array, byte value) {
 		array = expand(array, array.length + 1);
-		array[array.length-1] = value;
+		array[array.length - 1] = value;
 		return array;
 	}
 
 	public static final char[] append(char[] array, char value) {
 		array = expand(array, array.length + 1);
-		array[array.length-1] = value;
+		array[array.length - 1] = value;
 		return array;
 	}
-	
+
 	public static final int[] append(int[] array, int value) {
 		array = expand(array, array.length + 1);
-		array[array.length-1] = value;
+		array[array.length - 1] = value;
 		return array;
 	}
 
 	public static final double[] append(double[] array, double value) {
 		array = expand(array, array.length + 1);
-		array[array.length-1] = value;
+		array[array.length - 1] = value;
 		return array;
 	}
 
 	public static final String[] append(String[] array, String value) {
 		array = expand(array, array.length + 1);
-		array[array.length-1] = value;
+		array[array.length - 1] = value;
 		return array;
 	}
 
@@ -833,6 +851,11 @@ public class DataUtils {
 
 	public static final String[] expand(String[] list) {
 		return expand(list, list.length > 0 ? list.length << 1 : 1);
+	}
+
+	public static final Object expand(Object array) {
+		int len = Array.getLength(array);
+		return expand(array, len > 0 ? len << 1 : 1);
 	}
 
 	public static final boolean[] expand(boolean[] list, int newSize) {
@@ -953,27 +976,27 @@ public class DataUtils {
 	// shorten()
 
 	public static final boolean[] shorten(boolean[] list) {
-		return subset(list, 0, list.length-1);
+		return subset(list, 0, list.length - 1);
 	}
 
 	public static final byte[] shorten(byte[] list) {
-		return subset(list, 0, list.length-1);
+		return subset(list, 0, list.length - 1);
 	}
 
 	public static final char[] shorten(char[] list) {
-		return subset(list, 0, list.length-1);
+		return subset(list, 0, list.length - 1);
 	}
 
 	public static final int[] shorten(int[] list) {
-		return subset(list, 0, list.length-1);
+		return subset(list, 0, list.length - 1);
 	}
 
 	public static final double[] shorten(double[] list) {
-		return subset(list, 0, list.length-1);
+		return subset(list, 0, list.length - 1);
 	}
 
 	public static final String[] shorten(String[] list) {
-		return subset(list, 0, list.length-1);
+		return subset(list, 0, list.length - 1);
 	}
 
 	public static final Object shorten(Object list) {
@@ -1075,7 +1098,6 @@ public class DataUtils {
 		return outgoing;
 	}
 
-
 	public static final char[] splice(char[] list, char value, int index) {
 		char[] outgoing = new char[list.length + 1];
 		arrayCopy(list, 0, outgoing, 0, index);
@@ -1165,7 +1187,7 @@ public class DataUtils {
 	public static final boolean[] subset(boolean[] list, int start) {
 		return subset(list, start, list.length - start);
 	}
-	
+
 	public static final byte[] subset(byte[] list, int start) {
 		return subset(list, start, list.length - start);
 	}
@@ -1243,5 +1265,210 @@ public class DataUtils {
 		arrayCopy(list, start, outgoing, 0, count);
 		return outgoing;
 	}
+
+	////////////
+	// Output //
+	////////////
+
+	///////////////
+	// Text Area //
+	///////////////
+
+	// print()
+
+	public static final void print(byte what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(boolean what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(char what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(int what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(long what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(float what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(double what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(String what) {
+        System.out.print(what);
+        System.out.flush();
+    }
+
+    public static final void print(Object... variables) {
+        StringBuilder sb = new StringBuilder();
+        for (Object o : variables) {
+            if (sb.length() != 0) sb.append(" ");
+            if (o == null) sb.append("null");
+            else sb.append(o.toString());
+        }
+        System.out.print(sb.toString());
+    }
+
+	// printArray()
+
+	public static final void printArray(Object what) {
+        if (what == null) {
+            System.out.println("null");
+        } else {
+            String name = what.getClass().getName();
+            if (name.charAt(0) == '[') {
+                switch (name.charAt(1)) {
+                    case '[': // multidimensional
+                        System.out.println(what);
+                        break;
+
+                    case 'L': // objects
+                        Object poo[] = (Object[]) what;
+                        for (int i = 0; i < poo.length; i++) {
+                            if (poo[i] instanceof String) {
+                                System.out.println("[" + i + "] \"" + poo[i] + "\"");
+                            } else {
+                                System.out.println("[" + i + "] " + poo[i]);
+                            }
+                        }
+                        break;
+
+                    case 'Z': // boolean
+                        boolean zz[] = (boolean[]) what;
+                        for (int i = 0; i < zz.length; i++) {
+                            System.out.println("[" + i + "] " + zz[i]);
+                        }
+                        break;
+
+                    case 'B': // byte
+                        byte bb[] = (byte[]) what;
+                        for (int i = 0; i < bb.length; i++) {
+                            System.out.println("[" + i + "] " + bb[i]);
+                        }
+                        break;
+
+                    case 'C': // char
+                        char cc[] = (char[]) what;
+                        for (int i = 0; i < cc.length; i++) {
+                            System.out.println("[" + i + "] '" + cc[i] + "'");
+                        }
+                        break;
+
+                    case 'I': // int
+                        int ii[] = (int[]) what;
+                        for (int i = 0; i < ii.length; i++) {
+                            System.out.println("[" + i + "] " + ii[i]);
+                        }
+                        break;
+
+                    case 'J': // int
+                        long jj[] = (long[]) what;
+                        for (int i = 0; i < jj.length; i++) {
+                            System.out.println("[" + i + "] " + jj[i]);
+                        }
+                        break;
+
+                    case 'F': // float
+                        float ff[] = (float[]) what;
+                        for (int i = 0; i < ff.length; i++) {
+                            System.out.println("[" + i + "] " + ff[i]);
+                        }
+                        break;
+
+                    case 'D': // double
+                        double dd[] = (double[]) what;
+                        for (int i = 0; i < dd.length; i++) {
+                            System.out.println("[" + i + "] " + dd[i]);
+                        }
+                        break;
+
+                    default:
+                        System.out.println(what);
+                }
+            } else { // not an array
+                System.out.println(what);
+            }
+        }
+        System.out.flush();
+    }
+
+	// println()
+
+	public static final void println() {
+        System.out.println();
+    }
+
+	public static final void println(byte what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(boolean what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(char what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(int what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(long what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(float what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(double what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(String what) {
+        System.out.println(what);
+        System.out.flush();
+    }
+
+    public static final void println(Object... variables) {
+        print(variables);
+        println();
+    }
+
+    public static final void println(Object what) {
+        if (what == null) {
+            System.out.println("null");
+        } else if (what.getClass().isArray()) {
+            printArray(what);
+        } else {
+            System.out.println(what.toString());
+            System.out.flush();
+        }
+    }
 
 }

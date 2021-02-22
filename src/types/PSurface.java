@@ -73,7 +73,7 @@ public class PSurface {
   Canvas canvas;
 
   final Animation animation;
-  float frameRate = 60;
+  double frameRate = 60;
 
   private SynchronousQueue<Throwable> drawExceptionQueue = new SynchronousQueue<>();
 
@@ -247,18 +247,18 @@ public class PSurface {
 
       FXApp sketch = surface.sketch;
 
-      float renderScale = 1;
-      //float renderScale = Screen.getMainScreen().getRenderScale();
+      double renderScale = 1;
+      //double renderScale = Screen.getMainScreen().getRenderScale();
       if (FXApp.platform == MACOSX) {
         //for (Screen s : Screen.getScreens()) {
           //renderScale = Math.max(renderScale, s.getRenderScale());
         //}
       }
-      float uiScale = 1;
-      //float uiScale = Screen.getMainScreen().getUIScale();
+      double uiScale = 1;
+      //double uiScale = Screen.getMainScreen().getUIScale();
       if (sketch.pixelDensity == 2 && renderScale < 2) {
         sketch.pixelDensity = 1;
-        sketch.g.pixelDensity = 1;
+        sketch.pg.pixelDensity = 1;
         System.err.println("pixelDensity(2) is not available for this display");
       }
 
@@ -646,7 +646,7 @@ public class PSurface {
   }
 
 
-  public void setFrameRate(float fps) {
+  public void setFrameRate(double fps) {
     // setting rate to negative so that event fires at the start of
     // the key frame and first frame is drawn immediately
     if (fps > 0) {

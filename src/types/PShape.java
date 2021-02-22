@@ -75,7 +75,7 @@ public class PShape {
    * @brief     Shape document width
    * @see PShape#height
    */
-  public float width;
+  public double width;
   /**
    * ( begin auto-generated from PShape_height.xml )
    *
@@ -87,9 +87,9 @@ public class PShape {
    * @brief     Shape document height
    * @see PShape#width
    */
-  public float height;
+  public double height;
 
-  public float depth;
+  public double depth;
 
   PGraphics g;
 
@@ -103,7 +103,7 @@ public class PShape {
 
   protected boolean stroke;
   protected int strokeColor;
-  protected float strokeWeight; // default is 1
+  protected double strokeWeight; // default is 1
   protected int strokeCap;
   protected int strokeJoin;
 
@@ -117,7 +117,7 @@ public class PShape {
   protected boolean setAmbient;
   protected int specularColor;
   protected int emissiveColor;
-  protected float shininess;
+  protected double shininess;
 
   protected int sphereDetailU, sphereDetailV;
   protected int rectMode;
@@ -127,7 +127,7 @@ public class PShape {
   protected boolean style = true;
 
   /** For primitive shapes in particular, params like x/y/w/h or x1/y1/x2/y2. */
-  protected float[] params;
+  protected double[] params;
 
   protected int vertexCount;
   /**
@@ -135,7 +135,7 @@ public class PShape {
    * VERTEX_FIELD_COUNT. When drawing PATH shapes, the second param has only
    * two variables.
    */
-  protected float[][] vertices;
+  protected double[][] vertices;
 
   protected PShape parent;
   protected int childCount;
@@ -151,7 +151,7 @@ public class PShape {
   // ........................................................
 
   // internal color for setting/calculating
-  protected float calcR, calcG, calcB, calcA;
+  protected double calcR, calcG, calcB, calcA;
   protected int calcRi, calcGi, calcBi, calcAi;
   protected int calcColor;
   protected boolean calcAlpha;
@@ -160,16 +160,16 @@ public class PShape {
   public int colorMode; // = RGB;
 
   /** Max value for red (or hue) set by colorMode */
-  public float colorModeX; // = 255;
+  public double colorModeX; // = 255;
 
   /** Max value for green (or saturation) set by colorMode */
-  public float colorModeY; // = 255;
+  public double colorModeY; // = 255;
 
   /** Max value for blue (or value) set by colorMode */
-  public float colorModeZ; // = 255;
+  public double colorModeZ; // = 255;
 
   /** Max value for alpha set by colorMode */
-  public float colorModeA; // = 255;
+  public double colorModeA; // = 255;
 
   /** True if colors are not in the range 0..1 */
   boolean colorModeScale; // = true;
@@ -214,8 +214,8 @@ public class PShape {
   // except those currently supported (kinds of lights)
 
   // pivot point for transformations
-//  public float px;
-//  public float py;
+//  public double px;
+//  public double py;
 
 
   /**
@@ -297,7 +297,7 @@ public class PShape {
   }
 
 
-  public PShape(PGraphics g, int kind, float... params) {
+  public PShape(PGraphics g, int kind, double... params) {
     this(g, PRIMITIVE);
     setKind(kind);
     setParams(params);
@@ -430,7 +430,7 @@ public class PShape {
   /**
    * Get the width of the drawing area (not necessarily the shape boundary).
    */
-  public float getWidth() {
+  public double getWidth() {
     //checkBounds();
     return width;
   }
@@ -439,7 +439,7 @@ public class PShape {
   /**
    * Get the height of the drawing area (not necessarily the shape boundary).
    */
-  public float getHeight() {
+  public double getHeight() {
     //checkBounds();
     return height;
   }
@@ -449,7 +449,7 @@ public class PShape {
    * Get the depth of the shape area (not necessarily the shape boundary). Only makes sense for 3D PShape subclasses,
    * such as PShape3D.
    */
-  public float getDepth() {
+  public double getDepth() {
     //checkBounds();
     return depth;
   }
@@ -583,7 +583,7 @@ public class PShape {
     if (vertexCodes == null) {
       vertexCodes = new int[10];
     } else if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = FXApp.expand(vertexCodes);
+      vertexCodes = expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = BREAK;
   }
@@ -618,18 +618,18 @@ public class PShape {
   }
 
 
-  public void vertex(float x, float y) {
+  public void vertex(double x, double y) {
     if (vertices == null) {
-      vertices = new float[10][2];
+      vertices = new double[10][2];
     } else if (vertices.length == vertexCount) {
-      vertices = (float[][]) FXApp.expand(vertices);
+      vertices = (double[][]) expand(vertices);
     }
-    vertices[vertexCount++] = new float[] { x, y };
+    vertices[vertexCount++] = new double[] { x, y };
 
     if (vertexCodes == null) {
       vertexCodes = new int[10];
     } else if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = FXApp.expand(vertexCodes);
+      vertexCodes = expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = VERTEX;
 
@@ -642,27 +642,27 @@ public class PShape {
   }
 
 
-  public void vertex(float x, float y, float u, float v) {
+  public void vertex(double x, double y, double u, double v) {
   }
 
 
-  public void vertex(float x, float y, float z) {
+  public void vertex(double x, double y, double z) {
     vertex(x, y);  // maybe? maybe not?
   }
 
 
-  public void vertex(float x, float y, float z, float u, float v) {
+  public void vertex(double x, double y, double z, double u, double v) {
   }
 
 
-  public void normal(float nx, float ny, float nz) {
+  public void normal(double nx, double ny, double nz) {
   }
 
 
-  public void attribPosition(String name, float x, float y, float z) {
+  public void attribPosition(String name, double x, double y, double z) {
   }
 
-  public void attribNormal(String name, float nx, float ny, float nz) {
+  public void attribNormal(String name, double nx, double ny, double nz) {
   }
 
 
@@ -670,7 +670,7 @@ public class PShape {
   }
 
 
-  public void attrib(String name, float... values) {
+  public void attrib(String name, double... values) {
   }
 
 
@@ -730,7 +730,7 @@ public class PShape {
   // STROKE CAP/JOIN/WEIGHT
 
 
-  public void strokeWeight(float weight) {
+  public void strokeWeight(double weight) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "strokeWeight()");
       return;
@@ -794,7 +794,7 @@ public class PShape {
   }
 
 
-  public void fill(int rgb, float alpha) {
+  public void fill(int rgb, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "fill()");
       return;
@@ -810,7 +810,7 @@ public class PShape {
   }
 
 
-  public void fill(float gray) {
+  public void fill(double gray) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "fill()");
       return;
@@ -826,7 +826,7 @@ public class PShape {
   }
 
 
-  public void fill(float gray, float alpha) {
+  public void fill(double gray, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "fill()");
       return;
@@ -847,7 +847,7 @@ public class PShape {
   }
 
 
-  public void fill(float x, float y, float z) {
+  public void fill(double x, double y, double z) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "fill()");
       return;
@@ -863,7 +863,7 @@ public class PShape {
   }
 
 
-  public void fill(float x, float y, float z, float a) {
+  public void fill(double x, double y, double z, double a) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "fill()");
       return;
@@ -906,7 +906,7 @@ public class PShape {
   }
 
 
-  public void stroke(int rgb, float alpha) {
+  public void stroke(int rgb, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "stroke()");
       return;
@@ -918,7 +918,7 @@ public class PShape {
   }
 
 
-  public void stroke(float gray) {
+  public void stroke(double gray) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "stroke()");
       return;
@@ -930,7 +930,7 @@ public class PShape {
   }
 
 
-  public void stroke(float gray, float alpha) {
+  public void stroke(double gray, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "stroke()");
       return;
@@ -942,7 +942,7 @@ public class PShape {
   }
 
 
-  public void stroke(float x, float y, float z) {
+  public void stroke(double x, double y, double z) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "stroke()");
       return;
@@ -954,7 +954,7 @@ public class PShape {
   }
 
 
-  public void stroke(float x, float y, float z, float alpha) {
+  public void stroke(double x, double y, double z, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "stroke()");
       return;
@@ -993,7 +993,7 @@ public class PShape {
   }
 
 
-  public void tint(int rgb, float alpha) {
+  public void tint(int rgb, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "tint()");
       return;
@@ -1005,7 +1005,7 @@ public class PShape {
   }
 
 
-  public void tint(float gray) {
+  public void tint(double gray) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "tint()");
       return;
@@ -1017,7 +1017,7 @@ public class PShape {
   }
 
 
-  public void tint(float gray, float alpha) {
+  public void tint(double gray, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "tint()");
       return;
@@ -1029,7 +1029,7 @@ public class PShape {
   }
 
 
-  public void tint(float x, float y, float z) {
+  public void tint(double x, double y, double z) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "tint()");
       return;
@@ -1041,7 +1041,7 @@ public class PShape {
   }
 
 
-  public void tint(float x, float y, float z, float alpha) {
+  public void tint(double x, double y, double z, double alpha) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "tint()");
       return;
@@ -1069,7 +1069,7 @@ public class PShape {
   }
 
 
-  public void ambient(float gray) {
+  public void ambient(double gray) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "ambient()");
       return;
@@ -1081,7 +1081,7 @@ public class PShape {
   }
 
 
-  public void ambient(float x, float y, float z) {
+  public void ambient(double x, double y, double z) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "ambient()");
       return;
@@ -1108,7 +1108,7 @@ public class PShape {
   }
 
 
-  public void specular(float gray) {
+  public void specular(double gray) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "specular()");
       return;
@@ -1119,7 +1119,7 @@ public class PShape {
   }
 
 
-  public void specular(float x, float y, float z) {
+  public void specular(double x, double y, double z) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "specular()");
       return;
@@ -1145,7 +1145,7 @@ public class PShape {
   }
 
 
-  public void emissive(float gray) {
+  public void emissive(double gray) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "emissive()");
       return;
@@ -1156,7 +1156,7 @@ public class PShape {
   }
 
 
-  public void emissive(float x, float y, float z) {
+  public void emissive(double x, double y, double z) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "emissive()");
       return;
@@ -1171,7 +1171,7 @@ public class PShape {
 
   // Shininess set/update
 
-  public void shininess(float shine) {
+  public void shininess(double shine) {
     if (!openShape) {
       PGraphics.showWarning(OUTSIDE_BEGIN_END_ERROR, "shininess()");
       return;
@@ -1191,21 +1191,21 @@ public class PShape {
   }
 
 
-  public void bezierVertex(float x2, float y2,
-                           float x3, float y3,
-                           float x4, float y4) {
+  public void bezierVertex(double x2, double y2,
+                           double x3, double y3,
+                           double x4, double y4) {
     if (vertices == null) {
-      vertices = new float[10][];
+      vertices = new double[10][];
     } else if (vertexCount + 2 >= vertices.length) {
-      vertices = (float[][]) FXApp.expand(vertices);
+      vertices = (double[][]) expand(vertices);
     }
-    vertices[vertexCount++] = new float[] { x2, y2 };
-    vertices[vertexCount++] = new float[] { x3, y3 };
-    vertices[vertexCount++] = new float[] { x4, y4 };
+    vertices[vertexCount++] = new double[] { x2, y2 };
+    vertices[vertexCount++] = new double[] { x3, y3 };
+    vertices[vertexCount++] = new double[] { x4, y4 };
 
     // vertexCodes must be allocated because a vertex() call is required
     if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = FXApp.expand(vertexCodes);
+      vertexCodes = expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = BEZIER_VERTEX;
 
@@ -1218,25 +1218,25 @@ public class PShape {
   }
 
 
-  public void bezierVertex(float x2, float y2, float z2,
-                           float x3, float y3, float z3,
-                           float x4, float y4, float z4) {
+  public void bezierVertex(double x2, double y2, double z2,
+                           double x3, double y3, double z3,
+                           double x4, double y4, double z4) {
   }
 
 
-  public void quadraticVertex(float cx, float cy,
-                              float x3, float y3) {
+  public void quadraticVertex(double cx, double cy,
+                              double x3, double y3) {
     if (vertices == null) {
-      vertices = new float[10][];
+      vertices = new double[10][];
     } else if (vertexCount + 1 >= vertices.length) {
-      vertices = (float[][]) FXApp.expand(vertices);
+      vertices = (double[][]) expand(vertices);
     }
-    vertices[vertexCount++] = new float[] { cx, cy };
-    vertices[vertexCount++] = new float[] { x3, y3 };
+    vertices[vertexCount++] = new double[] { cx, cy };
+    vertices[vertexCount++] = new double[] { x3, y3 };
 
     // vertexCodes must be allocated because a vertex() call is required
     if (vertexCodes.length == vertexCodeCount) {
-      vertexCodes = FXApp.expand(vertexCodes);
+      vertexCodes = expand(vertexCodes);
     }
     vertexCodes[vertexCodeCount++] = QUADRATIC_VERTEX;
 
@@ -1249,8 +1249,8 @@ public class PShape {
   }
 
 
-  public void quadraticVertex(float cx, float cy, float cz,
-                              float x3, float y3, float z3) {
+  public void quadraticVertex(double cx, double cy, double cz,
+                              double x3, double y3, double z3) {
   }
 
 
@@ -1263,13 +1263,13 @@ public class PShape {
   public void curveDetail(int detail) {
   }
 
-  public void curveTightness(float tightness) {
+  public void curveTightness(double tightness) {
   }
 
-  public void curveVertex(float x, float y) {
+  public void curveVertex(double x, double y) {
   }
 
-  public void curveVertex(float x, float y, float z) {
+  public void curveVertex(double x, double y, double z) {
   }
 
 
@@ -1280,7 +1280,7 @@ public class PShape {
   /*
   boolean strokeSaved;
   int strokeColorSaved;
-  float strokeWeightSaved;
+  double strokeWeightSaved;
   int strokeCapSaved;
   int strokeJoinSaved;
 
@@ -1427,7 +1427,7 @@ public class PShape {
 
     if (src.style) {
       for (int i = 0; i < src.vertexCount; i++) {
-        float[] vert = src.vertices[i];
+        double[] vert = src.vertices[i];
 
         dest.fill((int)(vert[PGraphics.A] * 255) << 24 |
                   (int)(vert[PGraphics.R] * 255) << 16 |
@@ -1453,7 +1453,7 @@ public class PShape {
       }
     } else {
       for (int i = 0; i < src.vertexCount; i++) {
-        float[] vert = src.vertices[i];
+        double[] vert = src.vertices[i];
         if (vert[Z] == 0) {
           dest.vertex(vert[X], vert[Y]);
         } else {
@@ -1655,7 +1655,7 @@ public class PShape {
       }
     } else {
       for (int i = 0; i < vertexCount; i++) {
-        float[] vert = vertices[i];
+        double[] vert = vertices[i];
         if (vert[Z] == 0) {
           g.vertex(vert[X], vert[Y]);
         } else {
@@ -1673,7 +1673,7 @@ public class PShape {
     for (int j = 0; j < childCount; j++) {
       if (j > 0) g.breakShape();
       int count = children[j].vertexCount;
-      float[][] vert = children[j].vertices;
+      double[][] vert = children[j].vertices;
       int[] code = children[j].vertexCodes;
 
       for (int i = 0; i < count; i++) {
@@ -1695,9 +1695,9 @@ public class PShape {
           g.vertex(vert[i]);
 
         } else if (code[i] == BEZIER_VERTEX) {
-          float z0 = vert[i+0][Z];
-          float z1 = vert[i+1][Z];
-          float z2 = vert[i+2][Z];
+          double z0 = vert[i+0][Z];
+          double z1 = vert[i+1][Z];
+          double z2 = vert[i+2][Z];
           if (z0 == 0 && z1 == 0 && z2 == 0) {
             g.bezierVertex(vert[i+0][X], vert[i+0][Y], z0,
                            vert[i+1][X], vert[i+1][Y], z1,
@@ -1708,7 +1708,7 @@ public class PShape {
                            vert[i+2][X], vert[i+2][Y]);
           }
         } else if (code[i] == CURVE_VERTEX) {
-          float z = vert[i][Z];
+          double z = vert[i][Z];
           if (z == 0) {
             g.curveVertex(vert[i][X], vert[i][Y]);
           } else {
@@ -1900,7 +1900,7 @@ public class PShape {
   protected void crop() {
     // https://github.com/processing/processing/issues/3347
     if (children.length != childCount) {
-      children = (PShape[]) FXApp.subset(children, 0, childCount);
+      children = (PShape[]) subset(children, 0, childCount);
     }
   }
 
@@ -1974,7 +1974,7 @@ public class PShape {
       children = new PShape[1];
     }
     if (childCount == children.length) {
-      children = (PShape[]) FXApp.expand(children);
+      children = (PShape[]) expand(children);
     }
     children[childCount++] = who;
     who.parent = this;
@@ -1992,7 +1992,7 @@ public class PShape {
   public void addChild(PShape who, int idx) {
     if (idx < childCount) {
       if (childCount == children.length) {
-        children = (PShape[]) FXApp.expand(children);
+        children = (PShape[]) expand(children);
       }
 
       // Copy [idx, childCount - 1] to [idx + 1, childCount]
@@ -2079,28 +2079,28 @@ public class PShape {
   }
 
 
-  public float[] getParams() {
+  public double[] getParams() {
     return getParams(null);
   }
 
 
-  public float[] getParams(float[] target) {
+  public double[] getParams(double[] target) {
     if (target == null || target.length != params.length) {
-      target = new float[params.length];
+      target = new double[params.length];
     }
     arrayCopy(params, target);
     return target;
   }
 
 
-  public float getParam(int index) {
+  public double getParam(int index) {
     return params[index];
   }
 
 
-  protected void setParams(float[] source) {
+  protected void setParams(double[] source) {
     if (params == null) {
-      params = new float[source.length];
+      params = new double[source.length];
     }
     if (source.length != params.length) {
       PGraphics.showWarning("Wrong number of parameters");
@@ -2110,18 +2110,18 @@ public class PShape {
   }
 
 
-  public void setPath(int vcount, float[][] verts) {
+  public void setPath(int vcount, double[][] verts) {
     setPath(vcount, verts, 0, null);
   }
 
 
-  protected void setPath(int vcount, float[][] verts, int ccount, int[] codes) {
+  protected void setPath(int vcount, double[][] verts, int ccount, int[] codes) {
     if (verts == null || verts.length < vcount) return;
     if (0 < ccount && (codes == null || codes.length < ccount)) return;
 
     int ndim = verts[0].length;
     vertexCount = vcount;
-    vertices = new float[vertexCount][ndim];
+    vertices = new double[vertexCount][ndim];
     for (int i = 0; i < vertexCount; i++) {
       arrayCopy(verts[i], vertices[i]);
     }
@@ -2137,7 +2137,7 @@ public class PShape {
    * @webref pshape:method
    * @brief Returns the total number of vertices as an int
    * @see PShape#getVertex(int)
-   * @see PShape#setVertex(int, float, float)
+   * @see PShape#setVertex(int, double, double)
    */
   public int getVertexCount() {
     if (family == GROUP || family == PRIMITIVE) {
@@ -2151,7 +2151,7 @@ public class PShape {
    * @webref pshape:method
    * @brief Returns the vertex at the index position
    * @param index the location of the vertex
-   * @see PShape#setVertex(int, float, float)
+   * @see PShape#setVertex(int, double, double)
    * @see PShape#getVertexCount()
    */
   public PVector getVertex(int index) {
@@ -2166,7 +2166,7 @@ public class PShape {
     if (vec == null) {
       vec = new PVector();
     }
-    float[] vert = vertices[index];
+    double[] vert = vertices[index];
     vec.x = vert[X];
     vec.y = vert[Y];
     if (vert.length > 2) {
@@ -2178,17 +2178,17 @@ public class PShape {
   }
 
 
-  public float getVertexX(int index) {
+  public double getVertexX(int index) {
     return vertices[index][X];
   }
 
 
-  public float getVertexY(int index) {
+  public double getVertexY(int index) {
     return vertices[index][Y];
   }
 
 
-  public float getVertexZ(int index) {
+  public double getVertexZ(int index) {
     return vertices[index][Z];
   }
 
@@ -2202,7 +2202,7 @@ public class PShape {
    * @see PShape#getVertex(int)
    * @see PShape#getVertexCount()
    */
-  public void setVertex(int index, float x, float y) {
+  public void setVertex(int index, double x, double y) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setVertex()");
       return;
@@ -2216,7 +2216,7 @@ public class PShape {
   /**
    * @param z the z value for the vertex
    */
-  public void setVertex(int index, float x, float y, float z) {
+  public void setVertex(int index, double x, double y, double z) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setVertex()");
       return;
@@ -2237,11 +2237,11 @@ public class PShape {
       return;
     }
 
-    vertices[index][X] = (float) vec.x;
-    vertices[index][Y] = (float) vec.y;
+    vertices[index][X] = (double) vec.x;
+    vertices[index][Y] = (double) vec.y;
 
     if (vertices[index].length > 2) {
-      vertices[index][Z] = (float) vec.z;
+      vertices[index][Z] = (double) vec.z;
     } else if (vec.z != 0 && vec.z == vec.z) {
       throw new IllegalArgumentException("Cannot set a z-coordinate on a 2D shape");
     }
@@ -2264,22 +2264,22 @@ public class PShape {
   }
 
 
-  public float getNormalX(int index) {
+  public double getNormalX(int index) {
     return vertices[index][PGraphics.NX];
   }
 
 
-  public float getNormalY(int index) {
+  public double getNormalY(int index) {
     return vertices[index][PGraphics.NY];
   }
 
 
-  public float getNormalZ(int index) {
+  public double getNormalZ(int index) {
     return vertices[index][PGraphics.NZ];
   }
 
 
-  public void setNormal(int index, float nx, float ny, float nz) {
+  public void setNormal(int index, double nx, double ny, double nz) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setNormal()");
       return;
@@ -2292,7 +2292,7 @@ public class PShape {
 
 
 
-  public void setAttrib(String name, int index, float... values) {
+  public void setAttrib(String name, int index, double... values) {
   }
 
 
@@ -2304,17 +2304,17 @@ public class PShape {
   }
 
 
-  public float getTextureU(int index) {
+  public double getTextureU(int index) {
     return vertices[index][PGraphics.U];
   }
 
 
-  public float getTextureV(int index) {
+  public double getTextureV(int index) {
     return vertices[index][PGraphics.V];
   }
 
 
-  public void setTextureUV(int index, float u, float v) {
+  public void setTextureUV(int index, double u, double v) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setTextureUV()");
       return;
@@ -2600,7 +2600,7 @@ public class PShape {
   }
 
 
-  public float getStrokeWeight(int index) {
+  public double getStrokeWeight(int index) {
     // make sure we allocated the vertices array and that vertex exists
     if (vertices == null || index >= vertices.length) {
       PGraphics.showWarning(NO_SUCH_VERTEX_ERROR + " (" + index + ")", "getStrokeWeight()");
@@ -2611,7 +2611,7 @@ public class PShape {
   }
 
 
-  public void setStrokeWeight(float weight) {
+  public void setStrokeWeight(double weight) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setStrokeWeight()");
       return;
@@ -2627,7 +2627,7 @@ public class PShape {
   }
 
 
-  public void setStrokeWeight(int index, float weight) {
+  public void setStrokeWeight(int index, double weight) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setStrokeWeight()");
       return;
@@ -2813,7 +2813,7 @@ public class PShape {
   }
 
 
-  public float getShininess(int index) {
+  public double getShininess(int index) {
     // make sure we allocated the vertices array and that vertex exists
     if (vertices == null ||
         index >= vertices.length) {
@@ -2825,7 +2825,7 @@ public class PShape {
   }
 
 
-  public void setShininess(float shine) {
+  public void setShininess(double shine) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setShininess()");
       return;
@@ -2841,7 +2841,7 @@ public class PShape {
   }
 
 
-  public void setShininess(int index, float shine) {
+  public void setShininess(int index, double shine) {
     if (openShape) {
       PGraphics.showWarning(INSIDE_BEGIN_END_ERROR, "setShininess()");
       return;
@@ -2864,7 +2864,7 @@ public class PShape {
       return null;
     }
     if (vertexCodes.length != vertexCodeCount) {
-      vertexCodes = FXApp.subset(vertexCodes, 0, vertexCodeCount);
+      vertexCodes = subset(vertexCodes, 0, vertexCodeCount);
     }
     return vertexCodes;
   }
@@ -2895,7 +2895,7 @@ public class PShape {
    * Return true if this x, y coordinate is part of this shape. Only works
    * with PATH shapes or GROUP shapes that contain other GROUPs or PATHs.
    */
-  public boolean contains(float x, float y) {
+  public boolean contains(double x, double y) {
     if (family == PATH) {
       PVector p = new PVector(x, y);
       if (matrix != null) {
@@ -2968,11 +2968,11 @@ public class PShape {
    * @brief Displaces the shape
    * @param x left/right translation
    * @param y up/down translation
-   * @see PShape#rotate(float)
-   * @see PShape#scale(float)
+   * @see PShape#rotate(double)
+   * @see PShape#scale(double)
    * @see PShape#resetMatrix()
    */
-  public void translate(float x, float y) {
+  public void translate(double x, double y) {
     checkMatrix(2);
     matrix.translate(x, y);
   }
@@ -2980,7 +2980,7 @@ public class PShape {
   /**
    * @param z forward/back translation
    */
-  public void translate(float x, float y, float z) {
+  public void translate(double x, double y, double z) {
     checkMatrix(3);
     matrix.translate(x, y, z);
   }
@@ -3007,14 +3007,14 @@ public class PShape {
    * @usage web_application
    * @brief Rotates the shape around the x-axis
    * @param angle angle of rotation specified in radians
-   * @see PShape#rotate(float)
-   * @see PShape#rotateY(float)
-   * @see PShape#rotateZ(float)
-   * @see PShape#scale(float)
-   * @see PShape#translate(float, float)
+   * @see PShape#rotate(double)
+   * @see PShape#rotateY(double)
+   * @see PShape#rotateZ(double)
+   * @see PShape#scale(double)
+   * @see PShape#translate(double, double)
    * @see PShape#resetMatrix()
    */
-  public void rotateX(float angle) {
+  public void rotateX(double angle) {
     rotate(angle, 1, 0, 0);
   }
 
@@ -3041,14 +3041,14 @@ public class PShape {
    * @usage web_application
    * @brief Rotates the shape around the y-axis
    * @param angle angle of rotation specified in radians
-   * @see PShape#rotate(float)
-   * @see PShape#rotateX(float)
-   * @see PShape#rotateZ(float)
-   * @see PShape#scale(float)
-   * @see PShape#translate(float, float)
+   * @see PShape#rotate(double)
+   * @see PShape#rotateX(double)
+   * @see PShape#rotateZ(double)
+   * @see PShape#scale(double)
+   * @see PShape#translate(double, double)
    * @see PShape#resetMatrix()
    */
-  public void rotateY(float angle) {
+  public void rotateY(double angle) {
     rotate(angle, 0, 1, 0);
   }
 
@@ -3075,14 +3075,14 @@ public class PShape {
    * @usage web_application
    * @brief Rotates the shape around the z-axis
    * @param angle angle of rotation specified in radians
-   * @see PShape#rotate(float)
-   * @see PShape#rotateX(float)
-   * @see PShape#rotateY(float)
-   * @see PShape#scale(float)
-   * @see PShape#translate(float, float)
+   * @see PShape#rotate(double)
+   * @see PShape#rotateX(double)
+   * @see PShape#rotateY(double)
+   * @see PShape#scale(double)
+   * @see PShape#translate(double, double)
    * @see PShape#resetMatrix()
    */
-  public void rotateZ(float angle) {
+  public void rotateZ(double angle) {
     rotate(angle, 0, 0, 1);
   }
 
@@ -3106,14 +3106,14 @@ public class PShape {
    * @usage web_application
    * @brief Rotates the shape
    * @param angle angle of rotation specified in radians
-   * @see PShape#rotateX(float)
-   * @see PShape#rotateY(float)
-   * @see PShape#rotateZ(float)
-   * @see PShape#scale(float)
-   * @see PShape#translate(float, float)
+   * @see PShape#rotateX(double)
+   * @see PShape#rotateY(double)
+   * @see PShape#rotateZ(double)
+   * @see PShape#scale(double)
+   * @see PShape#translate(double, double)
    * @see PShape#resetMatrix()
    */
-  public void rotate(float angle) {
+  public void rotate(double angle) {
     checkMatrix(2);  // at least 2...
     matrix.rotate(angle);
   }
@@ -3121,12 +3121,12 @@ public class PShape {
 /**
  * @nowebref
  */
-  public void rotate(float angle, float v0, float v1, float v2) {
+  public void rotate(double angle, double v0, double v1, double v2) {
     checkMatrix(3);
-    float norm2 = v0 * v0 + v1 * v1 + v2 * v2;
+    double norm2 = v0 * v0 + v1 * v1 + v2 * v2;
     if (Math.abs(norm2 - 1) > EPSILON) {
       // The rotation vector is not normalized.
-      float norm = (float) sqrt(norm2);
+      double norm = (double) sqrt(norm2);
       v0 /= norm;
       v1 /= norm;
       v2 /= norm;
@@ -3157,17 +3157,17 @@ public class PShape {
    * @usage web_application
    * @brief Increases and decreases the size of a shape
    * @param s percentate to scale the object
-   * @see PShape#rotate(float)
-   * @see PShape#translate(float, float)
+   * @see PShape#rotate(double)
+   * @see PShape#translate(double, double)
    * @see PShape#resetMatrix()
    */
-  public void scale(float s) {
+  public void scale(double s) {
     checkMatrix(2);  // at least 2...
     matrix.scale(s);
   }
 
 
-  public void scale(float x, float y) {
+  public void scale(double x, double y) {
     checkMatrix(2);
     matrix.scale(x, y);
   }
@@ -3177,7 +3177,7 @@ public class PShape {
  * @param y percentage to scale the object in the y-axis
  * @param z percentage to scale the object in the z-axis
  */
-  public void scale(float x, float y, float z) {
+  public void scale(double x, double y, double z) {
     checkMatrix(3);
     matrix.scale(x, y, z);
   }
@@ -3195,9 +3195,9 @@ public class PShape {
    * @webref pshape:method
    * @brief Replaces the current matrix of a shape with the identity matrix
    * @usage web_application
-   * @see PShape#rotate(float)
-   * @see PShape#scale(float)
-   * @see PShape#translate(float, float)
+   * @see PShape#rotate(double)
+   * @see PShape#scale(double)
+   * @see PShape#translate(double, double)
  */
   public void resetMatrix() {
     checkMatrix(2);
@@ -3222,8 +3222,8 @@ public class PShape {
   }
 
 
-  public void applyMatrix(float n00, float n01, float n02,
-                          float n10, float n11, float n12) {
+  public void applyMatrix(double n00, double n01, double n02,
+                          double n10, double n11, double n12) {
     checkMatrix(2);
     matrix.apply(n00, n01, n02,
                  n10, n11, n12);
@@ -3238,10 +3238,10 @@ public class PShape {
   }
 
 
-  public void applyMatrix(float n00, float n01, float n02, float n03,
-                          float n10, float n11, float n12, float n13,
-                          float n20, float n21, float n22, float n23,
-                          float n30, float n31, float n32, float n33) {
+  public void applyMatrix(double n00, double n01, double n02, double n03,
+                          double n10, double n11, double n12, double n13,
+                          double n20, double n21, double n22, double n23,
+                          double n30, double n31, double n32, double n33) {
     checkMatrix(3);
     matrix.apply(n00, n01, n02, n03,
                  n10, n11, n12, n13,
@@ -3289,7 +3289,7 @@ public class PShape {
   /**
    * Set the pivot point for all transformations.
    */
-//  public void pivot(float x, float y) {
+//  public void pivot(double x, double y) {
 //    px = x;
 //    py = y;
 //  }
@@ -3305,7 +3305,7 @@ public class PShape {
   /**
    * @param max range for all color elements
    */
-  public void colorMode(int mode, float max) {
+  public void colorMode(int mode, double max) {
     colorMode(mode, max, max, max, max);
   }
 
@@ -3315,7 +3315,7 @@ public class PShape {
    * @param maxY range for the green or saturation depending on the current color mode
    * @param maxZ range for the blue or brightness depending on the current color mode
    */
-  public void colorMode(int mode, float maxX, float maxY, float maxZ) {
+  public void colorMode(int mode, double maxX, double maxY, double maxZ) {
     colorMode(mode, maxX, maxY, maxZ, colorModeA);
   }
 
@@ -3323,7 +3323,7 @@ public class PShape {
  * @param maxA range for the alpha
  */
   public void colorMode(int mode,
-                        float maxX, float maxY, float maxZ, float maxA) {
+                        double maxX, double maxY, double maxZ, double maxA) {
     colorMode = mode;
 
     colorModeX = maxX;  // still needs to be set for hsb
@@ -3345,7 +3345,7 @@ public class PShape {
 
   protected void colorCalc(int rgb) {
     if (((rgb & 0xff000000) == 0) && (rgb <= colorModeX)) {
-      colorCalc((float) rgb);
+      colorCalc((double) rgb);
 
     } else {
       colorCalcARGB(rgb, colorModeA);
@@ -3353,9 +3353,9 @@ public class PShape {
   }
 
 
-  protected void colorCalc(int rgb, float alpha) {
+  protected void colorCalc(int rgb, double alpha) {
     if (((rgb & 0xff000000) == 0) && (rgb <= colorModeX)) {  // see above
-      colorCalc((float) rgb, alpha);
+      colorCalc((double) rgb, alpha);
 
     } else {
       colorCalcARGB(rgb, alpha);
@@ -3363,12 +3363,12 @@ public class PShape {
   }
 
 
-  protected void colorCalc(float gray) {
+  protected void colorCalc(double gray) {
     colorCalc(gray, colorModeA);
   }
 
 
-  protected void colorCalc(float gray, float alpha) {
+  protected void colorCalc(double gray, double alpha) {
     if (gray > colorModeX) gray = colorModeX;
     if (alpha > colorModeA) alpha = colorModeA;
 
@@ -3387,12 +3387,12 @@ public class PShape {
   }
 
 
-  protected void colorCalc(float x, float y, float z) {
+  protected void colorCalc(double x, double y, double z) {
     colorCalc(x, y, z, colorModeA);
   }
 
 
-  protected void colorCalc(float x, float y, float z, float a) {
+  protected void colorCalc(double x, double y, double z, double a) {
     if (x > colorModeX) x = colorModeX;
     if (y > colorModeY) y = colorModeY;
     if (z > colorModeZ) z = colorModeZ;
@@ -3426,11 +3426,11 @@ public class PShape {
         calcR = calcG = calcB = z;
 
       } else {
-        float which = (x - (int)x) * 6.0f;
-        float f = which - (int)which;
-        float p = z * (1.0f - y);
-        float q = z * (1.0f - y * f);
-        float t = z * (1.0f - (y * (1.0f - f)));
+        double which = (x - (int)x) * 6.0f;
+        double f = which - (int)which;
+        double p = z * (1.0f - y);
+        double q = z * (1.0f - y * f);
+        double t = z * (1.0f - (y * (1.0f - f)));
 
         switch ((int)which) {
         case 0: calcR = z; calcG = t; calcB = p; break;
@@ -3450,7 +3450,7 @@ public class PShape {
   }
 
 
-  protected void colorCalcARGB(int argb, float alpha) {
+  protected void colorCalcARGB(int argb, double alpha) {
     if (alpha == colorModeA) {
       calcAi = (argb >> 24) & 0xff;
       calcColor = argb;

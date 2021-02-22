@@ -21,7 +21,7 @@ import static utils.MathUtils.*;
  *
  * @webref data:composite
  * @see IntList
- * @see FloatList
+ * @see DoubleList
  */
 public class StringList implements Iterable<String> {
   int count;
@@ -458,21 +458,7 @@ public class StringList implements Iterable<String> {
     }
     return -1;
   }
-
-
-  // !!! TODO this is not yet correct, because it's not being reset when
-  // the rest of the entries are changed
-//  protected void cacheIndices() {
-//    indexCache = new HashMap<Integer, Integer>();
-//    for (int i = 0; i < count; i++) {
-//      indexCache.put(data[i], i);
-//    }
-//  }
-
-  /**
-   * @webref stringlist:method
-   * @brief Check if a value is a part of the list
-   */
+  
   public boolean hasValue(String value) {
     if (value == null) {
       for (int i = 0; i < count; i++) {
@@ -767,7 +753,7 @@ public class StringList implements Iterable<String> {
    * Save tab-delimited entries to a file (TSV format, UTF-8 encoding)
    */
   public void save(File file) {
-    PrintWriter writer = createWriter(file);
+    PrintWriter writer = FXApp.createWriter(file);
     write(writer);
     writer.close();
   }

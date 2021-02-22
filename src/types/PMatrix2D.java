@@ -5,8 +5,8 @@ import static utils.MathUtils.*;
 
 public class PMatrix2D implements PMatrix {
 
-	public float m00, m01, m02;
-	public float m10, m11, m12;
+	public double m00, m01, m02;
+	public double m10, m11, m12;
 
 
 	/**
@@ -17,8 +17,8 @@ public class PMatrix2D implements PMatrix {
 	}
 
 
-	public PMatrix2D(float m00, float m01, float m02,
-			float m10, float m11, float m12) {
+	public PMatrix2D(double m00, double m01, double m02,
+			double m10, double m11, double m12) {
 		set(m00, m01, m02,
 				m10, m11, m12);
 	}
@@ -46,13 +46,13 @@ public class PMatrix2D implements PMatrix {
 
 
 	/**
-	 * Copies the matrix contents into a 6 entry float array.
+	 * Copies the matrix contents into a 6 entry double array.
 	 * If target is null (or not the correct size), a new array will be created.
 	 * Returned in the order {@code {m00, m01, m02, m10, m11, m12}}.
 	 */
-	public float[] get(float[] target) {
+	public double[] get(double[] target) {
 		if ((target == null) || (target.length != 6)) {
-			target = new float[6];
+			target = new double[6];
 		}
 		target[0] = m00;
 		target[1] = m01;
@@ -88,7 +88,7 @@ public class PMatrix2D implements PMatrix {
 	}
 
 
-	public void set(float[] source) {
+	public void set(double[] source) {
 		m00 = source[0];
 		m01 = source[1];
 		m02 = source[2];
@@ -102,8 +102,8 @@ public class PMatrix2D implements PMatrix {
 	/**
 	 * Sets the matrix content.
 	 */
-	public void set(float m00, float m01, float m02,
-			float m10, float m11, float m12) {
+	public void set(double m00, double m01, double m02,
+			double m10, double m11, double m12) {
 		this.m00 = m00; this.m01 = m01; this.m02 = m02;
 		this.m10 = m10; this.m11 = m11; this.m12 = m12;
 	}
@@ -112,15 +112,15 @@ public class PMatrix2D implements PMatrix {
 	/**
 	 * Unavailable in 2D. Does nothing.
 	 */
-	public void set(float m00, float m01, float m02, float m03,
-			float m10, float m11, float m12, float m13,
-			float m20, float m21, float m22, float m23,
-			float m30, float m31, float m32, float m33) {
+	public void set(double m00, double m01, double m02, double m03,
+			double m10, double m11, double m12, double m13,
+			double m20, double m21, double m22, double m23,
+			double m30, double m31, double m32, double m33) {
 
 	}
 
 
-	public void translate(float tx, float ty) {
+	public void translate(double tx, double ty) {
 		m02 = tx*m00 + ty*m01 + m02;
 		m12 = tx*m10 + ty*m11 + m12;
 	}
@@ -130,18 +130,18 @@ public class PMatrix2D implements PMatrix {
 	 * Unavailable in 2D.
 	 * @throws IllegalArgumentException
 	 */
-	public void translate(float x, float y, float z) {
+	public void translate(double x, double y, double z) {
 		throw new IllegalArgumentException("Cannot use translate(x, y, z) on a PMatrix2D.");
 	}
 
 
 	// Implementation roughly based on AffineTransform.
-	public void rotate(float angle) {
-		float s = (float) sin(angle);
-		float c = (float) cos(angle);
+	public void rotate(double angle) {
+		double s = (double) sin(angle);
+		double c = (double) cos(angle);
 
-		float temp1 = m00;
-		float temp2 = m01;
+		double temp1 = m00;
+		double temp2 = m01;
 		m00 =  c * temp1 + s * temp2;
 		m01 = -s * temp1 + c * temp2;
 		temp1 = m10;
@@ -155,7 +155,7 @@ public class PMatrix2D implements PMatrix {
 	 * Unavailable in 2D.
 	 * @throws IllegalArgumentException
 	 */
-	public void rotateX(float angle) {
+	public void rotateX(double angle) {
 		throw new IllegalArgumentException("Cannot use rotateX() on a PMatrix2D.");
 	}
 
@@ -164,12 +164,12 @@ public class PMatrix2D implements PMatrix {
 	 * Unavailable in 2D.
 	 * @throws IllegalArgumentException
 	 */
-	public void rotateY(float angle) {
+	public void rotateY(double angle) {
 		throw new IllegalArgumentException("Cannot use rotateY() on a PMatrix2D.");
 	}
 
 
-	public void rotateZ(float angle) {
+	public void rotateZ(double angle) {
 		rotate(angle);
 	}
 
@@ -178,17 +178,17 @@ public class PMatrix2D implements PMatrix {
 	 * Unavailable in 2D.
 	 * @throws IllegalArgumentException
 	 */
-	public void rotate(float angle, float v0, float v1, float v2) {
+	public void rotate(double angle, double v0, double v1, double v2) {
 		throw new IllegalArgumentException("Cannot use this version of rotate() on a PMatrix2D.");
 	}
 
 
-	public void scale(float s) {
+	public void scale(double s) {
 		scale(s, s);
 	}
 
 
-	public void scale(float sx, float sy) {
+	public void scale(double sx, double sy) {
 		m00 *= sx;  m01 *= sy;
 		m10 *= sx;  m11 *= sy;
 	}
@@ -198,18 +198,18 @@ public class PMatrix2D implements PMatrix {
 	 * Unavailable in 2D.
 	 * @throws IllegalArgumentException
 	 */
-	public void scale(float x, float y, float z) {
+	public void scale(double x, double y, double z) {
 		throw new IllegalArgumentException("Cannot use this version of scale() on a PMatrix2D.");
 	}
 
 
-	public void shearX(float angle) {
-		apply(1, 0, 1, (float) tan(angle), 0, 0);
+	public void shearX(double angle) {
+		apply(1, 0, 1, (double) tan(angle), 0, 0);
 	}
 
 
-	public void shearY(float angle) {
-		apply(1, 0, 1, 0, (float) tan(angle), 0);
+	public void shearY(double angle) {
+		apply(1, 0, 1, 0, (double) tan(angle), 0);
 	}
 
 
@@ -237,10 +237,10 @@ public class PMatrix2D implements PMatrix {
 	}
 
 
-	public void apply(float n00, float n01, float n02,
-			float n10, float n11, float n12) {
-		float t0 = m00;
-		float t1 = m01;
+	public void apply(double n00, double n01, double n02,
+			double n10, double n11, double n12) {
+		double t0 = m00;
+		double t1 = m01;
 		m00  = n00 * t0 + n10 * t1;
 		m01  = n01 * t0 + n11 * t1;
 		m02 += n02 * t0 + n12 * t1;
@@ -257,10 +257,10 @@ public class PMatrix2D implements PMatrix {
 	 * Unavailable in 2D.
 	 * @throws IllegalArgumentException
 	 */
-	public void apply(float n00, float n01, float n02, float n03,
-			float n10, float n11, float n12, float n13,
-			float n20, float n21, float n22, float n23,
-			float n30, float n31, float n32, float n33) {
+	public void apply(double n00, double n01, double n02, double n03,
+			double n10, double n11, double n12, double n13,
+			double n20, double n21, double n22, double n23,
+			double n30, double n31, double n32, double n33) {
 		throw new IllegalArgumentException("Cannot use this version of apply() on a PMatrix2D.");
 	}
 
@@ -292,10 +292,10 @@ public class PMatrix2D implements PMatrix {
 	}
 
 
-	public void preApply(float n00, float n01, float n02,
-			float n10, float n11, float n12) {
-		float t0 = m02;
-		float t1 = m12;
+	public void preApply(double n00, double n01, double n02,
+			double n10, double n11, double n12) {
+		double t0 = m02;
+		double t1 = m12;
 		n02 += t0 * n00 + t1 * n01;
 		n12 += t0 * n10 + t1 * n11;
 
@@ -318,10 +318,10 @@ public class PMatrix2D implements PMatrix {
 	 * Unavailable in 2D.
 	 * @throws IllegalArgumentException
 	 */
-	public void preApply(float n00, float n01, float n02, float n03,
-			float n10, float n11, float n12, float n13,
-			float n20, float n21, float n22, float n23,
-			float n30, float n31, float n32, float n33) {
+	public void preApply(double n00, double n01, double n02, double n03,
+			double n10, double n11, double n12, double n13,
+			double n20, double n21, double n22, double n23,
+			double n30, double n31, double n32, double n33) {
 		throw new IllegalArgumentException("Cannot use this version of preApply() on a PMatrix2D.");
 	}
 
@@ -345,17 +345,17 @@ public class PMatrix2D implements PMatrix {
 
 	/**
 	 * Multiply a two element vector against this matrix.
-	 * If out is null or not length four, a new float array will be returned.
+	 * If out is null or not length four, a new double array will be returned.
 	 * The values for vec and out can be the same (though that's less efficient).
 	 */
-	public float[] mult(float[] vec, float[] out) {
+	public double[] mult(double[] vec, double[] out) {
 		if (out == null || out.length != 2) {
-			out = new float[2];
+			out = new double[2];
 		}
 
 		if (vec == out) {
-			float tx = m00*vec[0] + m01*vec[1] + m02;
-			float ty = m10*vec[0] + m11*vec[1] + m12;
+			double tx = m00*vec[0] + m01*vec[1] + m02;
+			double ty = m10*vec[0] + m11*vec[1] + m12;
 
 			out[0] = tx;
 			out[1] = ty;
@@ -373,7 +373,7 @@ public class PMatrix2D implements PMatrix {
 	 * Returns the x-coordinate of the result of multiplying the point (x, y)
 	 * by this matrix.
 	 */
-	public float multX(float x, float y) {
+	public double multX(double x, double y) {
 		return m00*x + m01*y + m02;
 	}
 
@@ -382,7 +382,7 @@ public class PMatrix2D implements PMatrix {
 	 * Returns the y-coordinate of the result of multiplying the point (x, y)
 	 * by this matrix.
 	 */
-	public float multY(float x, float y) {
+	public double multY(double x, double y) {
 		return m10*x + m11*y + m12;
 	}
 
@@ -399,17 +399,17 @@ public class PMatrix2D implements PMatrix {
 	 * Implementation stolen from OpenJDK.
 	 */
 	public boolean invert() {
-		float determinant = determinant();
-		if (Math.abs(determinant) <= Float.MIN_VALUE) {
+		double determinant = determinant();
+		if (Math.abs(determinant) <= Double.MIN_VALUE) {
 			return false;
 		}
 
-		float t00 = m00;
-		float t01 = m01;
-		float t02 = m02;
-		float t10 = m10;
-		float t11 = m11;
-		float t12 = m12;
+		double t00 = m00;
+		double t01 = m01;
+		double t02 = m02;
+		double t10 = m10;
+		double t11 = m11;
+		double t12 = m12;
 
 		m00 =  t11 / determinant;
 		m10 = -t10 / determinant;
@@ -425,7 +425,7 @@ public class PMatrix2D implements PMatrix {
 	/**
 	 * @return the determinant of the matrix
 	 */
-	public float determinant() {
+	public double determinant() {
 		return m00 * m11 - m01 * m10;
 	}
 
@@ -438,7 +438,7 @@ public class PMatrix2D implements PMatrix {
 				max(abs(m10), abs(m11), abs(m12))));
 
 		int digits = 1;
-		if (Float.isNaN(big) || Float.isInfinite(big)) {  // avoid infinite loop
+		if (Double.isNaN(big) || Double.isInfinite(big)) {  // avoid infinite loop
 			digits = 5;
 		} else {
 			while ((big /= 10) != 0) digits++;  // cheap log()

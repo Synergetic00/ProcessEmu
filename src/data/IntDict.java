@@ -5,13 +5,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import main.FXApp;
+
 import static utils.DataUtils.*;
 
 /**
  * A simple class to use a String as a lookup for an int value.
  *
  * @webref data:composite
- * @see FloatDict
+ * @see DoubleDict
  * @see StringDict
  */
 public class IntDict {
@@ -53,7 +55,7 @@ public class IntDict {
    * @nowebref
    */
   public IntDict(BufferedReader reader) {
-    String[] lines = loadStrings(reader);
+    String[] lines = FXApp.loadStrings(reader);
     keys = new String[lines.length];
     values = new int[lines.length];
 
@@ -87,7 +89,7 @@ public class IntDict {
   /**
    * Constructor to allow (more intuitive) inline initialization, e.g.:
    * <pre>
-   * new FloatDict(new Object[][] {
+   * new DoubleDict(new Object[][] {
    *   { "key1", 1 },
    *   { "key2", 2 }
    * });
@@ -731,13 +733,13 @@ public class IntDict {
 
 
   /**
-   * Sum all of the values in this dictionary, then return a new FloatDict of
+   * Sum all of the values in this dictionary, then return a new DoubleDict of
    * each key, divided by the total sum. The total for all values will be ~1.0.
    * @return an IntDict with the original keys, mapped to their pct of the total
    */
-  public FloatDict getPercent() {
+  public DoubleDict getPercent() {
     double sum = sum();  // a little more accuracy
-    FloatDict outgoing = new FloatDict();
+    DoubleDict outgoing = new DoubleDict();
     for (int i = 0; i < size(); i++) {
       double percent = value(i) / sum;
       outgoing.set(key(i), (float) percent);
@@ -770,7 +772,7 @@ public class IntDict {
    * Save tab-delimited entries to a file (TSV format, UTF-8 encoding)
    */
   public void save(File file) {
-    PrintWriter writer = createWriter(file);
+    PrintWriter writer = FXApp.createWriter(file);
     write(writer);
     writer.close();
   }

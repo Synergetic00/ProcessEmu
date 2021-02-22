@@ -10,10 +10,10 @@ public class PStyle {
     public int blendMode;
 
     public int colorMode;
-    public float colorModeX;
-    public float colorModeY;
-    public float colorModeZ;
-    public float colorModeA;
+    public double colorModeX;
+    public double colorModeY;
+    public double colorModeZ;
+    public double colorModeA;
 
     public boolean tint;
     public int tintColor;
@@ -21,20 +21,20 @@ public class PStyle {
     public int fillColor;
     public boolean stroke;
     public int strokeColor;
-    public float strokeWeight;
+    public double strokeWeight;
     public int strokeCap;
     public int strokeJoin;
 
-    public float ambientR, ambientG, ambientB;
-    public float specularR, specularG, specularB;
-    public float emissiveR, emissiveG, emissiveB;
-    public float shininess;
+    public double ambientR, ambientG, ambientB;
+    public double specularR, specularG, specularB;
+    public double emissiveR, emissiveG, emissiveB;
+    public double shininess;
 
     public PFont textFont;
     public int textAlign;
     public int textAlignY;
     public int textMode;
-    public float textSize;
-    public float textLeading;
+    public double textSize;
+    public double textLeading;
 
 }

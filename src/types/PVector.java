@@ -294,19 +294,19 @@ public class PVector {
         y = tmp * sin(theta) + y * cos(theta);
     }
 
-    public void lerp(PVector v, float amt) {
+    public void lerp(PVector v, double amt) {
         x = MathUtils.lerp(x, v.x, amt);
         y = MathUtils.lerp(y, v.y, amt);
         z = MathUtils.lerp(z, v.z, amt);
     }
 
-    public static PVector lerp(PVector v1, PVector v2, float amt) {
+    public static PVector lerp(PVector v1, PVector v2, double amt) {
         PVector v = v1.copy();
         v.lerp(v2, amt);
         return v;
     }
 
-    public void lerp(float x, float y, float z, float amt) {
+    public void lerp(double x, double y, double z, double amt) {
         this.x = MathUtils.lerp(this.x, x, amt);
         this.y = MathUtils.lerp(this.y, y, amt);
         this.z = MathUtils.lerp(this.z, z, amt);
@@ -329,7 +329,7 @@ public class PVector {
         
         if (amt <= -1) return PI;
         else if (amt >= 1) return 0;
-        return (float) Math.acos(amt);
+        return (double) Math.acos(amt);
     }
 
 }

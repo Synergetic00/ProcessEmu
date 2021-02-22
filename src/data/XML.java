@@ -52,7 +52,6 @@ import static utils.DataUtils.*;
  * @see FXApp#parseXML(String)
  * @see FXApp#saveXML(XML, String)
  */
-@SuppressWarnings("serial")
 public class XML implements Serializable {
 
   /** The internal representation, a DOM node. */
@@ -105,7 +104,7 @@ public class XML implements Serializable {
    * @nowebref
    */
   public XML(File file, String options) throws IOException, ParserConfigurationException, SAXException {
-    this(createReader(file), options);
+    this(FXApp.createReader(file), options);
   }
 
   /**
@@ -217,7 +216,7 @@ public class XML implements Serializable {
    */
   public XML(String name) {
     try {
-      // TODO is there a more efficient way of doing this? wow.
+      
       DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
       DocumentBuilder builder = factory.newDocumentBuilder();
       Document document = builder.newDocument();
@@ -283,7 +282,7 @@ public class XML implements Serializable {
 
 
   public boolean save(File file, String options) {
-    PrintWriter writer = createWriter(file);
+    PrintWriter writer = FXApp.createWriter(file);
     boolean result = write(writer);
     writer.flush();
     writer.close();
@@ -596,7 +595,7 @@ public class XML implements Serializable {
    */
   public void removeChild(XML kid) {
     node.removeChild(kid.node);
-    children = null;  // TODO not efficient
+    children = null;
   }
 
   /**
@@ -818,57 +817,14 @@ public class XML implements Serializable {
     return (value == null) ? defaultValue : Long.parseLong(value);
   }
 
-
-  /**
-   * Returns the value of an attribute, or zero if not present.
-   *
-   * @webref xml:method
-   * @brief Gets the content of an attribute as a float
-   */
-  public float getFloat(String name) {
-    return getFloat(name, 0);
-  }
-
-
-  /**
-   * Returns the value of an attribute.
-   *
-   * @param name the non-null full name of the attribute.
-   * @param defaultValue the default value of the attribute.
-   * @return the value, or defaultValue if the attribute does not exist.
-   */
-  public float getFloat(String name, float defaultValue) {
-    String value = getString(name);
-    return (value == null) ? defaultValue : Float.parseFloat(value);
-  }
-
-
-  /**
-   * @webref xml:method
-   * @brief Sets the content of an attribute as a float
-   */
-  public void setFloat(String name, float value) {
-    setString(name, String.valueOf(value));
-  }
-
-
   public double getDouble(String name) {
     return getDouble(name, 0);
   }
 
-
-  /**
-   * Returns the value of an attribute.
-   *
-   * @param name the non-null full name of the attribute
-   * @param defaultValue the default value of the attribute
-   * @return the value, or defaultValue if the attribute does not exist
-   */
   public double getDouble(String name, double defaultValue) {
     String value = getString(name);
     return (value == null) ? defaultValue : Double.parseDouble(value);
   }
-
 
   public void setDouble(String name, double value) {
     setString(name, String.valueOf(value));
@@ -885,7 +841,7 @@ public class XML implements Serializable {
    * @brief Gets the content of an element
    * @return the content.
    * @see XML#getIntContent()
-   * @see XML#getFloatContent()
+   * @see XML#getDoubleContent()
    */
   public String getContent() {
     return node.getTextContent();
@@ -903,7 +859,7 @@ public class XML implements Serializable {
    * @brief Gets the content of an element as an int
    * @return the content.
    * @see XML#getContent()
-   * @see XML#getFloatContent()
+   * @see XML#getDoubleContent()
    */
   public int getIntContent() {
     return getIntContent(0);
@@ -917,25 +873,6 @@ public class XML implements Serializable {
     return parseInt(node.getTextContent(), defaultValue);
   }
 
-
-  /**
-   * @webref xml:method
-   * @brief Gets the content of an element as a float
-   * @return the content.
-   * @see XML#getContent()
-   * @see XML#getIntContent()
-   */
-  public float getFloatContent() {
-    return getFloatContent(0);
-  }
-
-
-  /**
-   * @param defaultValue the default value of the attribute
-   */
-  public float getFloatContent(float defaultValue) {
-    return parseFloat(node.getTextContent(), defaultValue);
-  }
 
 
   public long getLongContent() {
@@ -982,12 +919,6 @@ public class XML implements Serializable {
   public void setIntContent(int value) {
     setContent(String.valueOf(value));
   }
-
-
-  public void setFloatContent(float value) {
-    setContent(String.valueOf(value));
-  }
-
 
   public void setLongContent(long value) {
     setContent(String.valueOf(value));

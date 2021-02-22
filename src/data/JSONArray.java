@@ -43,6 +43,8 @@ import java.io.Writer;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 
+import main.FXApp;
+
 import static utils.DataUtils.*;
 
 /**
@@ -175,10 +177,10 @@ public class JSONArray {
   /**
    * @nowebref
    */
-  public JSONArray(FloatList list) {
+  public JSONArray(DoubleList list) {
     myArrayList = new ArrayList<>();
-    for (float item : list.values()) {
-      myArrayList.add(Float.valueOf(item));
+    for (double item : list.values()) {
+      myArrayList.add(Double.valueOf(item));
     }
   }
 
@@ -225,7 +227,7 @@ public class JSONArray {
 //  }
 
 
-  // TODO not decided whether we keep this one, but used heavily by JSONObject
+  
   /**
    * Construct a JSONArray from an array
    * @throws RuntimeException If not an array.
@@ -281,7 +283,7 @@ public class JSONArray {
    * @return      A string value.
    * @throws RuntimeException If there is no string value for the index.
    * @see JSONArray#getInt(int)
-   * @see JSONArray#getFloat(int)
+   * @see JSONArray#getDouble(int)
    * @see JSONArray#getBoolean(int)
    */
   public String getString(int index) {
@@ -315,7 +317,7 @@ public class JSONArray {
    * @param index must be between 0 and length() - 1
    * @return The value.
    * @throws RuntimeException If the key is not found or if the value is not a number.
-   * @see JSONArray#getFloat(int)
+   * @see JSONArray#getDouble(int)
    * @see JSONArray#getString(int)
    * @see JSONArray#getBoolean(int)
    */
@@ -386,31 +388,6 @@ public class JSONArray {
 
 
   /**
-   * Get a value from an index as a float. JSON uses 'double' values
-   * internally, so this is simply getDouble() cast to a float.
-   *
-   * @webref jsonarray:method
-   * @brief Gets the float value associated with an index
-   * @param index must be between 0 and length() - 1
-   * @see JSONArray#getInt(int)
-   * @see JSONArray#getString(int)
-   * @see JSONArray#getBoolean(int)
-   */
-  public float getFloat(int index) {
-    return (float) getDouble(index);
-  }
-
-
-  public float getFloat(int index, float defaultValue) {
-    try {
-      return getFloat(index);
-    } catch (Exception e) {
-      return defaultValue;
-    }
-  }
-
-
-  /**
    * Get the double value associated with an index.
    *
    * @param index must be between 0 and length() - 1
@@ -459,7 +436,7 @@ public class JSONArray {
    * @throws RuntimeException If there is no value for the index or if the
    *  value is not convertible to boolean.
    * @see JSONArray#getInt(int)
-   * @see JSONArray#getFloat(int)
+   * @see JSONArray#getDouble(int)
    * @see JSONArray#getString(int)
    */
   public boolean getBoolean(int index) {
@@ -599,16 +576,6 @@ public class JSONArray {
   }
 
 
-  /** Get this entire array as a float array. Everything must be an float. */
-  public float[] getFloatArray() {
-    float[] outgoing = new float[size()];
-    for (int i = 0; i < size(); i++) {
-      outgoing[i] = getFloat(i);
-    }
-    return outgoing;
-  }
-
-
   /** Get this entire array as a double array. Everything must be an double. */
   public double[] getDoubleArray() {
     double[] outgoing = new double[size()];
@@ -734,20 +701,6 @@ public class JSONArray {
     return this;
   }
 
-
-  /**
-   * Append a float value. This increases the array's length by one.
-   * This will store the value as a double, since there are no floats in JSON.
-   *
-   * @param value a float value
-   * @throws RuntimeException if the value is not finite.
-   * @return this.
-   */
-  public JSONArray append(float value) {
-    return append((double) value);
-  }
-
-
   /**
    * Append a double value. This increases the array's length by one.
    *
@@ -858,7 +811,7 @@ public class JSONArray {
    * @return this.
    * @throws RuntimeException If the index is negative.
    * @see JSONArray#setInt(int, int)
-   * @see JSONArray#setFloat(int, float)
+   * @see JSONArray#setDouble(int, double)
    * @see JSONArray#setBoolean(int, boolean)
    */
   public JSONArray setString(int index, String value) {
@@ -878,7 +831,7 @@ public class JSONArray {
    * @param value the value to assign
    * @return this.
    * @throws RuntimeException If the index is negative.
-   * @see JSONArray#setFloat(int, float)
+   * @see JSONArray#setDouble(int, double)
    * @see JSONArray#setString(int, String)
    * @see JSONArray#setBoolean(int, boolean)
    */
@@ -900,29 +853,6 @@ public class JSONArray {
   public JSONArray setLong(int index, long value) {
     return set(index, Long.valueOf(value));
   }
-
-
-  /**
-   * Put or replace a float value. If the index is greater than the length
-   * of the JSONArray, then null elements will be added as necessary to pad
-   * it out. There are no 'double' values in JSON, so this is passed to
-   * setDouble(value).
-   *
-   * @webref jsonarray:method
-   * @brief Put a float value in the JSONArray
-   * @param index an index value
-   * @param value the value to assign
-   * @return this.
-   * @throws RuntimeException If the index is negative or if the value is
-   * not finite.
-   * @see JSONArray#setInt(int, int)
-   * @see JSONArray#setString(int, String)
-   * @see JSONArray#setBoolean(int, boolean)
-   */
-  public JSONArray setFloat(int index, float value) {
-    return setDouble(index, value);
-  }
-
 
   /**
    * Put or replace a double value. If the index is greater than the length of
@@ -951,7 +881,7 @@ public class JSONArray {
    * @return this.
    * @throws RuntimeException If the index is negative.
    * @see JSONArray#setInt(int, int)
-   * @see JSONArray#setFloat(int, float)
+   * @see JSONArray#setDouble(int, double)
    * @see JSONArray#setString(int, String)
    */
   public JSONArray setBoolean(int index, boolean value) {
@@ -1100,7 +1030,7 @@ public class JSONArray {
 
 
   public boolean save(File file, String options) {
-    PrintWriter writer = createWriter(file);
+    PrintWriter writer = FXApp.createWriter(file);
     boolean success = write(writer, options);
     writer.close();
     return success;

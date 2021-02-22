@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
+import main.FXApp;
+
 import static utils.DataUtils.*;
 
 /**
@@ -12,7 +14,7 @@ import static utils.DataUtils.*;
  *
  * @webref data:composite
  * @see IntDict
- * @see FloatDict
+ * @see DoubleDict
  */
 public class StringDict {
 
@@ -54,7 +56,7 @@ public class StringDict {
    * @nowebref
    */
   public StringDict(BufferedReader reader) {
-    String[] lines = loadStrings(reader);
+    String[] lines = FXApp.loadStrings(reader);
     keys = new String[lines.length];
     values = new String[lines.length];
 
@@ -576,7 +578,7 @@ public class StringDict {
    * Save tab-delimited entries to a file (TSV format, UTF-8 encoding)
    */
   public void save(File file) {
-    PrintWriter writer = createWriter(file);
+    PrintWriter writer = FXApp.createWriter(file);
     write(writer);
     writer.close();
   }

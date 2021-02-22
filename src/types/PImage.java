@@ -275,7 +275,7 @@ public class PImage implements Cloneable {
 	/**
 	 * Check the alpha on an image, using a really primitive loop.
 	 */
-	protected void checkAlpha() {
+	public void checkAlpha() {
 		if (pixels == null) return;
 
 		for (int i = 0; i < pixels.length; i++) {
@@ -557,10 +557,10 @@ public class PImage implements Cloneable {
 		}
 
 		if (w == 0) {  // Use height to determine relative size
-			float diff = (float) h / (float) height;
+			double diff = (double) h / (double) height;
 			w = (int) (width * diff);
 		} else if (h == 0) {  // Use the width to determine relative size
-			float diff = (float) w / (float) width;
+			double diff = (double) w / (double) width;
 			h = (int) (height * diff);
 		}
 
@@ -1130,7 +1130,7 @@ public class PImage implements Cloneable {
 	 * @param kind Either THRESHOLD, GRAY, OPAQUE, INVERT, POSTERIZE, BLUR, ERODE, or DILATE
 	 * @param param unique for each, see above
 	 */
-	public void filter(int kind, float param) {
+	public void filter(int kind, double param) {
 		loadPixels();
 
 		switch (kind) {
@@ -1214,7 +1214,7 @@ public class PImage implements Cloneable {
 	 * added support for various image types (ALPHA, RGB, ARGB)
 	 * [toxi 050728]
 	 */
-	protected void buildBlurKernel(float r) {
+	protected void buildBlurKernel(double r) {
 		int radius = (int) (r * 3.5f);
 		radius = (radius < 1) ? 1 : ((radius < 248) ? radius : 248);
 		if (blurRadius != radius) {
@@ -1241,7 +1241,7 @@ public class PImage implements Cloneable {
 	}
 
 
-	protected void blurAlpha(float r) {
+	protected void blurAlpha(double r) {
 		int sum, cb;
 		int read, ri, ym, ymi, bk0;
 		int[] b2 = new int[pixels.length];
@@ -1312,7 +1312,7 @@ public class PImage implements Cloneable {
 	}
 
 
-	protected void blurRGB(float r) {
+	protected void blurRGB(double r) {
 		int sum, cr, cg, cb; //, k;
 		int /*pixel,*/ read, ri, /*roff,*/ ym, ymi, /*riw,*/ bk0;
 		int[] r2 = new int[pixels.length];
@@ -1394,7 +1394,7 @@ public class PImage implements Cloneable {
 	}
 
 
-	protected void blurARGB(float r) {
+	protected void blurARGB(double r) {
 		int sum, cr, cg, cb, ca;
 		int /*pixel,*/ read, ri, /*roff,*/ ym, ymi, /*riw,*/ bk0;
 		int wh = pixels.length;
@@ -1755,7 +1755,7 @@ public class PImage implements Cloneable {
 	 * @param c2 the second color to blend
 	 * @param mode either BLEND, ADD, SUBTRACT, DARKEST, LIGHTEST, DIFFERENCE, EXCLUSION, MULTIPLY, SCREEN, OVERLAY, HARD_LIGHT, SOFT_LIGHT, DODGE, or BURN
 	 * @see PImage#blend(PImage, int, int, int, int, int, int, int, int, int)
-	 * @see PApplet#color(float, float, float, float)
+	 * @see PApplet#color(double, double, double, double)
 	 */
 	static public int blendColor(int c1, int c2, int mode) {  // ignore
 		switch (mode) {
@@ -1960,8 +1960,8 @@ public class PImage implements Cloneable {
 			return;
 		}
 
-		int dx = (int) (srcW / (float) destW * PRECISIONF);
-		int dy = (int) (srcH / (float) destH * PRECISIONF);
+		int dx = (int) (srcW / (double) destW * PRECISIONF);
+		int dy = (int) (srcH / (double) destH * PRECISIONF);
 
 		srcXOffset = destX1 < 0 ? -destX1 * dx : srcX1 * PRECISIONF;
 		srcYOffset = destY1 < 0 ? -destY1 * dy : srcY1 * PRECISIONF;
