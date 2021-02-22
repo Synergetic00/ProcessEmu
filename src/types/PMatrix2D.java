@@ -458,7 +458,7 @@ public class PMatrix2D implements PMatrix {
 
 	//////////////////////////////////////////////////////////////
 
-	
+
 	// implementation needs to be improved first. (e.g. actually keeping track
 	// of whether the matrix is in fact identity internally.)
 
@@ -469,7 +469,7 @@ public class PMatrix2D implements PMatrix {
 	}
 
 
-	
+
 	protected boolean isWarped() {
 		return ((m00 != 1) || (m01 != 0) &&
 				(m10 != 0) || (m11 != 1));

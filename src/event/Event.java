@@ -18,108 +18,108 @@
   Public License along with this library; if not, write to the
   Free Software Foundation, Inc., 59 Temple Place, Suite 330,
   Boston, MA  02111-1307  USA
-*/
+ */
 
 package event;
 
 
 public class Event {
-  protected Object nativeObject;
+	protected Object nativeObject;
 
-  protected long millis;
-  protected int action;
+	protected long millis;
+	protected int action;
 
-  // These correspond to the java.awt.Event modifiers (not to be confused with
-  // the newer getModifiersEx), though they're not guaranteed to in the future.
-  static public final int SHIFT = 1 << 0;
-  static public final int CTRL  = 1 << 1;
-  static public final int META  = 1 << 2;
-  static public final int ALT   = 1 << 3;
-  protected int modifiers;
+	// These correspond to the java.awt.Event modifiers (not to be confused with
+	// the newer getModifiersEx), though they're not guaranteed to in the future.
+	static public final int SHIFT = 1 << 0;
+	static public final int CTRL  = 1 << 1;
+	static public final int META  = 1 << 2;
+	static public final int ALT   = 1 << 3;
+	protected int modifiers;
 
-  // Types of events. As with all constants in Processing, brevity's preferred.
-  static public final int KEY = 1;
-  static public final int MOUSE = 2;
-  static public final int TOUCH = 3;
-  protected int flavor;
-
-
-  public Event(Object nativeObject, long millis, int action, int modifiers) {
-    this.nativeObject = nativeObject;
-    this.millis = millis;
-    this.action = action;
-    this.modifiers = modifiers;
-  }
+	// Types of events. As with all constants in Processing, brevity's preferred.
+	static public final int KEY = 1;
+	static public final int MOUSE = 2;
+	static public final int TOUCH = 3;
+	protected int flavor;
 
 
-  public int getFlavor() {
-    return flavor;
-  }
+	public Event(Object nativeObject, long millis, int action, int modifiers) {
+		this.nativeObject = nativeObject;
+		this.millis = millis;
+		this.action = action;
+		this.modifiers = modifiers;
+	}
 
 
-  /**
-   * Get the platform-native event object. This might be the java.awt event
-   * on the desktop, though if you're using OpenGL on the desktop it'll be a
-   * NEWT event that JOGL uses. Android events are something else altogether.
-   * Bottom line, use this only if you know what you're doing, and don't make
-   * assumptions about the class type.
-   */
-  public Object getNative() {
-    return nativeObject;
-  }
+	public int getFlavor() {
+		return flavor;
+	}
 
 
-//  public void setNative(Object nativeObject) {
-//    this.nativeObject = nativeObject;
-//  }
+	/**
+	 * Get the platform-native event object. This might be the java.awt event
+	 * on the desktop, though if you're using OpenGL on the desktop it'll be a
+	 * NEWT event that JOGL uses. Android events are something else altogether.
+	 * Bottom line, use this only if you know what you're doing, and don't make
+	 * assumptions about the class type.
+	 */
+	public Object getNative() {
+		return nativeObject;
+	}
 
 
-  public long getMillis() {
-    return millis;
-  }
+	//  public void setNative(Object nativeObject) {
+	//    this.nativeObject = nativeObject;
+	//  }
 
 
-//  public void setMillis(long millis) {
-//    this.millis = millis;
-//  }
+	public long getMillis() {
+		return millis;
+	}
 
 
-  public int getAction() {
-    return action;
-  }
+	//  public void setMillis(long millis) {
+	//    this.millis = millis;
+	//  }
 
 
-//  public void setAction(int action) {
-//    this.action = action;
-//  }
+	public int getAction() {
+		return action;
+	}
 
 
-  public int getModifiers() {
-    return modifiers;
-  }
+	//  public void setAction(int action) {
+	//    this.action = action;
+	//  }
 
 
-//  public void setModifiers(int modifiers) {
-//    this.modifiers = modifiers;
-//  }
+	public int getModifiers() {
+		return modifiers;
+	}
 
 
-  public boolean isShiftDown() {
-    return (modifiers & SHIFT) != 0;
-  }
+	//  public void setModifiers(int modifiers) {
+	//    this.modifiers = modifiers;
+	//  }
 
 
-  public boolean isControlDown() {
-    return (modifiers & CTRL) != 0;
-  }
+	public boolean isShiftDown() {
+		return (modifiers & SHIFT) != 0;
+	}
 
 
-  public boolean isMetaDown() {
-    return (modifiers & META) != 0;
-  }
+	public boolean isControlDown() {
+		return (modifiers & CTRL) != 0;
+	}
 
 
-  public boolean isAltDown() {
-    return (modifiers & ALT) != 0;
-  }
+	public boolean isMetaDown() {
+		return (modifiers & META) != 0;
+	}
+
+
+	public boolean isAltDown() {
+		return (modifiers & ALT) != 0;
+	}
 }
