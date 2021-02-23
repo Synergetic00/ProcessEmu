@@ -172,7 +172,13 @@ public class DynLoader {
         program = program.replace("void ", "public void ");
         program = program.replace("float", "double");
         program = program.replace("Float", "Double");
+        program = program.replace("FLOAT", "DOUBLE");
         program = program.replace("color ", "int ");
+        program = program.replace("boolean(", "parseBoolean(");
+        program = program.replace("byte(", "parseByte(");
+        program = program.replace("char(", "parseChar(");
+        program = program.replace("double(", "parseDouble(");
+        program = program.replace("int(", "parseInt(");
         return program;
 
     }

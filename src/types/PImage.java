@@ -2858,7 +2858,7 @@ public class PImage implements Cloneable {
 	static final String TIFF_ERROR =
 			"Error: Processing can only read its own TIFF files.";
 
-	static protected PImage loadTIFF(byte[] tiff) {
+	public static PImage loadTIFF(byte[] tiff) {
 		if ((tiff[42] != tiff[102]) ||  // width/height in both places
 				(tiff[43] != tiff[103])) {
 			System.err.println(TIFF_ERROR);

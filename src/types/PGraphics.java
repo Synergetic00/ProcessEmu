@@ -45,7 +45,6 @@ import javafx.scene.transform.Affine;
 import javafx.scene.transform.Transform;
 import main.FXApp;
 
-@SuppressWarnings("serial")
 public class PGraphics extends PImage {
 
     // Variables --> JavaFX
@@ -677,10 +676,10 @@ public class PGraphics extends PImage {
 
             case POLYGON:
                 if (workPath.getNumCommands() == 0 || breakShape) {
-                    workPath.moveTo(x, y);
+                    workPath.moveTo((float)x, (float)y);
                     breakShape = false;
                 } else {
-                    workPath.lineTo(x, y);
+                    workPath.lineTo((float)x, (float)y);
                 }
                 break;
         }
@@ -787,11 +786,21 @@ public class PGraphics extends PImage {
         loaded = false;
     }
 
+    private float[] fpathCoordsBuffer = new float[pathCoordsBuffer.length];
+
+    private void copyCoordsBuffer() {
+        for (int i = 0; i < pathCoordsBuffer.length; i++) {
+            fpathCoordsBuffer[i] = (float) pathCoordsBuffer[i];
+        }
+    }
+
     private void drawShape(Shape s) {
         context.beginPath();
         PathIterator pi = s.getPathIterator(null);
+        copyCoordsBuffer();
         while (!pi.isDone()) {
-            int pitype = pi.currentSegment(pathCoordsBuffer);
+
+            int pitype = pi.currentSegment(fpathCoordsBuffer);
             switch (pitype) {
                 case PathIterator.SEG_MOVETO:
                     context.moveTo(pathCoordsBuffer[0], pathCoordsBuffer[1]);
@@ -1077,28 +1086,25 @@ public class PGraphics extends PImage {
 
     protected void bezierVertexCheck(int shape, int vertexCount) {
         if (shape == 0 || shape != POLYGON) {
-            throw new RuntimeException(
-                    "beginShape() or beginShape(POLYGON) " + "must be used before bezierVertex() or quadraticVertex()");
+            throw new RuntimeException("beginShape() or beginShape(POLYGON) " + "must be used before bezierVertex() or quadraticVertex()");
         }
         if (vertexCount == 0) {
-            throw new RuntimeException(
-                    "vertex() must be used at least once " + "before bezierVertex() or quadraticVertex()");
+            throw new RuntimeException("vertex() must be used at least once " + "before bezierVertex() or quadraticVertex()");
         }
     }
 
     public void bezierVertex(double x1, double y1, double x2, double y2, double x3, double y3) {
         bezierVertexCheck();
-        workPath.curveTo(x1, y1, x2, y2, x3, y3);
+        workPath.curveTo((float) x1, (float) y1, (float) x2, (float) y2, (float) x3, (float) y3);
     }
 
-    public void bezierVertex(double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4,
-            double z4) {
+    public void bezierVertex(double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4) {
         showDepthWarningXYZ("bezierVertex");
     }
 
     public void quadraticVertex(double ctrlX, double ctrlY, double endX, double endY) {
         bezierVertexCheck();
-        workPath.quadTo(ctrlX, ctrlY, endX, endY);
+        workPath.quadTo((float) ctrlX, (float) ctrlY, (float) endX, (float) endY);
     }
 
     public void quadraticVertex(double x2, double y2, double z2, double x4, double y4, double z4) {
@@ -1172,15 +1178,14 @@ public class PGraphics extends PImage {
         curveToBezierMatrix.mult(curveCoordY, curveDrawY);
 
         if (workPath.getNumCommands() == 0) {
-            workPath.moveTo(curveDrawX[0], curveDrawY[0]);
+            workPath.moveTo((float) curveDrawX[0], (float) curveDrawY[0]);
             breakShape = false;
         }
 
-        workPath.curveTo(curveDrawX[1], curveDrawY[1], curveDrawX[2], curveDrawY[2], curveDrawX[3], curveDrawY[3]);
+        workPath.curveTo((float) curveDrawX[1], (float) curveDrawY[1], (float) curveDrawX[2], (float) curveDrawY[2], (float) curveDrawX[3], (float) curveDrawY[3]);
     }
 
-    protected void curveVertexSegment(double x1, double y1, double z1, double x2, double y2, double z2, double x3,
-            double y3, double z3, double x4, double y4, double z4) {
+    protected void curveVertexSegment(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4) {
         double x0 = x2;
         double y0 = y2;
         double z0 = z2;
@@ -2120,7 +2125,7 @@ public class PGraphics extends PImage {
                 size = 0;
             }
             retrievingKey.name = name;
-            retrievingKey.size = size;
+            retrievingKey.size = (float) size;
             return cache.get(retrievingKey);
         }
 
@@ -2131,7 +2136,7 @@ public class PGraphics extends PImage {
             }
             Key key = new Key();
             key.name = name;
-            key.size = size;
+            key.size = (float) size;
             cache.put(key, fontInfo);
         }
 
@@ -2151,7 +2156,7 @@ public class PGraphics extends PImage {
 
         static final class Key {
             String name;
-            double size;
+            float size;
 
             @Override
 			public boolean equals(Object o) {
@@ -2165,13 +2170,13 @@ public class PGraphics extends PImage {
             @Override
 			public int hashCode() {
 				int result = name.hashCode();
-				result = 31 * result + (size != +0.0f ? Double.doubleToIntBits(size) : 0);
-				return result;
+                result = 31 * result + (size != +0.0f ? Float.floatToIntBits(size) : 0);
+                return result;
 			}
         }
     }
 
-    protected PFont createFont(String name, double size, boolean smooth, char[] charset) {
+    public PFont createFont(String name, double size, boolean smooth, char[] charset) {
         PFont font = createFontSuper(name, size, smooth, charset);
         if (font.isStream()) {
             fontCache.nameToFilename.put(font.getName(), name);
@@ -2207,7 +2212,7 @@ public class PGraphics extends PImage {
     }
 
     private PFont createFont(java.awt.Font baseFont, double size, boolean smooth, char[] charset, boolean stream) {
-        return new PFont(baseFont.deriveFont(size * parent.pixelDensity), smooth, charset, stream, parent.pixelDensity);
+        return new PFont(baseFont.deriveFont((float) (size * parent.pixelDensity)), smooth, charset, stream, parent.pixelDensity);
     }
 
     public void textAlign(int alignX) {
@@ -2818,6 +2823,16 @@ public class PGraphics extends PImage {
         tintB = savedTintB;
         tintA = savedTintA;
         tintAlpha = savedTintAlpha;
+    }
+
+	public void push() {
+        pushStyle();
+        pushMatrix();
+    }
+
+	public void pop() {
+        popStyle();
+        popMatrix();
     }
 
     public void pushMatrix() {
@@ -4087,7 +4102,7 @@ public class PGraphics extends PImage {
     protected void processImageBeforeAsyncSave(PImage image) {
     }
 
-    protected void awaitAsyncSaveCompletion(String filename) {
+    public void awaitAsyncSaveCompletion(String filename) {
         if (asyncImageSaver != null) {
             asyncImageSaver.awaitAsyncSaveCompletion(parent.sketchFile(filename));
         }

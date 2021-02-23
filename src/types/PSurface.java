@@ -75,6 +75,49 @@ public class PSurface {
 	final Animation animation;
 	double frameRate = 60;
 
+    ///////////////
+    // Structure //
+    ///////////////
+
+    // setLocation()
+
+    public void setLocation(int x, int y) {
+		stage.setX(x);
+		stage.setY(y);
+	}
+
+    // setResizable()
+
+    public void setResizable(boolean resizable) {
+		stage.setResizable(resizable);
+	}
+
+    // setTitle()
+
+    public void setTitle(String title) {
+		stage.setTitle(title);
+	}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	private SynchronousQueue<Throwable> drawExceptionQueue = new SynchronousQueue<>();
 
 	public PSurface(PGraphics graphics) {
@@ -114,20 +157,13 @@ public class PSurface {
 		});
 		animation = new Timeline(keyFrame);
 		animation.setCycleCount(Animation.INDEFINITE);
-
-		// key frame has duration of 1 second, so the rate of the animation
-		// should be set to frames per second
-
-		// setting rate to negative so that event fires at the start of
-		// the key frame and first frame is drawn immediately
-		animation.setRate(-frameRate);
+        animation.setRate(-frameRate);
 	}
 
 
 	public Object getNative() {
 		return canvas;
 	}
-
 
 	class ResizableCanvas extends Canvas {
 
@@ -241,9 +277,6 @@ public class PSurface {
 
 		@Override
 		public void start(final Stage stage) {
-			//      if (title != null) {
-			//        stage.setTitle(title);
-			//      }
 
 			FXApp sketch = surface.sketch;
 
@@ -422,12 +455,7 @@ public class PSurface {
 
 
 	/** Set the window (and dock, or whatever necessary) title. */
-	public void setTitle(String title) {
-		//    PApplicationFX.title = title;  // store this in case the stage still null
-		//    if (stage != null) {
-		stage.setTitle(title);
-		//    }
-	}
+	
 
 
 	/** Show or hide the window. */
@@ -446,12 +474,7 @@ public class PSurface {
 
 
 	/** Set true if we want to resize things (default is not resizable) */
-	public void setResizable(boolean resizable) {
-		//    PApplicationFX.resizable = resizable;
-		//    if (stage != null) {
-		stage.setResizable(resizable);
-		//    }
-	}
+	
 
 
 	public void setIcon(PImage icon) {
@@ -497,49 +520,6 @@ public class PSurface {
 	public void setAlwaysOnTop(boolean always) {
 		stage.setAlwaysOnTop(always);
 	}
-
-
-	/*
-  public void placeWindow(int[] location) {
-    //setFrameSize();
-
-    if (location != null) {
-      // a specific location was received from the Runner
-      // (applet has been run more than once, user placed window)
-      stage.setX(location[0]);
-      stage.setY(location[1]);
-
-    } else {  // just center on screen
-      // Can't use frame.setLocationRelativeTo(null) because it sends the
-      // frame to the main display, which undermines the --display setting.
-//      frame.setLocation(screenRect.x + (screenRect.width - sketchWidth) / 2,
-//                        screenRect.y + (screenRect.height - sketchHeight) / 2);
-    }
-    if (stage.getY() < 0) {
-      // Windows actually allows you to place frames where they can't be
-      // closed. Awesome. http://dev.org/bugs/show_bug.cgi?id=1508
-      //frame.setLocation(frameLoc.x, 30);
-      stage.setY(30);
-    }
-
-    //setCanvasSize();
-
-
-//    frame.addWindowListener(new WindowAdapter() {
-//      @Override
-//      public void windowClosing(WindowEvent e) {
-//        System.exit(0);
-//      }
-//    });
-
-
-//    setupFrameResizeListener();
-
-    if (sketch.getGraphics().displayable()) {
-      setVisible(true);
-    }
-  }
-	 */
 
 
 	public void placeWindow(int[] location, int[] editorLocation) {
@@ -608,16 +588,10 @@ public class PSurface {
 	}
 
 
-	public void setLocation(int x, int y) {
-		stage.setX(x);
-		stage.setY(y);
-	}
+	
 
 
 	public void setSize(int wide, int high) {
-		// When the surface is set to resizable via surface.setResizable(true),
-		// a crash may occur if the user sets the window to size zero.
-		// https://github.com/processing/processing/issues/5052
 		if (high <= 0) {
 			high = 1;
 		}
