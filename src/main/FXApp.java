@@ -26,6 +26,7 @@ import org.xml.sax.SAXException;
 import data.*;
 import event.*;
 import event.Event;
+import javafx.scene.canvas.GraphicsContext;
 import types.*;
 
 import static utils.Constants.*;
@@ -76,6 +77,13 @@ public class FXApp {
     OutputStream outputStream;
     int windowColor = 0xffDDDDDD;
     boolean external = false;
+
+    public GraphicsContext gc;
+
+    public FXApp(GraphicsContext gc) {
+        this.gc = gc;
+        pg = createPrimaryGraphics();
+    }
 
     public void setSize(int width, int height) {
         this.width = width;
@@ -266,15 +274,15 @@ public class FXApp {
     // Handled Methods
 
     public void handleSettings() {
-
+        settings();
     }
 
     public void handleSetup() {
-        
+        setup();
     }
 
     public void handleDraw() {
-        
+        draw();
     }
 
     public void handleKeyPressed(javafx.scene.input.KeyEvent event) {
@@ -640,10 +648,10 @@ public class FXApp {
 
     public void size(int width, int height) {
         if (width != this.width || height != this.height) {
-            if (insideSettings("size", width, height)) {
+            //if (insideSettings("size", width, height)) {
                 this.width = width;
                 this.height = height;
-            }
+            //}
         }
     }
 

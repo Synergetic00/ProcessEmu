@@ -37,8 +37,8 @@ public class Main extends Application {
         gc = canvas.getGraphicsContext2D();
         apps = new ArrayList<AppTemplate>();
         loadFolder(new File("src/programs"));
-        //apps.get(index).launch(gc);
-        runTestCode();
+        apps.get(index).launch(gc);
+        //runTestCode();
 
         scene.setOnKeyPressed(event -> { handleKeyPressed(event); });
         scene.setOnKeyReleased(event -> { handleKeyReleased(event); });
