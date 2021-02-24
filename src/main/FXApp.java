@@ -65,7 +65,7 @@ public class FXApp {
 
     boolean insideSettings;
 
-    String renderer = FX2D;
+    String renderer = JAVA2D;
     int smooth = 1;
     boolean fullScreen;
     int display = -1;
@@ -84,6 +84,73 @@ public class FXApp {
         this.gc = gc;
         pg = createPrimaryGraphics();
     }
+
+    final public int sketchWidth() { return width; }
+    final public int sketchHeight() { return height; }
+    final public String sketchRenderer() { return renderer; }
+    final public int sketchSmooth() { return smooth; }
+    final public boolean sketchFullScreen() { return fullScreen; }
+    final public int sketchDisplay() { return display; }
+    final public String sketchOutputPath() { return outputPath; }
+    final public OutputStream sketchOutputStream() { return outputStream; }
+    final public int sketchWindowColor() { return windowColor; }
+    final public int sketchPixelDensity() { return pixelDensity; }
+
+    /////////////////////
+    // Handled Methods //
+    /////////////////////
+
+    public void handleSettings() {
+        settings();
+    }
+
+    public void handleSetup() {
+        setup();
+    }
+
+    public void handleDraw() {
+        draw();
+    }
+
+    public void handleKeyPressed(javafx.scene.input.KeyEvent event) {
+        
+    }
+
+    public void handleKeyReleased(javafx.scene.input.KeyEvent event) {
+        
+    }
+
+    public void handleKeyTyped(javafx.scene.input.KeyEvent event) {
+        
+    }
+
+    public void handleMouseClicked(javafx.scene.input.MouseEvent event) {
+        
+    }
+
+    public void handleMouseDragged(javafx.scene.input.MouseEvent event) {
+        
+    }
+
+    public void handleMouseMoved(javafx.scene.input.MouseEvent event) {
+        
+    }
+
+    public void handleMousePressed(javafx.scene.input.MouseEvent event) {
+        
+    }
+
+    public void handleMouseReleased(javafx.scene.input.MouseEvent event) {
+        
+    }
+
+    public void handleMouseWheel(javafx.scene.input.ScrollEvent event) {
+        
+    }
+
+    /////////////////////
+    // Other Functions //
+    /////////////////////
 
     public void setSize(int width, int height) {
         this.width = width;
@@ -159,17 +226,6 @@ public class FXApp {
         }
         throw new IllegalStateException(method + "() cannot be used here, see " + url);
     }
-
-    final public int sketchWidth() { return width; }
-    final public int sketchHeight() { return height; }
-    final public String sketchRenderer() { return renderer; }
-    final public int sketchSmooth() { return smooth; }
-    final public boolean sketchFullScreen() { return fullScreen; }
-    final public int sketchDisplay() { return display; }
-    final public String sketchOutputPath() { return outputPath; }
-    final public OutputStream sketchOutputStream() { return outputStream; }
-    final public int sketchWindowColor() { return windowColor; }
-    final public int sketchPixelDensity() { return pixelDensity; }
 
     public void die(String what) {
         dispose();
@@ -271,54 +327,46 @@ public class FXApp {
         }
     }
 
-    // Handled Methods
-
-    public void handleSettings() {
-        settings();
+    public PMatrix getMatrix() {
+        return pg.getMatrix();
     }
 
-    public void handleSetup() {
-        setup();
+    public PMatrix2D getMatrix(PMatrix2D target) {
+        return pg.getMatrix(target);
     }
 
-    public void handleDraw() {
-        draw();
+    public PMatrix3D getMatrix(PMatrix3D target) {
+        return pg.getMatrix(target);
     }
 
-    public void handleKeyPressed(javafx.scene.input.KeyEvent event) {
-        
+    public void setMatrix(PMatrix source) {
+        if (recorder != null)
+            recorder.setMatrix(source);
+        pg.setMatrix(source);
     }
 
-    public void handleKeyReleased(javafx.scene.input.KeyEvent event) {
-        
+    public void setMatrix(PMatrix2D source) {
+        if (recorder != null)
+            recorder.setMatrix(source);
+        pg.setMatrix(source);
     }
 
-    public void handleKeyTyped(javafx.scene.input.KeyEvent event) {
-        
+    public void setMatrix(PMatrix3D source) {
+        if (recorder != null)
+            recorder.setMatrix(source);
+        pg.setMatrix(source);
     }
 
-    public void handleMouseClicked(javafx.scene.input.MouseEvent event) {
-        
+    public void style(PStyle s) {
+        if (recorder != null)
+            recorder.style(s);
+        pg.style(s);
     }
 
-    public void handleMouseDragged(javafx.scene.input.MouseEvent event) {
-        
-    }
-
-    public void handleMouseMoved(javafx.scene.input.MouseEvent event) {
-        
-    }
-
-    public void handleMousePressed(javafx.scene.input.MouseEvent event) {
-        
-    }
-
-    public void handleMouseReleased(javafx.scene.input.MouseEvent event) {
-        
-    }
-
-    public void handleMouseWheel(javafx.scene.input.ScrollEvent event) {
-        
+    public void mask(PImage img) {
+        if (recorder != null)
+            recorder.mask(img);
+        pg.mask(img);
     }
 
     ///////////////
@@ -3927,36 +3975,18 @@ public class FXApp {
         }
 
         try {
-            Class<?> rendererClass = Thread.currentThread().getContextClassLoader().loadClass(renderer);
-            Constructor<?> constructor = rendererClass.getConstructor(new Class[] {});
-            PGraphics pg = (PGraphics) constructor.newInstance();
-
+            //Class<?> rendererClass = Thread.currentThread().getContextClassLoader().loadClass(renderer);
+            //Constructor<?> constructor = rendererClass.getConstructor(new Class[] {});
+            //PGraphics pg = (PGraphics) constructor.newInstance();
+            pg = new PGraphics(gc, this);
             pg.setParent(this);
             pg.setPrimary(primary);
             if (path != null) {
                 pg.setPath(savePath(path));
             }
             pg.setSize(w, h);
+            print(primary+" "+w+" "+h);
             return pg;
-        } catch (InvocationTargetException ite) {
-            String msg = ite.getTargetException().getMessage();
-            if ((msg != null) && (msg.indexOf("no jogl in java.library.path") != -1)) {
-                throw new RuntimeException("The jogl library folder needs to be " + "specified with -Djava.library.path=/path/to/jogl");
-
-            } else {
-                printStackTrace(ite.getTargetException());
-                Throwable target = ite.getTargetException();
-                throw new RuntimeException(target.getMessage());
-            }
-
-        } catch (ClassNotFoundException cnfe) {
-            if (external) {
-                throw new RuntimeException(
-                        "You need to use \"Import Library\" " + "to add " + renderer + " to your sketch.");
-            } else {
-                throw new RuntimeException("The " + renderer + " renderer is not in the class path.");
-            }
-
         } catch (Exception e) {
             if ((e instanceof IllegalArgumentException) || (e instanceof NoSuchMethodException)
                     || (e instanceof IllegalAccessException)) {
