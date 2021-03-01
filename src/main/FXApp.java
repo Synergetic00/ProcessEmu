@@ -3425,6 +3425,7 @@ public class FXApp {
     public void image(PImage img, double a, double b, double c, double d) {
         if (recorder != null)
             recorder.image(img, a, b, c, d);
+        System.out.println("Called image(1)");
         pg.image(img, a, b, c, d);
     }
 
@@ -3985,7 +3986,7 @@ public class FXApp {
                 pg.setPath(savePath(path));
             }
             pg.setSize(w, h);
-            print(primary+" "+w+" "+h);
+            println(primary+" "+w+" "+h);
             return pg;
         } catch (Exception e) {
             if ((e instanceof IllegalArgumentException) || (e instanceof NoSuchMethodException)

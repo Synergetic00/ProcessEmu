@@ -1820,12 +1820,16 @@ public class PGraphics extends PImage {
     }
 
     public void image(PImage img, double a, double b, double c, double d) {
+        System.out.println("Called image(2)");
         image(img, a, b, c, d, 0, 0, img.width, img.height);
     }
 
     public void image(PImage img, double a, double b, double c, double d, int u1, int v1, int u2, int v2) {
         // Starting in release 0144, image errors are simply ignored.
         // loadImageAsync() sets width and height to -1 when loading fails.
+        
+        System.out.println("Called image(3) "+img.width);
+        
         if (img.width == -1 || img.height == -1)
             return;
 
@@ -3560,6 +3564,7 @@ public class PGraphics extends PImage {
         context.setTransform(new Affine());
         context.setFill(new Color(backgroundR, backgroundG, backgroundB, backgroundA));
         context.setGlobalBlendMode(BlendMode.SRC_OVER);
+        println(width);
         context.fillRect(0, 0, width, height);
         context.restore();
     }

@@ -7,7 +7,7 @@ void setup() {
     size(400,400);
     pg = createGraphics(400,400);
     pg.beginDraw();
-    pg.background(0,0,200);
+    //pg.background(0,0,200);
     pg.fill(255,0,0);
     pg.rect(200,50,300,300);
     pg.endDraw();
