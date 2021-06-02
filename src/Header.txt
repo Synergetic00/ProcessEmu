@@ -1,0 +1,9 @@
+package sketches;
+
+import javafx.scene.canvas.GraphicsContext;
+
+import main.AppBase;
+
+public class ProcessingApp extends AppBase {
+
+public ProcessingApp(GraphicsContext gc) { super(gc); }
