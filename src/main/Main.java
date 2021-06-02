@@ -23,7 +23,7 @@ public class Main extends Application {
     public static GraphicsContext gc;
     public static ArrayList<AppTemplate> apps;
     public static Stage stage;
-    public static int index = 0;
+    public static int index = 1;
 
     public static void main(String[] args) { launch(args); }
 
