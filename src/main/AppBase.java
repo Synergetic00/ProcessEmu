@@ -13,8 +13,8 @@ public class AppBase {
 
     private GraphicsContext gc;
 
-    private int width;
-    private int height;
+    public int width;
+    public int height;
 
     public AppBase(GraphicsContext gc) {
         this.gc = gc;
