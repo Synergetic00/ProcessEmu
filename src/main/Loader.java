@@ -1,6 +1,8 @@
 package main;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyEvent;
+
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -59,6 +61,14 @@ public class Loader {
         }
     }
 
+    // Keyboard input methods
+    static Method keyPressedMethod;
+    public static void handleKeyPressed(KeyEvent event) {
+        try {
+            keyPressedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
     public static void searchFolder(File path) throws IOException {
         for (File entry : path.listFiles()) {
             if (entry.isDirectory()) {
@@ -98,6 +108,25 @@ public class Loader {
         return program;
     }
 
+    public static void launchHomeScreen() {
+        // Go back to home screen
+        try {
+            launchProgram("src/Home.pde");
+        } catch (Exception e) {
+            System.out.println("Failed to load home screen");
+        }
+    }
+
+    public static void launchProgram(int id) {
+        try {
+            Main.apps.get(id).launch();
+        } catch (IndexOutOfBoundsException e) {
+            System.out.println("No application exists at index: "+id);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+    }
+
     public static void launchProgram(String path) throws Exception {
         String program = getFileContents(path);
 
@@ -115,6 +144,7 @@ public class Loader {
         settingsMethod = programClass.getMethod("handleSettings");
         setupMethod = programClass.getMethod("handleSetup");
         drawMethod = programClass.getMethod("handleDraw");
+        keyPressedMethod    = programClass.getMethod("handleKeyPressed", KeyEvent.class);
 
         settingsMethod.invoke(programObject);
         setupMethod.invoke(programObject);

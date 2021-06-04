@@ -9,13 +9,11 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
+import utils.Constants;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
-
-import javax.swing.ImageIcon;
 
 public class Main extends Application {
 
@@ -25,12 +23,17 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
+        Constants.screenW(1280);
+        Constants.screenH(720);
+
         Main.stage = stage;
         Group root = new Group();
         Scene scene = new Scene(root, Color.BLACK);
-        Canvas canvas = new Canvas(1280, 720);
+        Canvas canvas = new Canvas(Constants.screenW(), Constants.screenH());
         root.getChildren().add(canvas);
         Main.gc = canvas.getGraphicsContext2D();
+
+        scene.setOnKeyPressed(event -> { Loader.handleKeyPressed(event); });
 
         new AnimationTimer() { public void handle(long now) { updateApplication(); }}.start();
 
@@ -41,13 +44,11 @@ public class Main extends Application {
         Main.stage.setResizable(false);
         Main.stage.show();
 
-        try {
+        /*try {
             URL iconURL = new File("RPFXLogo.png").toURI().toURL();
             java.awt.Image image = new ImageIcon(iconURL).getImage();
             com.apple.eawt.Application.getApplication().setDockIconImage(image);
-        } catch (Exception e) {
-            System.out.println("Not running MacOS");
-        }
+        } catch (Exception e) {}*/
 
         Main.apps = new ArrayList<AppEntry>();
         
@@ -57,11 +58,7 @@ public class Main extends Application {
             e.printStackTrace();
         }
 
-        try {
-            apps.get(0).launch();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        Loader.launchHomeScreen();
     }
 
     protected void updateApplication() {

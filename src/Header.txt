@@ -3,6 +3,7 @@ package sketches;
 import javafx.scene.canvas.GraphicsContext;
 
 import main.AppBase;
+import main.Loader;
 
 public class ProcessingApp extends AppBase {
 
