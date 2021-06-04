@@ -2,8 +2,8 @@ package utils;
 
 public class Constants {
 
-    public static int screenW;
-    public static int screenH;
+    private static int screenW;
+    private static int screenH;
 
     public static int screenW() {
         return screenW;

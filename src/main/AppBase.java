@@ -35,6 +35,8 @@ public class AppBase {
         size(Constants.screenW(), Constants.screenH());
     }
 
+    // Background
+
     public void background(int gray) {
         background(gray, gray, gray, 255);
     }
@@ -58,6 +60,73 @@ public class AppBase {
         gc.restore();
     }
 
+    // Fill
+
+    private boolean hasFill;
+
+    public void noFill() {
+        hasFill = false;
+    }
+
+    public void fill(int gray) {
+        fill(gray, gray, gray, 255);
+    }
+
+    public void fill(int gray, int alpha) {
+        fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(int rh, int gs, int bv) {
+        fill(rh, gs, bv, 255);
+    }
+
+    public void fill(int rh, int gs, int bv, int ao) {
+        hasFill = true;
+        setFill(Colours.encodeColour(rh, gs, bv, ao));
+    }
+
+    private void setFill(int encodedValue) {
+        gc.setFill(Colours.decodeColour(encodedValue));
+    }
+
+    // Stroke
+
+    private boolean hasStroke;
+
+    public void noStroke() {
+        hasStroke = false;
+    }
+
+    public void stroke(int gray) {
+        stroke(gray, gray, gray, 255);
+    }
+
+    public void stroke(int gray, int alpha) {
+        stroke(gray, gray, gray, alpha);
+    }
+
+    public void stroke(int rh, int gs, int bv) {
+        stroke(rh, gs, bv, 255);
+    }
+
+    public void stroke(int rh, int gs, int bv, int ao) {
+        hasStroke = true;
+        setStroke(Colours.encodeColour(rh, gs, bv, ao));
+    }
+
+    private void setStroke(int encodedValue) {
+        gc.setStroke(Colours.decodeColour(encodedValue));
+    }
+
+    // Shapes
+
+    public void rect(int x, int y, int w, int h) {
+        if (hasFill) gc.fillRect(Constants.offsetW() + x, Constants.offsetH() + y, w, h);
+        if (hasStroke) gc.strokeRect(Constants.offsetW() + x, Constants.offsetH() + y, w, h);
+    }
+
+    // Other
+
     public void exit() {
         Loader.launchHomeScreen();
     }
@@ -72,6 +141,17 @@ public class AppBase {
 
     public void handleDraw() {
         draw();
+        coverEdges();
+    }
+
+    private void coverEdges() {
+        gc.save();
+        fill(20);
+        gc.fillRect(0, 0, Constants.screenW(), Constants.offsetH());                            // Top
+        gc.fillRect(0, Constants.offsetH() + height, Constants.screenW(), Constants.offsetH()); // Bottom
+        gc.fillRect(0, 0, Constants.offsetW(), Constants.screenH());                            // Left
+        gc.fillRect(Constants.offsetW() + width, 0, Constants.offsetW(), Constants.screenH());  // Right
+        gc.restore();
     }
 
     public void settings() {}
