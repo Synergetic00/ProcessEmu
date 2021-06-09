@@ -1,9 +1,14 @@
 package sketches;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
 
 import main.AppBase;
 import main.Loader;
+import main.Main;
+import utils.Maths;
+
+import static utils.Constants.*;
 
 public class ProcessingApp extends AppBase {
 

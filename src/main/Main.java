@@ -20,6 +20,7 @@ public class Main extends Application {
     public static ArrayList<AppEntry> apps;
     public static GraphicsContext gc;
     public static Stage stage;
+    public static int appIndex;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -34,6 +35,14 @@ public class Main extends Application {
         Main.gc = canvas.getGraphicsContext2D();
 
         scene.setOnKeyPressed(event -> { Loader.handleKeyPressed(event); });
+        scene.setOnKeyReleased(event -> { Loader.handleKeyReleased(event); });
+        scene.setOnKeyTyped(event -> { Loader.handleKeyTyped(event); });
+        scene.setOnMouseClicked(event -> { Loader.handleMouseClicked(event); });
+        scene.setOnMouseDragged(event -> { Loader.handleMouseDragged(event); });
+        scene.setOnMouseMoved(event -> { Loader.handleMouseMoved(event); });
+        scene.setOnMousePressed(event -> { Loader.handleMousePressed(event); });
+        scene.setOnMouseReleased(event -> { Loader.handleMouseReleased(event); });
+        scene.setOnScroll(event -> { Loader.handleMouseWheel(event); });
 
         new AnimationTimer() { public void handle(long now) { updateApplication(); }}.start();
 

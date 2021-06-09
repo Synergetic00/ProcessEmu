@@ -2,6 +2,8 @@ package main;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
@@ -66,6 +68,63 @@ public class Loader {
     public static void handleKeyPressed(KeyEvent event) {
         try {
             keyPressedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
+    static Method keyReleasedMethod;
+    public static void handleKeyReleased(KeyEvent event) {
+        try {
+            keyReleasedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
+    static Method keyTypedMethod;
+    public static void handleKeyTyped(KeyEvent event) {
+        try {
+            keyTypedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
+    // Mouse input methods
+    static Method mouseClickedMethod;
+    public static void handleMouseClicked(MouseEvent event) {
+        try {
+            mouseClickedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
+    static Method mouseDraggedMethod;
+    public static void handleMouseDragged(MouseEvent event) {
+        try {
+            mouseDraggedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
+    static Method mouseMovedMethod;
+    public static void handleMouseMoved(MouseEvent event) {
+        try {
+            mouseMovedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+    
+    static Method mousePressedMethod;
+    public static void handleMousePressed(MouseEvent event) {
+        try {
+            mousePressedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
+    static Method mouseReleasedMethod;
+    public static void handleMouseReleased(MouseEvent event) {
+        try {
+            mouseReleasedMethod.invoke(programObject, event);
+        } catch (Exception e) {}
+    }
+
+    static Method mouseWheelMethod;
+    public static void handleMouseWheel(ScrollEvent event) {
+        try {
+            mouseWheelMethod.invoke(programObject, event);
         } catch (Exception e) {}
     }
 
