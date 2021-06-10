@@ -3,13 +3,18 @@ package main;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.TextAlignment;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import utils.Colours;
 import utils.Constants;
 import utils.Maths;
+
+import static utils.Constants.*;
 
 @SuppressWarnings("unused")
 public class AppBase {
@@ -22,6 +27,10 @@ public class AppBase {
     private boolean looping;
     private boolean redraw;
 
+    public int rectMode;
+    public int ellipseMode;
+    public int colorMode;
+
     public AppBase(GraphicsContext gc) {
         this.gc = gc;
         defaultSettings();
@@ -32,11 +41,21 @@ public class AppBase {
         size(100, 100);
         background(204);
         looping = true;
+        rectMode = CORNER;
+        ellipseMode = CENTER;
     }
 
     /////////////////////////////
     // Handled Default Methods //
     /////////////////////////////
+
+    public void rectMode(int mode) {
+        rectMode = mode;
+    }
+
+    public void ellipseMode(int mode) {
+        ellipseMode = mode;
+    }
 
     public double mouseX, mouseY, pmouseX, pmouseY;
 
@@ -160,20 +179,69 @@ public class AppBase {
     // Environment //
     /////////////////
 
-    public void textAlign(int vert, int horz) {
+    private TextAlignment alignH = TextAlignment.LEFT;
+    private VPos alignV = VPos.BASELINE;
 
+    public void textAlign(int newAlignX) {
+
+        switch (newAlignX) {
+            case LEFT: {
+                alignH = TextAlignment.LEFT;
+                break;
+            }
+            case CENTER: {
+                alignH = TextAlignment.CENTER;
+                break;
+            }
+            case RIGHT: {
+                alignH = TextAlignment.RIGHT;
+                break;
+            }
+        }
+
+        textAlign(alignH, alignV);
     }
 
-    public void strokeWeight(int weight) {
+    public void textAlign(int newAlignX, int newAlignY) {
+        textAlign(newAlignX);
 
+        switch (newAlignY) {
+            case TOP: {
+                alignV = VPos.TOP;
+                break;
+            }
+            case BOTTOM: {
+                alignV = VPos.BOTTOM;
+                break;
+            }
+            case CENTER: {
+                alignV = VPos.CENTER;
+                break;
+            }
+            case BASELINE: {
+                alignV = VPos.BASELINE;
+                break;
+            }
+        }
+
+        textAlign(alignH, alignV);
     }
 
-    public void textSize(int size) {
-        
+    public void textAlign(TextAlignment alignH, VPos alignV) {
+        gc.setTextAlign(alignH);
+        gc.setTextBaseline(alignV);
     }
 
-    public void text(String s, int x, int y) {
-        
+    public void strokeWeight(double weight) {
+        gc.setLineWidth(weight);
+    }
+
+    public void textSize(double size) {
+        gc.setFont(new Font(size));
+    }
+
+    public void text(String text, int x, int y) {
+        gc.fillText(text, x, y);
     }
 
 
@@ -298,9 +366,36 @@ public class AppBase {
 
     // Shapes
 
-    public void rect(int x, int y, int w, int h) {
-        if (hasFill) gc.fillRect(Constants.offsetW() + x, Constants.offsetH() + y, w, h);
-        if (hasStroke) gc.strokeRect(Constants.offsetW() + x, Constants.offsetH() + y, w, h);
+
+
+    public void rectImpl(double x, double y, double w, double h) {
+
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (rectMode) {
+            case CORNERS: {
+                nw /= 2;
+                nh /= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+            }
+        }
+
+        if (hasFill) gc.fillRect(Constants.offsetW() + nx, Constants.offsetH() + ny, nw, nh);
+        if (hasStroke) gc.strokeRect(Constants.offsetW() + nx, Constants.offsetH() + ny, nw, nh);
     }
 
     Calendar date;

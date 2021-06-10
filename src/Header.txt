@@ -9,6 +9,7 @@ import main.Main;
 import utils.Maths;
 
 import static utils.Constants.*;
+import static utils.Maths.*;
 
 public class ProcessingApp extends AppBase {
 

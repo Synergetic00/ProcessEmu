@@ -2,7 +2,7 @@ package main;
 
 public class AppEntry implements Comparable<AppEntry> {
 
-    String title, authour, description;
+    public String title, authour, description;
 
     public AppEntry(String t, String a, String d) {
         title = t; authour = a; description = d;
