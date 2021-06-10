@@ -163,6 +163,7 @@ public class Loader {
 
         program = program.replace("public void ", "void ");
         program = program.replace("void ", "public void ");
+        program = program.replace("float", "double");
 
         return program;
     }
@@ -172,7 +173,8 @@ public class Loader {
         try {
             launchProgram("src/Home.pde");
         } catch (Exception e) {
-            System.out.println("Failed to load home screen");
+            e.printStackTrace();
+            //System.out.println("Failed to load home screen");
         }
     }
 

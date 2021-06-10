@@ -33,6 +33,7 @@ public class AppBase {
 
     public AppBase(GraphicsContext gc) {
         this.gc = gc;
+        this.date = new Calendar.Builder().build();
         defaultSettings();
     }
 
@@ -240,7 +241,7 @@ public class AppBase {
         gc.setFont(new Font(size));
     }
 
-    public void text(String text, int x, int y) {
+    public void text(String text, double x, double y) {
         gc.fillText(text, x, y);
     }
 
@@ -366,9 +367,45 @@ public class AppBase {
 
     // Shapes
 
+    public void circle(double x, double y, double s) {
+        ellipse(x, y, s, s);
+    }
 
+    public void ellipse(double x, double y, double w, double h) {
 
-    public void rectImpl(double x, double y, double w, double h) {
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (ellipseMode) {
+            case CORNER: {
+                nw *= 2;
+                nh *= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+        }
+
+        nx += Constants.offsetW();
+        ny += Constants.offsetH();
+
+        if (hasFill) gc.fillOval(nx, ny, nw, nh);
+        if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
+    }
+
+    public void rect(double x, double y, double w, double h) {
 
         double nx = x;
         double ny = y;
@@ -394,8 +431,11 @@ public class AppBase {
             }
         }
 
-        if (hasFill) gc.fillRect(Constants.offsetW() + nx, Constants.offsetH() + ny, nw, nh);
-        if (hasStroke) gc.strokeRect(Constants.offsetW() + nx, Constants.offsetH() + ny, nw, nh);
+        nx += Constants.offsetW();
+        ny += Constants.offsetH();
+
+        if (hasFill) gc.fillRect(nx, ny, nw, nh);
+        if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
     }
 
     Calendar date;
