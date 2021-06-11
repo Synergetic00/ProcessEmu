@@ -1,30 +1,39 @@
 //Default Application
 //This handles the home screen
 
-int dispNum = 5;
-int pageNum = (int) (Main.appIndex / dispNum);
-int pageTtl = (int) Maths.ceil(Main.apps.size() / (double) dispNum);
-int tailNum = Main.apps.size() % dispNum;
-int calcNum = Main.apps.size() - (pageNum * dispNum);
-int toRender = (calcNum == tailNum) ? tailNum : dispNum;
-int spacing = 30;
-int rectH = (int)((height - (spacing * (dispNum+1)))/dispNum);
-int rectX = 600;
-
-int actualIndex = 0;
+int dispNum;
+int pageNum;
+int pageTtl;
+int tailNum;
+int calcNum;
+int toRender;
+int spacing;
+double rectH;
+double rectX;
+int actualIndex;
 
 void setup() {
     fullScreen();
-    textAlign(LEFT, CENTER);
+
+    dispNum = 5;
+    pageNum = (int) (Main.appIndex / dispNum);
+    pageTtl = (int) Maths.ceil(Main.apps.size() / (double) dispNum);
+    tailNum = Main.apps.size() % dispNum;
+    calcNum = Main.apps.size() - (pageNum * dispNum);
+    toRender = (calcNum == tailNum) ? tailNum : dispNum;
+    spacing = 30;
+    rectH = (height - (spacing * (dispNum+1)))/dispNum;
+    rectX = 600;
 }
 
 void draw() {
     background(0);
+    textAlign(LEFT, CENTER);
 
     for (int i = 0; i < toRender; i++) {
         actualIndex = i + (pageNum * dispNum);
         double yPos = i*(rectH+spacing)+spacing;
-        System.out.println(yPos);
+
         fill(0);
         strokeWeight(5);
         if (i == Main.appIndex % dispNum) {
@@ -81,9 +90,17 @@ void keyPressed() {
     
     if (keyCode == KeyCode.UP) {
         Main.appIndex--;
+
+        if (Main.appIndex < 0) {
+            Main.appIndex = Main.apps.size() - 1;
+        }
     }
     
     if (keyCode == KeyCode.DOWN) {
         Main.appIndex++;
+
+        if (Main.appIndex >= Main.apps.size()) {
+            Main.appIndex = 0;
+        }
     }
 }

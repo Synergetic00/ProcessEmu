@@ -2,42 +2,87 @@ package utils;
 
 public class Constants {
 
+    // Size Variables
+
+    // window = the interactable application box
+    // screen = what is displayed inside the window
+    // offset = how far to move the processing window to center
+    // display = your actual monitor
+
     private static int screenW;
     private static int screenH;
 
     public static int screenW() {
-   return screenW;
+        return screenW;
     }
 
     public static int screenH() {
-   return screenH;
+        return screenH;
     }
 
     public static void screenW(int screenW) {
-   Constants.screenW = screenW;
+        Constants.screenW = screenW;
     }
 
     public static void screenH(int screenH) {
-   Constants.screenH = screenH;
+        Constants.screenH = screenH;
     }
 
-    public static int offsetW;
-    public static int offsetH;
+    private static int offsetW;
+    private static int offsetH;
 
     public static int offsetW() {
-   return offsetW;
+        return offsetW;
     }
 
     public static int offsetH() {
-   return offsetH;
+        return offsetH;
     }
 
     public static void offsetW(int offsetW) {
-   Constants.offsetW = offsetW;
+        Constants.offsetW = offsetW;
     }
 
     public static void offsetH(int offsetH) {
-   Constants.offsetH = offsetH;
+        Constants.offsetH = offsetH;
+    }
+
+    private static int displayW;
+    private static int displayH;
+
+    public static int displayW() {
+        return displayW;
+    }
+
+    public static int displayH() {
+        return displayH;
+    }
+
+    public static void displayW(int displayW) {
+        Constants.displayW = displayW;
+    }
+
+    public static void displayH(int displayH) {
+        Constants.displayH = displayH;
+    }
+
+    private static int windowW;
+    private static int windowH;
+
+    public static int windowW() {
+        return windowW;
+    }
+
+    public static int windowH() {
+        return windowH;
+    }
+
+    public static void windowW(int windowW) {
+        Constants.windowW = windowW;
+    }
+
+    public static void windowH(int windowH) {
+        Constants.windowH = windowH;
     }
 
     public static final int RGB = 0;

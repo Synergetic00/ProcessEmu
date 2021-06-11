@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import ptypes.PSurface;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import utils.Colours;
@@ -22,23 +23,21 @@ import static utils.Constants.*;
 public class AppBase {
 
     private GraphicsContext gc;
-
-    public int width;
-    public int height;
-
+    private Calendar date;
     private boolean looping;
-    private boolean redraw;
 
-    public int rectMode;
-    public int ellipseMode;
-    public int colorMode;
+    public PSurface surface;
 
+    // Constructor for the object and the internal variables
     public AppBase(GraphicsContext gc) {
         this.gc = gc;
         this.date = new Calendar.Builder().build();
+        this.surface = new PSurface();
+        resetSurface();
         defaultSettings();
     }
 
+    // Initial internal variables in Processing
     private void defaultSettings() {
         updateTime();
         size(100, 100);
@@ -51,119 +50,9 @@ public class AppBase {
         ellipseMode = CENTER;
     }
 
-    /////////////////////////////
-    // Handled Default Methods //
-    /////////////////////////////
+    // Structure
 
-    public void rectMode(int mode) {
-        rectMode = mode;
-    }
-
-    public void ellipseMode(int mode) {
-        ellipseMode = mode;
-    }
-
-    public double mouseX, mouseY, pmouseX, pmouseY;
-
-    public void updateMouse(javafx.scene.input.MouseEvent event) {
-        pmouseX = mouseX;
-        pmouseY = mouseY;
-
-        mouseX = Maths.clamp((int)(event.getSceneX()-Constants.offsetW()), 0, width);
-        mouseY = Maths.clamp((int)(event.getSceneY()-Constants.offsetH()), 0, height);
-    }
-
-    public char key;
-    public KeyCode keyCode;
-    public boolean keyPressed;
-    ArrayList<KeyCode> pressedKeys = new ArrayList<>(20);
-
-    public void settings() {}
-    public void setup() {}
     public void draw() {}
-    public void mouseClicked() {}
-    public void mouseDragged() {}
-    public void mousedMoved() {}
-    public void mousePressed() {}
-    public void mouseReleased() {}
-    //spublic void mouseWheel(MouseEvent event) {}
-    public void keyPressed() {}
-    public void keyReleased() {}
-    public void keyTyped() {}
-
-    public void handleSettings() {
-        settings();
-    }
-
-    public void handleSetup() {
-        setup();
-    }
-
-    public void handleDraw() {
-        updateTime();
-        if (looping) {
-            draw();
-            coverEdges();
-        }
-    }
-
-    public void handleMouseClicked(javafx.scene.input.MouseEvent event) {
-        updateMouse(event);
-        mouseClicked();
-    }
-
-    public void handleMouseDragged(javafx.scene.input.MouseEvent event) {
-        mouseDragged();
-    }
-
-    public void handleMouseMoved(javafx.scene.input.MouseEvent event) {
-        updateMouse(event);
-        mousedMoved();
-    }
-
-    public void handleMousePressed(javafx.scene.input.MouseEvent event) {
-        updateMouse(event);
-        mousePressed();
-    }
-
-    public void handleMouseReleased(javafx.scene.input.MouseEvent event) {
-        updateMouse(event);
-        mouseReleased();
-    }
-
-    public void handleMouseWheel(javafx.scene.input.ScrollEvent scrollEvent) {
-        int count = (int) -(scrollEvent.getDeltaY() / scrollEvent.getMultiplierY());
-        //MouseEvent event = new MouseEvent(count);
-        //mouseWheel(event);
-    }
-
-    public void handleKeyPressed(KeyEvent event) {
-        updateKeys(event);
-        if (!pressedKeys.contains(keyCode)) pressedKeys.add(keyCode);
-        keyPressed = true;
-        keyPressed();
-    }
-
-    public void handleKeyReleased(KeyEvent event) {
-        updateKeys(event);
-        pressedKeys.remove(keyCode);
-        keyPressed = !pressedKeys.isEmpty();
-        keyReleased();
-    }
-
-    public void handleKeyTyped(KeyEvent event) {
-        updateKeys(event);
-        keyTyped();
-    }
-
-    private void updateKeys(KeyEvent event) {
-        keyCode = event.getCode();
-        key = event.getCharacter().charAt(0);
-    }
-
-    ///////////////
-    // Structure //
-    ///////////////
 
     public void exit() {
         Loader.launchHomeScreen();
@@ -177,77 +66,30 @@ public class AppBase {
         looping = false;
     }
 
+    public void pop() {
+        gc.restore();
+    }
+
+    public void popStyle() {
+        
+    }
+
+    public void push() {
+        gc.save();
+    }
+
+    public void pushStyle() {
+
+    }
+
     public void redraw() {
-        handleDraw();
+        render();
     }
 
-    /////////////////
-    // Environment //
-    /////////////////
+    public void setup() {}
 
-    private TextAlignment alignH = TextAlignment.LEFT;
-    private VPos alignV = VPos.BASELINE;
+    public void thread(String name) {
 
-    public void textAlign(int newAlignX) {
-
-        switch (newAlignX) {
-            case LEFT: {
-                alignH = TextAlignment.LEFT;
-                break;
-            }
-            case CENTER: {
-                alignH = TextAlignment.CENTER;
-                break;
-            }
-            case RIGHT: {
-                alignH = TextAlignment.RIGHT;
-                break;
-            }
-        }
-
-        textAlign(alignH, alignV);
-    }
-
-    public void textAlign(int newAlignX, int newAlignY) {
-        textAlign(newAlignX);
-
-        switch (newAlignY) {
-            case TOP: {
-                alignV = VPos.TOP;
-                break;
-            }
-            case BOTTOM: {
-                alignV = VPos.BOTTOM;
-                break;
-            }
-            case CENTER: {
-                alignV = VPos.CENTER;
-                break;
-            }
-            case BASELINE: {
-                alignV = VPos.BASELINE;
-                break;
-            }
-        }
-
-        textAlign(alignH, alignV);
-    }
-
-    public void textAlign(TextAlignment alignH, VPos alignV) {
-        gc.setTextAlign(alignH);
-        gc.setTextBaseline(alignV);
-    }
-
-    public void strokeWeight(double weight) {
-        gc.setLineWidth(weight);
-    }
-
-    public void textSize(double size) {
-        gc.setFont(new Font(size));
-    }
-
-    public void text(String text, double x, double y) {
-        gc.fillText(text, x, y);
     }
 
     // 2D Primatives
@@ -330,6 +172,23 @@ public class AppBase {
         if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
     }
 
+    public void line(double startX, double startY, double endX, double endY) {
+        double sx = Constants.offsetW() + startX;
+        double sy = Constants.offsetH() + startY;
+        double ex = Constants.offsetW() + endX;
+        double ey = Constants.offsetH() + endY;
+        
+        gc.strokeLine(sx, sy, ex, ey);
+    }
+
+    public void point(double x, double y) {
+        gc.strokeLine(x, y, x, y);
+    }
+
+    public void quad() {
+
+    }
+    
     public void rect(double x, double y, double w, double h) {
 
         double nx = x;
@@ -363,18 +222,303 @@ public class AppBase {
         if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
     }
 
-    public void line(double startX, double startY, double endX, double endY) {
-        double sx = Constants.offsetW() + startX;
-        double sy = Constants.offsetH() + startY;
-        double ex = Constants.offsetW() + endX;
-        double ey = Constants.offsetH() + endY;
-        
-        gc.strokeLine(sx, sy, ex, ey);
+    public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+        double[] xPoints = {x1, x2, x3};
+        for (int i = 0; i < 3; i++) xPoints[i] += Constants.offsetW();
+        double[] yPoints = {y1, y2, y3};
+        for (int i = 0; i < 3; i++) yPoints[i] += Constants.offsetH();
+        if (hasFill) gc.fillPolygon(xPoints, yPoints, 3);
+        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }
 
-    public void point(double x, double y) {
-        gc.strokeLine(x, y, x, y);
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        double[] xPoints = {x1, x2, x3, x4};
+        for (int i = 0; i < 4; i++) xPoints[i] += Constants.offsetW();
+        double[] yPoints = {y1, y2, y3, y4};
+        for (int i = 0; i < 4; i++) yPoints[i] += Constants.offsetH();
+        if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
+        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private void resetSurface() {
+        //surface.setLocation((Constants.displayW() - Constants.windowW()) / 2, (Constants.displayH() - Constants.windowH()) / 2);
+        //surface.setTitle(Main.title);
+    }
+
+
+
+
+
+
+
+
+    public int width;
+    public int height;
+
+
+
+    public int rectMode;
+    public int ellipseMode;
+    public int colorMode;
+
+    /////////////////////////////
+    // Handled Default Methods //
+    /////////////////////////////
+
+    public void rectMode(int mode) {
+        rectMode = mode;
+    }
+
+    public void ellipseMode(int mode) {
+        ellipseMode = mode;
+    }
+
+    public double mouseX, mouseY, pmouseX, pmouseY;
+
+    public void updateMouse(javafx.scene.input.MouseEvent event) {
+        if (inside(event.getSceneX(), event.getSceneY(), Constants.offsetW(), Constants.offsetH(), width, height)) {
+            pmouseX = mouseX;
+            pmouseY = mouseY;
+    
+            mouseX = Maths.clamp((int)(event.getSceneX()-Constants.offsetW()), 0, width);
+            mouseY = Maths.clamp((int)(event.getSceneY()-Constants.offsetH()), 0, height);
+        }
+    }
+
+    public char key;
+    public KeyCode keyCode;
+    public boolean keyPressed;
+    ArrayList<KeyCode> pressedKeys = new ArrayList<>(20);
+
+    public void settings() {}
+    public void mouseClicked() {}
+    public void mouseDragged() {}
+    public void mousedMoved() {}
+    public void mousePressed() {}
+    public void mouseReleased() {}
+    //spublic void mouseWheel(MouseEvent event) {}
+    public void keyPressed() {}
+    public void keyReleased() {}
+    public void keyTyped() {}
+
+    public void handleSettings() {
+        settings();
+    }
+
+    public void handleSetup() {
+        setup();
+        render();
+    }
+
+    public void handleDraw() {
+        updateTime();
+        if (looping) {
+            render();
+        }
+    }
+
+    private void render() {
+        draw();
+        coverEdges();
+    }
+
+    public void handleMouseClicked(javafx.scene.input.MouseEvent event) {
+        updateMouse(event);
+        mouseClicked();
+    }
+
+    public void handleMouseDragged(javafx.scene.input.MouseEvent event) {
+        mouseDragged();
+    }
+
+    public void handleMouseMoved(javafx.scene.input.MouseEvent event) {
+        updateMouse(event);
+        mousedMoved();
+    }
+
+    public void handleMousePressed(javafx.scene.input.MouseEvent event) {
+        updateMouse(event);
+        mousePressed();
+    }
+
+    public void handleMouseReleased(javafx.scene.input.MouseEvent event) {
+        updateMouse(event);
+        mouseReleased();
+    }
+
+    public void handleMouseWheel(javafx.scene.input.ScrollEvent scrollEvent) {
+        int count = (int) -(scrollEvent.getDeltaY() / scrollEvent.getMultiplierY());
+        //MouseEvent event = new MouseEvent(count);
+        //mouseWheel(event);
+    }
+
+    public void handleKeyPressed(KeyEvent event) {
+        updateKeys(event);
+        if (!pressedKeys.contains(keyCode)) pressedKeys.add(keyCode);
+        keyPressed = true;
+        keyPressed();
+    }
+
+    public void handleKeyReleased(KeyEvent event) {
+        updateKeys(event);
+        pressedKeys.remove(keyCode);
+        keyPressed = !pressedKeys.isEmpty();
+        keyReleased();
+    }
+
+    public void handleKeyTyped(KeyEvent event) {
+        updateKeys(event);
+        keyTyped();
+    }
+
+    private void updateKeys(KeyEvent event) {
+        keyCode = event.getCode();
+        key = event.getCharacter().charAt(0);
+    }
+
+    ///////////////
+    // Structure //
+    ///////////////
+
+    /////////////////
+    // Environment //
+    /////////////////
+
+    private TextAlignment alignH = TextAlignment.LEFT;
+    private VPos alignV = VPos.BASELINE;
+
+    public void textAlign(int newAlignX) {
+
+        switch (newAlignX) {
+            case LEFT: {
+                alignH = TextAlignment.LEFT;
+                break;
+            }
+            case CENTER: {
+                alignH = TextAlignment.CENTER;
+                break;
+            }
+            case RIGHT: {
+                alignH = TextAlignment.RIGHT;
+                break;
+            }
+        }
+
+        textAlign(alignH, alignV);
+    }
+
+    public void textAlign(int newAlignX, int newAlignY) {
+        textAlign(newAlignX);
+
+        switch (newAlignY) {
+            case TOP: {
+                alignV = VPos.TOP;
+                break;
+            }
+            case BOTTOM: {
+                alignV = VPos.BOTTOM;
+                break;
+            }
+            case CENTER: {
+                alignV = VPos.CENTER;
+                break;
+            }
+            case BASELINE: {
+                alignV = VPos.BASELINE;
+                break;
+            }
+        }
+
+        textAlign(alignH, alignV);
+    }
+
+    public void textAlign(TextAlignment alignH, VPos alignV) {
+        gc.setTextAlign(alignH);
+        gc.setTextBaseline(alignV);
+    }
+
+    public void strokeWeight(double weight) {
+        gc.setLineWidth(weight);
+    }
+
+    public void textSize(double size) {
+        gc.setFont(new Font(size));
+    }
+
+    public void text(String text, double x, double y) {
+        gc.fillText(text, x, y);
+    }
+
+    
+
+    
 
     // More Stuff
 
@@ -413,19 +557,19 @@ public class AppBase {
 
     // Background
 
-    public void background(int gray) {
+    public void background(double gray) {
         background(gray, gray, gray, 255);
     }
 
-    public void background(int gray, int alpha) {
+    public void background(double gray, double alpha) {
         background(gray, gray, gray, alpha);
     }
 
-    public void background(int rh, int gs, int bv) {
+    public void background(double rh, double gs, double bv) {
         background(rh, gs, bv, 255);
     }
 
-    public void background(int rh, int gs, int bv, int ao) {
+    public void background(double rh, double gs, double bv, double ao) {
         setBackground(Colours.encodeColour(rh, gs, bv, ao));
     }
 
@@ -444,19 +588,19 @@ public class AppBase {
         hasFill = false;
     }
 
-    public void fill(int gray) {
+    public void fill(double gray) {
         fill(gray, gray, gray, 255);
     }
 
-    public void fill(int gray, int alpha) {
+    public void fill(double gray, double alpha) {
         fill(gray, gray, gray, alpha);
     }
 
-    public void fill(int rh, int gs, int bv) {
+    public void fill(double rh, double gs, double bv) {
         fill(rh, gs, bv, 255);
     }
 
-    public void fill(int rh, int gs, int bv, int ao) {
+    public void fill(double rh, double gs, double bv, double ao) {
         hasFill = true;
         setFill(Colours.encodeColour(rh, gs, bv, ao));
     }
@@ -473,19 +617,19 @@ public class AppBase {
         hasStroke = false;
     }
 
-    public void stroke(int gray) {
+    public void stroke(double gray) {
         stroke(gray, gray, gray, 255);
     }
 
-    public void stroke(int gray, int alpha) {
+    public void stroke(double gray, double alpha) {
         stroke(gray, gray, gray, alpha);
     }
 
-    public void stroke(int rh, int gs, int bv) {
+    public void stroke(double rh, double gs, double bv) {
         stroke(rh, gs, bv, 255);
     }
 
-    public void stroke(int rh, int gs, int bv, int ao) {
+    public void stroke(double rh, double gs, double bv, double ao) {
         hasStroke = true;
         setStroke(Colours.encodeColour(rh, gs, bv, ao));
     }
@@ -498,7 +642,6 @@ public class AppBase {
 
     
 
-    Calendar date;
 
     private void updateTime() {
         date.setTimeInMillis(System.currentTimeMillis());

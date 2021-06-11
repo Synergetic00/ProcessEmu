@@ -224,5 +224,14 @@ public class Maths {
         if (val >= min && val <= max) return true;
         return false;
     }
+
+    public static boolean inside(double valX, double valY, double x, double y, double w, double h) {
+        if (between(valX, x, x + w)) {
+            if (between(valY, y, y + h)) {
+                return true;
+            }
+        }
+        return false;
+    }
     
 }

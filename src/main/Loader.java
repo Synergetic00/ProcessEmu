@@ -1,6 +1,9 @@
 package main;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
@@ -19,6 +22,7 @@ import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -32,6 +36,8 @@ import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 
 public class Loader {
+
+    final static KeyCombination quitComb = new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN);
 
     // Java object variables
     static Class<?> programClass;
@@ -49,6 +55,7 @@ public class Loader {
                 setupMethod.invoke(programObject);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error in setup()");
         }
     }
@@ -59,6 +66,7 @@ public class Loader {
                 drawMethod.invoke(programObject);
             }
         } catch (Exception e) {
+            e.printStackTrace();
             System.out.println("Error in draw()");
         }
     }
@@ -69,6 +77,11 @@ public class Loader {
         try {
             keyPressedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+
+        if (quitComb.match(event)) {
+            launchHomeScreen();
+        }
+        event.consume();
     }
 
     static Method keyReleasedMethod;
@@ -76,6 +89,7 @@ public class Loader {
         try {
             keyReleasedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
 
     static Method keyTypedMethod;
@@ -83,6 +97,7 @@ public class Loader {
         try {
             keyTypedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
 
     // Mouse input methods
@@ -91,6 +106,7 @@ public class Loader {
         try {
             mouseClickedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
 
     static Method mouseDraggedMethod;
@@ -98,6 +114,7 @@ public class Loader {
         try {
             mouseDraggedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
 
     static Method mouseMovedMethod;
@@ -105,6 +122,7 @@ public class Loader {
         try {
             mouseMovedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
     
     static Method mousePressedMethod;
@@ -112,6 +130,7 @@ public class Loader {
         try {
             mousePressedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
 
     static Method mouseReleasedMethod;
@@ -119,6 +138,7 @@ public class Loader {
         try {
             mouseReleasedMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
 
     static Method mouseWheelMethod;
@@ -126,6 +146,7 @@ public class Loader {
         try {
             mouseWheelMethod.invoke(programObject, event);
         } catch (Exception e) {}
+        event.consume();
     }
 
     public static void searchFolder(File path) throws IOException {
@@ -134,10 +155,12 @@ public class Loader {
                 searchFolder(entry);
             } else {
                 addAppEntry(entry.getName());
-                System.out.println(entry.getName());
             }
         }
-        System.out.println("Loaded "+Main.apps.size()+" app(s)");
+
+        Collections.sort(Main.apps);
+
+        System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
     }
 
     private static void addAppEntry(String name) throws IOException {
