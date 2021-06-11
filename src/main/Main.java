@@ -62,7 +62,7 @@ public class Main extends Application {
         Main.apps = new ArrayList<AppEntry>();
         
         try {
-            Loader.searchFolder(new File("src/sketches"));
+            Loader.searchFolder(new File("sketches"));
         } catch (IOException e) {
             e.printStackTrace();
         }

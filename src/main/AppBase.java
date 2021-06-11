@@ -6,6 +6,7 @@ import java.util.Calendar;
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.input.KeyCode;
@@ -14,6 +15,7 @@ import utils.Colours;
 import utils.Constants;
 import utils.Maths;
 
+import static utils.Maths.*;
 import static utils.Constants.*;
 
 @SuppressWarnings("unused")
@@ -41,6 +43,9 @@ public class AppBase {
         updateTime();
         size(100, 100);
         background(204);
+        fill(255);
+        stroke(0);
+        strokeWeight(1);
         looping = true;
         rectMode = CORNER;
         ellipseMode = CENTER;
@@ -64,8 +69,8 @@ public class AppBase {
         pmouseX = mouseX;
         pmouseY = mouseY;
 
-        mouseX = Maths.clamp((int)(event.getSceneX()-Constants.offsetW), 0, width);
-        mouseY = Maths.clamp((int)(event.getSceneY()-Constants.offsetH), 0, height);
+        mouseX = Maths.clamp((int)(event.getSceneX()-Constants.offsetW()), 0, width);
+        mouseY = Maths.clamp((int)(event.getSceneY()-Constants.offsetH()), 0, height);
     }
 
     public char key;
@@ -165,11 +170,11 @@ public class AppBase {
     }
 
     public void loop() {
-        if (!looping) looping = true;
+        looping = true;
     }
 
     public void noLoop() {
-        if (looping) looping = false;
+        looping = false;
     }
 
     public void redraw() {
@@ -245,9 +250,133 @@ public class AppBase {
         gc.fillText(text, x, y);
     }
 
+    // 2D Primatives
 
+    public void arc(double x, double y, double width, double height, double start, double stop) {
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
 
+        double nx = Constants.offsetW() + x - width/2;
+        double ny = Constants.offsetH() + y - height/2;
 
+        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
+        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
+    }
+
+    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
+        clamp(mode, OPEN, PIE);
+        ArcType arcMode = ArcType.OPEN;
+        switch (mode) {
+            case OPEN: {
+                arcMode = ArcType.OPEN;
+                break;
+            }
+            case CHORD: {
+                arcMode = ArcType.CHORD;
+                break;
+            }
+            case PIE: {
+                arcMode = ArcType.ROUND;
+                break;
+            }
+        }
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
+
+        double nx = Constants.offsetW() + x - width/2;
+        double ny = Constants.offsetH() + y - height/2;
+
+        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
+        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
+    }
+
+    public void circle(double x, double y, double s) {
+        ellipse(x, y, s, s);
+    }
+
+    public void ellipse(double x, double y, double w, double h) {
+
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (ellipseMode) {
+            case CORNER: {
+                nw *= 2;
+                nh *= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+        }
+
+        nx += Constants.offsetW();
+        ny += Constants.offsetH();
+
+        if (hasFill) gc.fillOval(nx, ny, nw, nh);
+        if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
+    }
+
+    public void rect(double x, double y, double w, double h) {
+
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (rectMode) {
+            case CORNERS: {
+                nw /= 2;
+                nh /= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+            }
+        }
+
+        nx += Constants.offsetW();
+        ny += Constants.offsetH();
+
+        if (hasFill) gc.fillRect(nx, ny, nw, nh);
+        if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
+    }
+
+    public void line(double startX, double startY, double endX, double endY) {
+        double sx = Constants.offsetW() + startX;
+        double sy = Constants.offsetH() + startY;
+        double ex = Constants.offsetW() + endX;
+        double ey = Constants.offsetH() + endY;
+        
+        gc.strokeLine(sx, sy, ex, ey);
+    }
+
+    public void point(double x, double y) {
+        gc.strokeLine(x, y, x, y);
+    }
+
+    // More Stuff
 
 
 
@@ -367,76 +496,7 @@ public class AppBase {
 
     // Shapes
 
-    public void circle(double x, double y, double s) {
-        ellipse(x, y, s, s);
-    }
-
-    public void ellipse(double x, double y, double w, double h) {
-
-        double nx = x;
-        double ny = y;
-        double nw = w;
-        double nh = h;
-
-        switch (ellipseMode) {
-            case CORNER: {
-                nw *= 2;
-                nh *= 2;
-                break;
-            }
-            case RADIUS: {
-                nw *= 2;
-                nh *= 2;
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-            case CENTER: {
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-        }
-
-        nx += Constants.offsetW();
-        ny += Constants.offsetH();
-
-        if (hasFill) gc.fillOval(nx, ny, nw, nh);
-        if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
-    }
-
-    public void rect(double x, double y, double w, double h) {
-
-        double nx = x;
-        double ny = y;
-        double nw = w;
-        double nh = h;
-
-        switch (rectMode) {
-            case CORNERS: {
-                nw /= 2;
-                nh /= 2;
-                break;
-            }
-            case RADIUS: {
-                nw *= 2;
-                nh *= 2;
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-            case CENTER: {
-                nx -= nw / 2;
-                ny -= nh / 2;
-            }
-        }
-
-        nx += Constants.offsetW();
-        ny += Constants.offsetH();
-
-        if (hasFill) gc.fillRect(nx, ny, nw, nh);
-        if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
-    }
+    
 
     Calendar date;
 

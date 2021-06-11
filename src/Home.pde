@@ -24,6 +24,7 @@ void draw() {
     for (int i = 0; i < toRender; i++) {
         actualIndex = i + (pageNum * dispNum);
         double yPos = i*(rectH+spacing)+spacing;
+        System.out.println(yPos);
         fill(0);
         strokeWeight(5);
         if (i == Main.appIndex % dispNum) {

@@ -141,7 +141,7 @@ public class Loader {
     }
 
     private static void addAppEntry(String name) throws IOException {
-        FileReader fr = new FileReader("src/sketches/" + name);
+        FileReader fr = new FileReader("sketches/" + name);
         BufferedReader br = new BufferedReader(fr);
 
         String title = name.substring(0, name.length() - 4);
@@ -205,7 +205,16 @@ public class Loader {
         settingsMethod = programClass.getMethod("handleSettings");
         setupMethod = programClass.getMethod("handleSetup");
         drawMethod = programClass.getMethod("handleDraw");
-        keyPressedMethod    = programClass.getMethod("handleKeyPressed", KeyEvent.class);
+        
+        keyPressedMethod = programClass.getMethod("handleKeyPressed", KeyEvent.class);
+        keyReleasedMethod = programClass.getMethod("handleKeyReleased", KeyEvent.class);
+        keyTypedMethod = programClass.getMethod("handleKeyTyped", KeyEvent.class);
+        mouseClickedMethod = programClass.getMethod("handleMouseClicked", MouseEvent.class);
+        mouseDraggedMethod = programClass.getMethod("handleMouseDragged", MouseEvent.class);
+        mouseMovedMethod = programClass.getMethod("handleMouseMoved", MouseEvent.class);
+        mousePressedMethod = programClass.getMethod("handleMousePressed", MouseEvent.class);
+        mouseReleasedMethod = programClass.getMethod("handleMouseReleased", MouseEvent.class);
+        mouseWheelMethod = programClass.getMethod("handleMouseWheel", ScrollEvent.class);
 
         settingsMethod.invoke(programObject);
         setupMethod.invoke(programObject);

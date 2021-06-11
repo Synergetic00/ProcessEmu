@@ -9,7 +9,7 @@ public class AppEntry implements Comparable<AppEntry> {
     }
 
     public void launch() throws Exception {
-        Loader.launchProgram("src/sketches/"+title+".pde");
+        Loader.launchProgram("sketches/"+title+".pde");
     }
 
     @Override
