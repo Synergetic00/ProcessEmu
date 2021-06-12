@@ -28,6 +28,16 @@ public class AppBase {
 
     public PSurface surface;
 
+    private boolean hasFill;
+    private boolean hasStroke;
+
+    public int rectMode;
+    public int ellipseMode;
+    public int colorMode;
+
+    public int width;
+    public int height;
+
     // Constructor for the object and the internal variables
     public AppBase(GraphicsContext gc) {
         this.gc = gc;
@@ -41,6 +51,7 @@ public class AppBase {
     private void defaultSettings() {
         updateTime();
         size(100, 100);
+        colorMode(RGB, 255, 255, 255, 255);
         background(204);
         fill(255);
         stroke(0);
@@ -182,11 +193,16 @@ public class AppBase {
     }
 
     public void point(double x, double y) {
-        gc.strokeLine(x, y, x, y);
+        rect(x, y, 1, 1);
     }
 
-    public void quad() {
-
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        double[] xPoints = {x1, x2, x3, x4};
+        for (int i = 0; i < 4; i++) xPoints[i] += Constants.offsetW();
+        double[] yPoints = {y1, y2, y3, y4};
+        for (int i = 0; i < 4; i++) yPoints[i] += Constants.offsetH();
+        if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
+        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
     
     public void rect(double x, double y, double w, double h) {
@@ -231,18 +247,117 @@ public class AppBase {
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }
 
-    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
-        double[] xPoints = {x1, x2, x3, x4};
-        for (int i = 0; i < 4; i++) xPoints[i] += Constants.offsetW();
-        double[] yPoints = {y1, y2, y3, y4};
-        for (int i = 0; i < 4; i++) yPoints[i] += Constants.offsetH();
-        if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
-        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
+    // Color // Setting
+
+    public void background(double gray) {
+        background(gray, gray, gray, (int)maxAO);
     }
 
+    public void background(double gray, double alpha) {
+        background(gray, gray, gray, alpha);
+    }
 
+    public void background(double rh, double gs, double bv) {
+        background(rh, gs, bv, (int)maxAO);
+    }
 
+    public void background(double rh, double gs, double bv, double ao) {
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, (int)maxAO, 0, 255), 0, 255);
+        setBackground(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
+    }
 
+    private void setBackground(int encodedValue) {
+        gc.save();
+        gc.setFill(Colours.decodeColour(colorMode, encodedValue));
+        gc.fillRect(Constants.offsetW(), Constants.offsetH(), width, height);
+        gc.restore();
+    }
+
+    private double maxRH;
+    private double maxGS;
+    private double maxBB;
+    private double maxAO;
+
+    public void colorMode(int mode) {
+        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, (int)maxAO);
+    }
+
+    public void colorMode(int mode, double max) {
+        colorMode(mode, max, max, max, (int)maxAO);
+    }
+
+    public void colorMode(int mode, double rh, double gs, double bb) {
+        colorMode(mode, rh, gs, bb, (int)maxAO);
+    }
+
+    public void colorMode(int mode, double rh, double gs, double bb, double alpha) {
+        colorMode = mode;
+        maxRH = rh;
+        maxGS = gs;
+        maxBB = bb;
+        maxAO = alpha;
+    }
+
+    public void fill(double gray) {
+        fill(gray, gray, gray, (int)maxAO);
+    }
+
+    public void fill(double gray, double alpha) {
+        fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(double rh, double gs, double bv) {
+        fill(rh, gs, bv, (int)maxAO);
+    }
+
+    public void fill(double rh, double gs, double bv, double ao) {
+        hasFill = true;
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, (int)maxAO, 0, 255), 0, 255);
+        setFill(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
+    }
+
+    private void setFill(int encodedValue) {
+        gc.setFill(Colours.decodeColour(colorMode, encodedValue));
+    }
+
+    public void noFill() {
+        hasFill = false;
+    }
+
+    public void noStroke() {
+        hasStroke = false;
+    }
+
+    public void stroke(double gray) {
+        stroke(gray, gray, gray, (int)maxAO);
+    }
+
+    public void stroke(double gray, double alpha) {
+        stroke(gray, gray, gray, alpha);
+    }
+
+    public void stroke(double rh, double gs, double bv) {
+        stroke(rh, gs, bv, (int)maxAO);
+    }
+
+    public void stroke(double rh, double gs, double bv, double ao) {
+        hasStroke = true;
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, (int)maxAO, 0, 255), 0, 255);
+        setStroke(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
+    }
+
+    private void setStroke(int encodedValue) {
+        gc.setStroke(Colours.decodeColour(colorMode, encodedValue));
+    }
 
 
 
@@ -319,14 +434,9 @@ public class AppBase {
 
 
 
-    public int width;
-    public int height;
 
 
 
-    public int rectMode;
-    public int ellipseMode;
-    public int colorMode;
 
     /////////////////////////////
     // Handled Default Methods //
@@ -557,86 +667,15 @@ public class AppBase {
 
     // Background
 
-    public void background(double gray) {
-        background(gray, gray, gray, 255);
-    }
-
-    public void background(double gray, double alpha) {
-        background(gray, gray, gray, alpha);
-    }
-
-    public void background(double rh, double gs, double bv) {
-        background(rh, gs, bv, 255);
-    }
-
-    public void background(double rh, double gs, double bv, double ao) {
-        setBackground(Colours.encodeColour(rh, gs, bv, ao));
-    }
-
-    private void setBackground(int encodedValue) {
-        gc.save();
-        gc.setFill(Colours.decodeColour(encodedValue));
-        gc.fillRect(Constants.offsetW(), Constants.offsetH(), width, height);
-        gc.restore();
-    }
+    
 
     // Fill
 
-    private boolean hasFill;
-
-    public void noFill() {
-        hasFill = false;
-    }
-
-    public void fill(double gray) {
-        fill(gray, gray, gray, 255);
-    }
-
-    public void fill(double gray, double alpha) {
-        fill(gray, gray, gray, alpha);
-    }
-
-    public void fill(double rh, double gs, double bv) {
-        fill(rh, gs, bv, 255);
-    }
-
-    public void fill(double rh, double gs, double bv, double ao) {
-        hasFill = true;
-        setFill(Colours.encodeColour(rh, gs, bv, ao));
-    }
-
-    private void setFill(int encodedValue) {
-        gc.setFill(Colours.decodeColour(encodedValue));
-    }
+    
 
     // Stroke
 
-    private boolean hasStroke;
-
-    public void noStroke() {
-        hasStroke = false;
-    }
-
-    public void stroke(double gray) {
-        stroke(gray, gray, gray, 255);
-    }
-
-    public void stroke(double gray, double alpha) {
-        stroke(gray, gray, gray, alpha);
-    }
-
-    public void stroke(double rh, double gs, double bv) {
-        stroke(rh, gs, bv, 255);
-    }
-
-    public void stroke(double rh, double gs, double bv, double ao) {
-        hasStroke = true;
-        setStroke(Colours.encodeColour(rh, gs, bv, ao));
-    }
-
-    private void setStroke(int encodedValue) {
-        gc.setStroke(Colours.decodeColour(encodedValue));
-    }
+    
 
     // Shapes
 

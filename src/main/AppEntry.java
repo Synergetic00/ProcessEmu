@@ -5,7 +5,7 @@ public class AppEntry implements Comparable<AppEntry> {
     public String title, authour, description, fileName;
 
     public AppEntry(String t, String a, String d) {
-        title = t.replaceAll("([^_])([A-Z])", "$1 $2").trim();
+        title = t.replaceAll("([^_])([A-Z][a-z])", "$1 $2").trim();
         fileName = t;
         authour = a.trim();
         description = d.trim();

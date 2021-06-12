@@ -22,7 +22,7 @@ public class Main extends Application {
     public static GraphicsContext gc;
     public static Stage stage;
     public static int appIndex;
-    public static String title;
+    public static String title, version;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -36,7 +36,8 @@ public class Main extends Application {
         Canvas canvas = new Canvas(Constants.screenW(), Constants.screenH());
         root.getChildren().add(canvas);
 
-        Main.title = "RaspberryPiFX v4";
+        Main.title = "RaspberryPiFX";
+        Main.version = "v4.1.1";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 

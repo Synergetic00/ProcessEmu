@@ -1,9 +1,9 @@
 //Default Application
 //This handles the home screen
 
-int dispNum;
-int pageNum;
-int pageTtl;
+int displayNum;
+int pageCount;
+int pageTotal;
 int tailNum;
 int calcNum;
 int toRender;
@@ -14,35 +14,37 @@ int actualIndex;
 
 void setup() {
     fullScreen();
-
-    dispNum = 5;
-    pageNum = (int) (Main.appIndex / dispNum);
-    pageTtl = (int) Maths.ceil(Main.apps.size() / (double) dispNum);
-    tailNum = Main.apps.size() % dispNum;
-    calcNum = Main.apps.size() - (pageNum * dispNum);
-    toRender = (calcNum == tailNum) ? tailNum : dispNum;
+    
+    displayNum = 5;
     spacing = 30;
-    rectH = (height - (spacing * (dispNum+1)))/dispNum;
     rectX = 600;
+    rectH = (height - (spacing * (displayNum+1)))/displayNum;
+
+    tailNum = Main.apps.size() % displayNum;
+    pageTotal = (int) Maths.ceil(Main.apps.size() / (double) displayNum);
 }
 
 void draw() {
+    pageCount = (int) (Main.appIndex / displayNum);
+    calcNum = Main.apps.size() - (pageCount * displayNum);
+    toRender = (calcNum == tailNum) ? tailNum : displayNum;
+
     background(0);
     textAlign(LEFT, CENTER);
 
     for (int i = 0; i < toRender; i++) {
-        actualIndex = i + (pageNum * dispNum);
+        actualIndex = i + (pageCount * displayNum);
         double yPos = i*(rectH+spacing)+spacing;
 
         fill(0);
         strokeWeight(5);
-        if (i == Main.appIndex % dispNum) {
+        if (i == Main.appIndex % displayNum) {
             stroke(54, 205, 255);
         } else {
             stroke(255);
         }
         rect(rectX, yPos, width - rectX - spacing, rectH);
-        if (i == Main.appIndex % dispNum) {
+        if (i == Main.appIndex % displayNum) {
             fill(54, 205, 255);
         } else {
             fill(255);
@@ -55,11 +57,11 @@ void draw() {
         text(Main.apps.get(actualIndex).description, rectX + spacing, yPos+(rectH)-(30));
     }
 
-    for (int i = 0; i < pageTtl; i++) {
+    for (int i = 0; i < pageTotal; i++) {
         stroke(255);
-        if (i == pageNum) fill(255);
+        if (i == pageCount) fill(255);
         else fill(0);
-        ellipse((rectX/2)-(25*pageTtl)+(50*i)+25, height - 50, 25, 25);
+        ellipse((rectX/2)-(25*pageTotal)+(50*i)+25, height - 50, 25, 25);
     }
 
     String day = String.format("%02d", day());
@@ -79,7 +81,7 @@ void draw() {
     textSize(70);
     text("RaspberryPiFX",(rectX/2),100);
     textSize(40);
-    text("v4.1.0",(rectX/2),200);
+    text(Main.version, (rectX/2),200);
 }
 
 void keyPressed() {

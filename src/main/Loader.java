@@ -182,7 +182,14 @@ public class Loader {
         byte[] header = Files.readAllBytes(Paths.get("src/Header.txt"));
         byte[] bytes = Files.readAllBytes(Paths.get(path));
         Charset charset = Charset.forName("UTF-8");
-        String program = new String(header, charset).concat(new String(bytes, charset)).concat("\n\n}");
+
+        String program = new String(bytes, charset);
+
+        if (!(program.contains("void setup()") || program.contains("void draw()"))) {
+            program = new String("void setup() {\n".concat(program).concat("\n}"));
+        }
+
+        program = new String(header, charset).concat(program).concat("\n\n}");
 
         program = program.replace("public void ", "void ");
         program = program.replace("void ", "public void ");
