@@ -7,6 +7,7 @@ import main.AppBase;
 import main.Loader;
 import main.Main;
 import utils.Maths;
+import utils.MouseEvent;
 import ptypes.*;
 
 import static utils.Colours.*;

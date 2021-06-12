@@ -1,7 +1,5 @@
 package utils;
 
-import javafx.scene.input.KeyCode;
-
 public class Constants {
 
     // Size Variables
@@ -112,8 +110,6 @@ public class Constants {
     public static final int RADIUS = 2;
     public static final int CENTER = 3;
 
-    public static final int LEFT = 4;
-    public static final int RIGHT = 5;
     public static final int TOP = 6;
     public static final int BOTTOM = 7;
     public static final int BASELINE = 8;
@@ -164,16 +160,13 @@ public class Constants {
 	// i.e. if ((key == CODED) && (keyCode == UP))
 	public static final int CODED     = 0xffff;
 
-	// key will be CODED and keyCode will be this value
-	public static final KeyCode UP        = KeyCode.UP;
-	public static final KeyCode DOWN      = KeyCode.DOWN;
-	//static final KeyCode LEFT      = KeyCode.LEFT;
-	//static final KeyCode RIGHT     = KeyCode.RIGHT;
-
-	// key will be CODED and keyCode will be this value
-	public static final KeyCode ALT       = KeyCode.ALT;
-	public static final KeyCode CONTROL   = KeyCode.CONTROL;
-	public static final KeyCode SHIFT     = KeyCode.SHIFT;
+	public static final int UP = 200;
+	public static final int DOWN = 201;
+    public static final int LEFT = 202;
+    public static final int RIGHT = 203;
+	public static final int ALT = 204;
+	public static final int CONTROL = 205;
+	public static final int SHIFT = 206;
 
     public static final String WHITESPACE = " \t\n\r\f\u00A0";
     

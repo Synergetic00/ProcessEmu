@@ -18,6 +18,7 @@ void setup() {
 }
 
 void draw() {
+    frameRate((mouseX/width)*60);
     background(0, 0, 200);
     isHoveringBox = isHoveringBox();
     if (isHoveringBox) {

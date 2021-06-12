@@ -1,5 +1,7 @@
 package main;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Calendar;
 
@@ -10,6 +12,8 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import ptypes.PFont;
+import ptypes.PImage;
+import ptypes.PShape;
 import ptypes.PSurface;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -36,11 +40,6 @@ public class AppBase {
     public int ellipseMode;
     public int colorMode;
 
-    public int width;
-    public int height;
-
-    public double frameRate;
-
     // Constructor for the object and the internal variables
     public AppBase(GraphicsContext gc) {
         this.gc = gc;
@@ -52,7 +51,10 @@ public class AppBase {
 
     // Initial internal variables in Processing
     private void defaultSettings() {
+        frameCount = 0;
+        focused = true;
         updateTime();
+        frameRate(60);
         size(100, 100);
         colorMode(RGB, 255, 255, 255, 255);
         background(204);
@@ -102,11 +104,143 @@ public class AppBase {
 
     public void setup() {}
 
-    public void thread(String name) {
+    public void thread(final String name) {
+        Thread later = new Thread() {
+            @Override
+            public void run() {
+                method(name);
+            }
+        };
+        later.start();
+    }
+
+    private void method(String name) {
+        try {
+            Method method = getClass().getMethod(name, new Class[] {});
+            method.invoke(this, new Object[] { });
+        } catch (IllegalArgumentException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.getTargetException().printStackTrace();
+        } catch (NoSuchMethodException nsme) {
+            System.err.println("There is no public " + name + "() method " + "in the class " + getClass().getName());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    /////////////////
+    // Environment //
+    /////////////////
+
+    public void cursor() {
+        surface.showCursor();
+    }
+
+    public void cursor(int kind) {
+        surface.setCursor(kind);
+    }
+
+    public void cursor(PImage img) {
+        cursor(img, img.width / 2, img.height / 2);
+    }
+
+    public void cursor(PImage img, int x, int y) {
+        surface.setCursor(img, x, y);
+    }
+
+    public void delay(int napTime) {
+        try {
+            Thread.sleep(napTime);
+        } catch (InterruptedException ie) {}
+    }
+
+    public int displayDensity() {
+        return 1;
+    }
+
+    public int displayDensity(int display) {
+        return 1;
+    }
+
+    public boolean focused;
+
+    public int frameCount;
+
+    public void frameRate(double fps) {
+        if (fps > 0) {
+            frameRate = fps;
+			Main.animation.setRate(-frameRate);
+		}
+    }
+
+    public double frameRate;
+
+    public void fullScreen() {
+        size(Constants.screenW(), Constants.screenH());
+    }
+
+    public int height;
+
+    public void noCursor() {
 
     }
 
-    // 2D Primatives
+    public void noSmooth() {
+        
+    }
+
+    public void pixelDensity(int density) {
+        
+    }
+
+    public int pixelHeight;
+
+    public int pixelWidth;
+
+    public void size(int width, int height) {
+        this.width = width;
+        this.height = height;
+
+        Constants.offsetW((Constants.screenW() - width) / 2);
+        Constants.offsetH((Constants.screenH() - height) / 2);
+
+        background(204);
+    }
+
+    public void settings() {}
+
+    public void smooth(int level) {
+
+    }
+
+    public int width;
+
+    ///////////
+    // Shape //
+    ///////////
+
+    public PShape createShape() {
+        return null;
+    }
+
+    public PShape createShape(int type) {
+        return null;
+    }
+
+    public PShape createShape(int kind, double... p) {
+        return null;
+    }
+	
+    public PShape loadShape(String filename) {
+        return null;
+    }
+
+    ////////////////////////////
+    // Shape // 2D Primatives //
+    ////////////////////////////
 
     public void arc(double x, double y, double width, double height, double start, double stop) {
         double degStart = -degrees(start);
@@ -250,6 +384,102 @@ public class AppBase {
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }
 
+    /////////////////////
+    // Shape // Curves //
+    /////////////////////
+
+    /////////////////////////
+    // Shape // Attributes //
+    /////////////////////////
+
+    /////////////////////
+    // Shape // Vertex //
+    /////////////////////
+
+    ///////////////////////////////////
+    // Shape // Loading & Displaying //
+    ///////////////////////////////////
+
+    ////////////////////
+    // Input // Mouse //
+    ////////////////////
+
+    public int mouseButton;
+
+    public void mouseClicked() {}
+
+    public void mouseDragged() {}
+
+    public void mousedMoved() {}
+
+    public void mousePressed() {}
+
+    public boolean mousePressed;
+
+    public void mouseReleased() {}
+    
+    public void mouseWheel(utils.MouseEvent event) {}
+
+    public double mouseX;
+
+    public double mouseY;
+
+    public double pmouseX;
+
+    public double pmouseY;
+
+    ///////////////////////
+    // Input // Keyboard //
+    ///////////////////////
+
+    public char key;
+    
+    public KeyCode keyCode;
+
+    public void keyPressed() {}
+
+    public boolean keyPressed;
+
+    public void keyReleased() {}
+    
+    public void keyTyped() {}
+    
+    ////////////////////
+    // Input // Files //
+    ////////////////////
+
+    //////////////////////////
+    // Input // Time & Date //
+    //////////////////////////
+
+    public int day() {
+        return date.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public int hour() {
+        return date.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public int millis() {
+        return date.get(Calendar.MILLISECOND);
+    }
+
+    public int minute() {
+        return date.get(Calendar.MINUTE);
+    }
+
+    public int month() {
+        return date.get(Calendar.MONTH) + 1;
+    }
+
+    public int second() {
+        return date.get(Calendar.SECOND);
+    }
+
+    /////////////////////
+    // Output // Image //
+    /////////////////////
+
     // Color // Setting
 
     public void background(double gray) {
@@ -375,30 +605,6 @@ public class AppBase {
     }
 
     // Input // Time & Date
-
-    public int day() {
-        return date.get(Calendar.DAY_OF_MONTH);
-    }
-
-    public int hour() {
-        return date.get(Calendar.HOUR_OF_DAY);
-    }
-
-    public int millis() {
-        return date.get(Calendar.MILLISECOND);
-    }
-
-    public int minute() {
-        return date.get(Calendar.MINUTE);
-    }
-
-    public int month() {
-        return date.get(Calendar.MONTH) + 1;
-    }
-
-    public int second() {
-        return date.get(Calendar.SECOND);
-    }
 
     public int year() {
         return date.get(Calendar.YEAR);
@@ -563,8 +769,6 @@ public class AppBase {
         ellipseMode = mode;
     }
 
-    public double mouseX, mouseY, pmouseX, pmouseY;
-
     public void updateMouse(javafx.scene.input.MouseEvent event) {
         if (inside(event.getSceneX(), event.getSceneY(), Constants.offsetW(), Constants.offsetH(), width, height)) {
             pmouseX = mouseX;
@@ -575,21 +779,7 @@ public class AppBase {
         }
     }
 
-    public char key;
-    public KeyCode keyCode;
-    public boolean keyPressed;
-    ArrayList<KeyCode> pressedKeys = new ArrayList<>(20);
-
-    public void settings() {}
-    public void mouseClicked() {}
-    public void mouseDragged() {}
-    public void mousedMoved() {}
-    public void mousePressed() {}
-    public void mouseReleased() {}
-    //spublic void mouseWheel(MouseEvent event) {}
-    public void keyPressed() {}
-    public void keyReleased() {}
-    public void keyTyped() {}
+    private ArrayList<KeyCode> pressedKeys = new ArrayList<>(20);
 
     public void handleSettings() {
         settings();
@@ -605,6 +795,7 @@ public class AppBase {
         if (looping) {
             render();
         }
+        frameCount++;
     }
 
     private void render() {
@@ -638,8 +829,8 @@ public class AppBase {
 
     public void handleMouseWheel(javafx.scene.input.ScrollEvent scrollEvent) {
         int count = (int) -(scrollEvent.getDeltaY() / scrollEvent.getMultiplierY());
-        //MouseEvent event = new MouseEvent(count);
-        //mouseWheel(event);
+        utils.MouseEvent event = new utils.MouseEvent(count);
+        mouseWheel(event);
     }
 
     public void handleKeyPressed(KeyEvent event) {
@@ -765,20 +956,6 @@ public class AppBase {
 
 
 
-
-    public void size(int width, int height) {
-        this.width = width;
-        this.height = height;
-
-        Constants.offsetW((Constants.screenW() - width) / 2);
-        Constants.offsetH((Constants.screenH() - height) / 2);
-
-        background(204);
-    }
-
-    public void fullScreen() {
-        size(Constants.screenW(), Constants.screenH());
-    }
 
     // Other
 

@@ -1,7 +1,11 @@
 package main;
 
-import javafx.animation.AnimationTimer;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
@@ -10,6 +14,7 @@ import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import utils.Constants;
 
 import java.io.File;
@@ -20,6 +25,8 @@ public class Main extends Application {
 
     public static ArrayList<AppEntry> apps;
     public static GraphicsContext gc;
+    public static Canvas canvas;
+    public static Animation animation;
     public static Stage stage;
     public static int appIndex;
     public static String title, version;
@@ -33,7 +40,7 @@ public class Main extends Application {
 
         Group root = new Group();
         Scene scene = new Scene(root, Color.BLACK);
-        Canvas canvas = new Canvas(Constants.screenW(), Constants.screenH());
+        canvas = new Canvas(Constants.screenW(), Constants.screenH());
         root.getChildren().add(canvas);
 
         Main.title = "RaspberryPiFX";
@@ -51,7 +58,18 @@ public class Main extends Application {
         scene.setOnMouseReleased(event -> { Loader.handleMouseReleased(event); });
         scene.setOnScroll(event -> { Loader.handleMouseWheel(event); });
 
-        new AnimationTimer() { public void handle(long now) { updateApplication(); }}.start();
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                updateApplication();
+            }
+        });
+
+        animation = new Timeline(keyFrame);
+        animation.setCycleCount(Animation.INDEFINITE);
+        animation.setRate(-60);
+        animation.play();
+
+        //new AnimationTimer() { public void handle(long now) { updateApplication(); }}.start();
 
         Main.stage.setOnCloseRequest(value -> closeApplication());
         Main.stage.setTitle(Main.title);
