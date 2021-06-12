@@ -194,6 +194,14 @@ public class Loader {
         program = program.replace("public void ", "void ");
         program = program.replace("void ", "public void ");
         program = program.replace("float", "double");
+        program = program.replace("Float", "Double");
+        program = program.replace("FLOAT", "DOUBLE");
+        program = program.replace("color ", "int ");
+        program = program.replace("\bboolean(", "parseBoolean(");
+        program = program.replace("\bbyte(", "parseByte(");
+        program = program.replace("\bchar(", "parseChar(");
+        program = program.replace("\bdouble(", "parseDouble(");
+        program = program.replace("\bint(", "parseInt(");
 
         return program;
     }

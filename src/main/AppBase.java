@@ -9,6 +9,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import ptypes.PFont;
 import ptypes.PSurface;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -37,6 +38,8 @@ public class AppBase {
 
     public int width;
     public int height;
+
+    public double frameRate;
 
     // Constructor for the object and the internal variables
     public AppBase(GraphicsContext gc) {
@@ -250,7 +253,11 @@ public class AppBase {
     // Color // Setting
 
     public void background(double gray) {
-        background(gray, gray, gray, (int)maxAO);
+        if (between(gray, 0, maxRH)) {
+            background(gray, gray, gray, maxAO);
+        } else {
+            setBackground((int) gray);
+        }
     }
 
     public void background(double gray, double alpha) {
@@ -258,14 +265,14 @@ public class AppBase {
     }
 
     public void background(double rh, double gs, double bv) {
-        background(rh, gs, bv, (int)maxAO);
+        background(rh, gs, bv, maxAO);
     }
 
     public void background(double rh, double gs, double bv, double ao) {
         double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
         double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
         double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
-        double mappedAO = clamp(map(ao, 0, (int)maxAO, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
         setBackground(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
     }
 
@@ -282,15 +289,15 @@ public class AppBase {
     private double maxAO;
 
     public void colorMode(int mode) {
-        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, (int)maxAO);
+        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, maxAO);
     }
 
     public void colorMode(int mode, double max) {
-        colorMode(mode, max, max, max, (int)maxAO);
+        colorMode(mode, max, max, max, maxAO);
     }
 
     public void colorMode(int mode, double rh, double gs, double bb) {
-        colorMode(mode, rh, gs, bb, (int)maxAO);
+        colorMode(mode, rh, gs, bb, maxAO);
     }
 
     public void colorMode(int mode, double rh, double gs, double bb, double alpha) {
@@ -302,7 +309,11 @@ public class AppBase {
     }
 
     public void fill(double gray) {
-        fill(gray, gray, gray, (int)maxAO);
+        if (between(gray, 0, maxRH)) {
+            fill(gray, gray, gray, maxAO);
+        } else {
+            setFill((int) gray);
+        }
     }
 
     public void fill(double gray, double alpha) {
@@ -310,7 +321,7 @@ public class AppBase {
     }
 
     public void fill(double rh, double gs, double bv) {
-        fill(rh, gs, bv, (int)maxAO);
+        fill(rh, gs, bv, maxAO);
     }
 
     public void fill(double rh, double gs, double bv, double ao) {
@@ -318,7 +329,7 @@ public class AppBase {
         double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
         double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
         double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
-        double mappedAO = clamp(map(ao, 0, (int)maxAO, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
         setFill(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
     }
 
@@ -335,7 +346,11 @@ public class AppBase {
     }
 
     public void stroke(double gray) {
-        stroke(gray, gray, gray, (int)maxAO);
+        if (between(gray, 0, maxRH)) {
+            stroke(gray, gray, gray, maxAO);
+        } else {
+            setStroke((int) gray);
+        }
     }
 
     public void stroke(double gray, double alpha) {
@@ -343,7 +358,7 @@ public class AppBase {
     }
 
     public void stroke(double rh, double gs, double bv) {
-        stroke(rh, gs, bv, (int)maxAO);
+        stroke(rh, gs, bv, maxAO);
     }
 
     public void stroke(double rh, double gs, double bv, double ao) {
@@ -351,7 +366,7 @@ public class AppBase {
         double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
         double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
         double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
-        double mappedAO = clamp(map(ao, 0, (int)maxAO, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
         setStroke(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
     }
 
@@ -359,9 +374,107 @@ public class AppBase {
         gc.setStroke(Colours.decodeColour(colorMode, encodedValue));
     }
 
+    // Input // Time & Date
 
+    public int day() {
+        return date.get(Calendar.DAY_OF_MONTH);
+    }
 
+    public int hour() {
+        return date.get(Calendar.HOUR_OF_DAY);
+    }
 
+    public int millis() {
+        return date.get(Calendar.MILLISECOND);
+    }
+
+    public int minute() {
+        return date.get(Calendar.MINUTE);
+    }
+
+    public int month() {
+        return date.get(Calendar.MONTH) + 1;
+    }
+
+    public int second() {
+        return date.get(Calendar.SECOND);
+    }
+
+    public int year() {
+        return date.get(Calendar.YEAR);
+    }
+
+    // Transform
+
+    private double currentRotationY = 0;
+    private double currentScaleX = 1;
+    private double currentScaleY = 1;
+    private double currentTranslateX = 0;
+    private double currentTranslateY = 0;
+
+	public void rotate(double radians) {
+        currentRotationY += radians;
+	}
+
+	public void scale(double amount) {
+        scale(amount, amount);
+	}
+
+	public void scale(double amountX, double amountY) {
+        currentScaleX *= amountX;
+        currentScaleY *= amountX;
+	}
+
+	public void translate(double amountX, double amountY) {
+        currentTranslateX += amountX;
+        currentTranslateY += amountX;
+	}
+
+    //
+
+    public void popMatrix() {
+
+    }
+
+    public void pushMatrix() {
+
+    }
+
+    public void resetMatrix() {
+
+    }
+
+    // Color
+
+    public int color(double gray) {
+        if (between(gray, 0, maxRH)) {
+            color(gray, gray, gray, maxAO);
+        } else {
+            return (int) gray;
+        }
+
+        return color(gray, gray, gray, maxAO);
+    }
+
+    public int color(double gray, double alpha) {
+        return color(gray, gray, gray, alpha);
+    }
+
+    public int color(double rh, double gs, double bv) {
+        return color(rh, gs, bv, maxAO);
+    }
+
+    public int color(double rh, double gs, double bv, double ao) {
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        return Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO);
+    }
+
+    public void textFont(PFont font, int size) {
+        
+    }
 
 
 
@@ -659,66 +772,23 @@ public class AppBase {
 
         Constants.offsetW((Constants.screenW() - width) / 2);
         Constants.offsetH((Constants.screenH() - height) / 2);
+
+        background(204);
     }
 
     public void fullScreen() {
         size(Constants.screenW(), Constants.screenH());
     }
 
-    // Background
-
-    
-
-    // Fill
-
-    
-
-    // Stroke
-
-    
-
-    // Shapes
-
-    
-
+    // Other
 
     private void updateTime() {
         date.setTimeInMillis(System.currentTimeMillis());
     }
 
-    public int day() {
-        return date.get(Calendar.DAY_OF_MONTH);
-    }
-
-    public int hour() {
-        return date.get(Calendar.HOUR_OF_DAY);
-    }
-
-    public int millis() {
-        return date.get(Calendar.MILLISECOND);
-    }
-
-    public int minute() {
-        return date.get(Calendar.MINUTE);
-    }
-
-    public int month() {
-        return date.get(Calendar.MONTH) + 1;
-    }
-
-    public int second() {
-        return date.get(Calendar.SECOND);
-    }
-
-    public int year() {
-        return date.get(Calendar.YEAR);
-    }
-
-    // Other
-
     private void coverEdges() {
         gc.save();
-        fill(20);
+        gc.setFill(Color.gray(0.08));
         gc.fillRect(0, 0, Constants.screenW(), Constants.offsetH());                            // Top
         gc.fillRect(0, Constants.offsetH() + height, Constants.screenW(), Constants.offsetH()); // Bottom
         gc.fillRect(0, 0, Constants.offsetW(), Constants.screenH());                            // Left

@@ -187,35 +187,160 @@ public class Maths {
     
     // Random
     
-    static Random defaultRandom;
+    static Random internalRandom;
+    static Random perlinRandom;
 
-    public static double random(double high) {
-        return random(0, high);
+    static final int PERLIN_YWRAPB = 4;
+    static final int PERLIN_YWRAP = 1 << PERLIN_YWRAPB;
+    static final int PERLIN_ZWRAPB = 8;
+    static final int PERLIN_ZWRAP = 1 << PERLIN_YWRAPB;
+	static final int PERLIN_SIZE = 4095;
+
+    static int perlinOctaves = 4;
+    static double perlinAmpFalloff = 0.5;
+
+    static int perlinTwoPi, perlinPi;
+    static double[] perlinCosTable;
+    static double[] perlin;
+
+    private static void setupRandom(Random random) {
+        if (random == null) random = new Random();
     }
 
-    public static double random(double low, double high) {
-        if (defaultRandom == null) defaultRandom = new Random();
-        return (low + (high - low) * defaultRandom.nextDouble());
+    private static double noiseFsc(double i) {
+        return 0.5 * (1 - perlinCosTable[(int)(i * perlinPi) % perlinTwoPi]);
     }
-
-    public static double randomGaussian() {
-        if (defaultRandom == null) defaultRandom = new Random();
-        return defaultRandom.nextGaussian();
-    }
-
-    public static void randomSeed(int seed) {
-        if (defaultRandom == null) defaultRandom = new Random();
-        defaultRandom.setSeed(seed);
-    }
-
-    static Random perlinRandom = new Random();
 
     // noise()
+
+    public static double noise(double x) {
+		return noise(x, 0, 0);
+	}
+
+	public static double noise(double x, double y) {
+		return noise(x, y, 0);
+	}
+
+	public static double noise(double x, double y, double z) {
+		setupRandom(perlinRandom);
+        if (perlin == null) {
+            perlin = new double[PERLIN_SIZE + 1];
+            for (int i = 0; i < PERLIN_SIZE + 1; i++) {
+                perlin[i] = perlinRandom.nextDouble();
+            }
+            perlinCosTable = new double[0]; //PGraphics.cosLUT;
+            perlinTwoPi = perlinPi = 0; //PGraphics.SINCOS_LENGTH;
+            perlinPi >>= 1;
+        }
+
+        abs(x); abs(y); abs(z);
+
+        int xi = (int) x, yi = (int) y, zi = (int) z;
+        double xd = x - xi;
+        double yd = y - yi;
+        double zd = z - zi;
+        double rxd, ryd;
+        double r = 0, ampl = 0.5;
+        double n1, n2, n3;
+
+        for (int i = 0; i < perlinOctaves; i++) {
+            int of = xi + (yi << PERLIN_YWRAPB) + (zi << PERLIN_ZWRAPB);
+
+            rxd = noiseFsc(xd);
+            ryd = noiseFsc(yd);
+
+            n1  = perlin[of & PERLIN_SIZE];
+            n1 += rxd * (perlin[(of + 1) & PERLIN_SIZE] - n1);
+            n2  = perlin[(of + PERLIN_YWRAP) & PERLIN_SIZE];
+            n2 += rxd * (perlin[(of + PERLIN_YWRAP + 1) & PERLIN_SIZE] - n2);
+            n1 += ryd * (n2 - n1);
+
+            of += PERLIN_ZWRAP;
+            n2  = perlin[of&PERLIN_SIZE];
+            n2 += rxd * (perlin[(of + 1) & PERLIN_SIZE] - n2);
+            n3  = perlin[(of + PERLIN_YWRAP) & PERLIN_SIZE];
+            n3 += rxd * (perlin[(of + PERLIN_YWRAP + 1) & PERLIN_SIZE] - n3);
+            n2 += ryd * (n3 - n2);
+
+            n1 += noiseFsc(zd) * (n2 - n1);
+            r += n1 * ampl;
+            ampl *= perlinAmpFalloff;
+            xi <<= 1; xd *= 2;
+            yi <<= 1; yd *= 2;
+            zi <<= 1; zd *= 2;
+
+            if (xd>=1.0f) { xi++; xd--; }
+            if (yd>=1.0f) { yi++; yd--; }
+            if (zd>=1.0f) { zi++; zd--; }
+        }
+
+        return r;
+
+	}
+    
     // noiseDetail()
 
-    public static void noiseSeed(int seed) {
-        if (perlinRandom == null) perlinRandom = new Random();
+    public void noiseDetail(int lod) {
+        if (lod>0) perlinOctaves=lod;
+    }
+
+    public void noiseDetail(int lod, float falloff) {
+        if (lod > 0) perlinOctaves = lod;
+        if (falloff > 0) perlinAmpFalloff = falloff;
+    }
+    
+    // noiseSeed()
+
+    public void noiseSeed(long seed) {
+        setupRandom(perlinRandom);
         perlinRandom.setSeed(seed);
+        perlin = null;
+    }
+    
+    // random()
+
+    public static final double random(double high) {
+        if (high == 0 || high != high) return 0;
+        setupRandom(internalRandom);
+        double output = 0;
+        do {
+			output = internalRandom.nextDouble() * high;
+		} while (output == high);
+        return output;
+    }
+
+    public static final double random(double low, double high) {
+        if (low >= high) return low;
+        double diff = high - low;
+        double output = 0;
+        do {
+			output = random(diff) + low;
+		} while (output == high);
+		return output;
+    }
+
+    public static final int random(int low, int high) {
+        if (low >= high) return low;
+        double diff = high - low;
+        double output = 0;
+        do {
+			output = random(diff) + low;
+		} while (output == high);
+		return (int) output;
+    }
+    
+    // randomGaussian()
+
+    public static final double randomGaussian() {
+        setupRandom(internalRandom);
+        return internalRandom.nextGaussian();
+    }
+
+    // randomSeed()
+
+    public static final void randomSeed(long seed) {
+        setupRandom(internalRandom);
+        internalRandom.setSeed(seed);
     }
 
     // Custom
