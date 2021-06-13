@@ -46,12 +46,9 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "RaspberryPiFX";
-        Main.version = "v4.2.0";
+        Main.version = "v4.2.2";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
-
-        //ctrl r reload
-        //ctrl f scale app view
 
         scene.setOnKeyPressed(event -> { Loader.handleKeyPressed(event); });
         scene.setOnKeyReleased(event -> { Loader.handleKeyReleased(event); });

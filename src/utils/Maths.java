@@ -300,33 +300,12 @@ public class Maths {
     // random()
 
     public static final double random(double high) {
-        if (high == 0 || high != high) return 0;
-        setupRandom(internalRandom);
-        double output = 0;
-        do {
-			output = internalRandom.nextDouble() * high;
-		} while (output == high);
-        return output;
+        return random(0, high);
     }
 
     public static final double random(double low, double high) {
-        if (low >= high) return low;
-        double diff = high - low;
-        double output = 0;
-        do {
-			output = random(diff) + low;
-		} while (output == high);
-		return output;
-    }
-
-    public static final int random(int low, int high) {
-        if (low >= high) return low;
-        double diff = high - low;
-        double output = 0;
-        do {
-			output = random(diff) + low;
-		} while (output == high);
-		return (int) output;
+        if (internalRandom == null) internalRandom = new Random();
+        return (low + (high - low) * internalRandom.nextDouble());
     }
     
     // randomGaussian()

@@ -78,7 +78,9 @@ public class Loader {
     public static void handleKeyPressed(KeyEvent event) {
         try {
             keyPressedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
         if (quitComb.match(event)) {
             launchHomeScreen();
@@ -107,7 +109,9 @@ public class Loader {
     public static void handleKeyTyped(KeyEvent event) {
         try {
             keyTypedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         event.consume();
     }
 
