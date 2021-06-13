@@ -1,8 +1,11 @@
+// Processing References
+// Hue Saturation Brightness
+
 noStroke();
-colorMode(RGB, 100);
+colorMode(HSB, 100);
 for (int i = 0; i < 100; i++) {
   for (int j = 0; j < 100; j++) {
-    stroke(i, j, 0);
+    stroke(i, j, 100);
     point(i, j);
   }
 }

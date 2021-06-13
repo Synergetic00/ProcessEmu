@@ -46,7 +46,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "RaspberryPiFX";
-        Main.version = "v4.1.4";
+        Main.version = "v4.2.0";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 
@@ -97,6 +97,7 @@ public class Main extends Application {
         
         try {
             Loader.searchFolder(new File("sketches"));
+            System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
         } catch (IOException e) {
             e.printStackTrace();
         }

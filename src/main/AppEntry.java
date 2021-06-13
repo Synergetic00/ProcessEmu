@@ -2,17 +2,17 @@ package main;
 
 public class AppEntry implements Comparable<AppEntry> {
 
-    public String title, authour, description, fileName;
+    public String title, authour, description, path;
 
-    public AppEntry(String t, String a, String d) {
+    public AppEntry(String t, String a, String d, String p) {
         title = t.replaceAll("([^_])([A-Z][a-z])", "$1 $2").trim();
-        fileName = t;
+        path = p;
         authour = a.trim();
         description = d.trim();
     }
 
     public void launch() throws Exception {
-        Loader.launchProgram("sketches/"+fileName+".pde");
+        Loader.launchProgram(path);
     }
 
     @Override

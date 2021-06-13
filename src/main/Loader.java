@@ -165,23 +165,21 @@ public class Loader {
             if (entry.isDirectory()) {
                 searchFolder(entry);
             } else {
-                addAppEntry(entry.getName());
+                addAppEntry(entry);
             }
         }
 
         Collections.sort(Main.apps);
-
-        System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
     }
 
-    private static void addAppEntry(String name) throws IOException {
-        FileReader fr = new FileReader("sketches/" + name);
+    private static void addAppEntry(File file) throws IOException {
+        FileReader fr = new FileReader(file);
         BufferedReader br = new BufferedReader(fr);
 
-        String title = name.substring(0, name.length() - 4);
+        String title = file.getName().substring(0, file.getName().length() - 4);
         String authour = br.readLine().substring(2);
         String desc = br.readLine().substring(2);
-        Main.apps.add(new AppEntry(title, authour, desc));
+        Main.apps.add(new AppEntry(title, authour, desc, file.toString()));
 
         br.close();
         fr.close();

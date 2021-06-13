@@ -1,3 +1,6 @@
+//Processing References
+//Color function
+
 color c;  // Declare color 'c'
 noStroke();  // Don't draw a stroke around shapes
 
