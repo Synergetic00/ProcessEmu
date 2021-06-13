@@ -38,6 +38,8 @@ import javax.tools.ToolProvider;
 public class Loader {
 
     final static KeyCombination quitComb = new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN);
+    final static KeyCombination scaleComb = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
+    final static KeyCombination reloadComb = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
 
     // Java object variables
     static Class<?> programClass;
@@ -81,6 +83,15 @@ public class Loader {
         if (quitComb.match(event)) {
             launchHomeScreen();
         }
+
+        if (scaleComb.match(event)) {
+            Main.scaled = !Main.scaled;
+        }
+
+        if (reloadComb.match(event)) {
+            launchProgram(Main.appIndex);
+        }
+
         event.consume();
     }
 

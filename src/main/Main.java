@@ -29,7 +29,9 @@ public class Main extends Application {
     public static Animation animation;
     public static Stage stage;
     public static int appIndex;
-    public static String title, version;
+    public static String title;
+    public static String version;
+    public static boolean scaled;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -44,9 +46,12 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "RaspberryPiFX";
-        Main.version = "v4.1.2";
+        Main.version = "v4.1.3";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
+
+        //ctrl r reload
+        //ctrl f scale app view
 
         scene.setOnKeyPressed(event -> { Loader.handleKeyPressed(event); });
         scene.setOnKeyReleased(event -> { Loader.handleKeyReleased(event); });
@@ -88,6 +93,7 @@ public class Main extends Application {
         } catch (Exception e) {}*/
 
         Main.apps = new ArrayList<AppEntry>();
+        Main.scaled = false;
         
         try {
             Loader.searchFolder(new File("sketches"));

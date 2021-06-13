@@ -11,12 +11,16 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
+import javafx.scene.transform.Affine;
+import javafx.scene.transform.Shear;
 import ptypes.PFont;
 import ptypes.PImage;
 import ptypes.PShape;
 import ptypes.PSurface;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import utils.Colours;
 import utils.Constants;
 import utils.Maths;
@@ -53,6 +57,7 @@ public class AppBase {
     private void defaultSettings() {
         frameCount = 0;
         focused = true;
+        resetMatrix();
         updateTime();
         frameRate(60);
         size(100, 100);
@@ -441,7 +446,7 @@ public class AppBase {
     public boolean keyPressed;
 
     public void keyReleased() {}
-    
+
     public void keyTyped() {}
     
     ////////////////////
@@ -476,11 +481,96 @@ public class AppBase {
         return date.get(Calendar.SECOND);
     }
 
+    public int year() {
+        return date.get(Calendar.YEAR);
+    }
+
     /////////////////////
     // Output // Image //
     /////////////////////
 
-    // Color // Setting
+    ///////////////
+    // Transform //
+    ///////////////
+
+    private double currentRotationY = 0;
+    private double currentScaleX = 1;
+    private double currentScaleY = 1;
+    private double currentTranslateX = 0;
+    private double currentTranslateY = 0;
+
+	public void rotate(double radians) {
+        currentRotationY += radians;
+
+        double sideA = Constants.offsetW();
+        double sideB = Constants.offsetH();
+        double sideC = sqrt(sq(sideA)+sq(sideB));
+        double anglB = degrees(acos((sq(sideA)+sq(sideC)-sq(sideB))/(2*sideA*sideC)));
+        double finalAmt = degrees(radians) + anglB;
+        double rtsdA = sideC*sin(radians(finalAmt));
+        double rtsdB = sideC*cos(radians(finalAmt));
+        double diffX = sideA - rtsdB;
+        double diffY = sideB - rtsdA;
+        gc.translate(diffX, diffY);
+        gc.rotate(degrees(radians));
+        //gc.translate(-diffX, -diffY);
+	}
+
+	public void scale(double amount) {
+        scale(amount, amount);
+	}
+
+	public void scale(double amountX, double amountY) {
+        currentScaleX *= amountX;
+        currentScaleY *= amountX;
+
+        gc.scale(amountX, amountY);
+	}
+
+    public void shearX(double amount) {
+        Shear shear = Affine.shear(amount, 0);
+    }
+
+    public void shearY(double amount) {
+        Shear shear = Affine.shear(0, amount);
+    }
+
+	public void translate(double amountX, double amountY) {
+        currentTranslateX += amountX;
+        currentTranslateY += amountX;
+
+        gc.translate(amountX, amountY);
+	}
+
+    private final int MATRIX_STACK_DEPTH = 32;
+    private int transformCount;
+    private Affine[] transformStack = new Affine[MATRIX_STACK_DEPTH];
+
+    public void pushMatrix() {
+        if (transformCount == transformStack.length) {
+            throw new RuntimeException("StackOverflow: Reached the maximum amount of pushed matrixes");
+        } else {
+            transformStack[transformCount] = gc.getTransform(transformStack[transformCount]);
+            transformCount++;
+        }
+    }
+
+    public void popMatrix() {
+        if (transformCount == 0) {
+            throw new RuntimeException("popMatrix() needs corresponding pushMatrix() statement");
+        } else {
+            transformCount--;
+            gc.setTransform(transformStack[transformCount]);
+        }
+    }
+
+	public void resetMatrix() {
+        gc.setTransform(new Affine());
+    }
+
+    //////////////////////
+    // Color // Setting //
+    //////////////////////
 
     public void background(double gray) {
         if (between(gray, 0, maxRH)) {
@@ -507,10 +597,13 @@ public class AppBase {
     }
 
     private void setBackground(int encodedValue) {
+        pushMatrix();
+        resetMatrix();
         gc.save();
         gc.setFill(Colours.decodeColour(colorMode, encodedValue));
         gc.fillRect(Constants.offsetW(), Constants.offsetH(), width, height);
         gc.restore();
+        popMatrix();
     }
 
     private double maxRH;
@@ -606,49 +699,7 @@ public class AppBase {
 
     // Input // Time & Date
 
-    public int year() {
-        return date.get(Calendar.YEAR);
-    }
-
     // Transform
-
-    private double currentRotationY = 0;
-    private double currentScaleX = 1;
-    private double currentScaleY = 1;
-    private double currentTranslateX = 0;
-    private double currentTranslateY = 0;
-
-	public void rotate(double radians) {
-        currentRotationY += radians;
-	}
-
-	public void scale(double amount) {
-        scale(amount, amount);
-	}
-
-	public void scale(double amountX, double amountY) {
-        currentScaleX *= amountX;
-        currentScaleY *= amountX;
-	}
-
-	public void translate(double amountX, double amountY) {
-        currentTranslateX += amountX;
-        currentTranslateY += amountX;
-	}
-
-    //
-
-    public void popMatrix() {
-
-    }
-
-    public void pushMatrix() {
-
-    }
-
-    public void resetMatrix() {
-
-    }
 
     // Color
 
@@ -770,6 +821,28 @@ public class AppBase {
     }
 
     public void updateMouse(javafx.scene.input.MouseEvent event) {
+        switch(event.getButton()) {
+            case MIDDLE: {
+                mouseButton = CENTER;
+                break;
+            }
+
+            case PRIMARY: {
+                mouseButton = LEFT;
+                break;
+            }
+
+            case SECONDARY: {
+                mouseButton = RIGHT;
+                break;
+            }
+
+            default: {
+                mouseButton = 0;
+                break;
+            }
+        }
+
         if (inside(event.getSceneX(), event.getSceneY(), Constants.offsetW(), Constants.offsetH(), width, height)) {
             pmouseX = mouseX;
             pmouseY = mouseY;
@@ -792,9 +865,16 @@ public class AppBase {
 
     public void handleDraw() {
         updateTime();
+
+        //if (Main.scaled) {
+        //    double scaleAmount = min(Constants.screenW() / width, Constants.screenH() / height);
+        //    scale(scaleAmount);
+        //}       
+
         if (looping) {
             render();
         }
+
         frameCount++;
     }
 
@@ -964,6 +1044,8 @@ public class AppBase {
     }
 
     private void coverEdges() {
+        pushMatrix();
+        resetMatrix();
         gc.save();
         gc.setFill(Color.gray(0.08));
         gc.fillRect(0, 0, Constants.screenW(), Constants.offsetH());                            // Top
@@ -971,6 +1053,7 @@ public class AppBase {
         gc.fillRect(0, 0, Constants.offsetW(), Constants.screenH());                            // Left
         gc.fillRect(Constants.offsetW() + width, 0, Constants.offsetW(), Constants.screenH());  // Right
         gc.restore();
+        popMatrix();
     }
 
 }
