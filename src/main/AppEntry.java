@@ -22,5 +22,5 @@ public class AppEntry implements Comparable<AppEntry> {
         if (this.description.compareTo(other.description) != 0) return this.description.compareTo(other.description);
         return 0;
     }
-    
+
 }

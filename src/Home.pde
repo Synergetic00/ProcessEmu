@@ -14,7 +14,7 @@ int actualIndex;
 
 void setup() {
     fullScreen();
-    
+
     displayNum = 5;
     spacing = 30;
     rectX = 600;
@@ -85,11 +85,11 @@ void draw() {
 }
 
 void keyPressed() {
-    
+
     if (keyCode == KeyCode.ENTER) {
         Loader.launchProgram(Main.appIndex);
     }
-    
+
     if (keyCode == KeyCode.UP) {
         Main.appIndex--;
 
@@ -97,7 +97,7 @@ void keyPressed() {
             Main.appIndex = Main.apps.size() - 1;
         }
     }
-    
+
     if (keyCode == KeyCode.DOWN) {
         Main.appIndex++;
 

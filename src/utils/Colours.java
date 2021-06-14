@@ -63,5 +63,5 @@ public class Colours {
     public static double brightness(int encodedValue) {
         return map(blue(encodedValue), 0, 255, 0, 1);
     }
-    
+
 }

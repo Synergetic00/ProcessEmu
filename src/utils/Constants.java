@@ -121,31 +121,31 @@ public class Constants {
     public static final int CLOSE = 2;
 
     public static final int GROUP = 0;
-  
-    public static final int POINT = 2; 
-    public static final int POINTS = 3; 
-  
-    public static final int LINE = 4; 
+
+    public static final int POINT = 2;
+    public static final int POINTS = 3;
+
+    public static final int LINE = 4;
     public static final int LINES = 5;
     public static final int LINE_STRIP = 50;
     public static final int LINE_LOOP = 51;
-  
-    public static final int TRIANGLE = 8; 
-    public static final int TRIANGLES = 9; 
+
+    public static final int TRIANGLE = 8;
+    public static final int TRIANGLES = 9;
     public static final int TRIANGLE_STRIP = 10;
     public static final int TRIANGLE_FAN = 11;
-  
+
     public static final int QUAD = 16;
     public static final int QUADS = 17;
     public static final int QUAD_STRIP = 18;
-  
+
     public static final int POLYGON = 20;
     public static final int PATH = 21;
-  
+
     public static final int RECT = 30;
     public static final int ELLIPSE = 31;
     public static final int ARC = 32;
-  
+
     public static final int SPHERE = 40;
     public static final int BOX = 41;
 
@@ -169,5 +169,5 @@ public class Constants {
 	public static final int SHIFT = 206;
 
     public static final String WHITESPACE = " \t\n\r\f\u00A0";
-    
+
 }

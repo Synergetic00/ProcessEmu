@@ -15,7 +15,7 @@ public class Maths {
     public static double abs(double a) {
         return (a <= 0.0) ? 0.0 - a : a;
     }
-    
+
     public static int ceil(double val) {
         if (val % 1 == 0) return (int) val;
         return (int) ((val > 0) ? val - (val % 1) + 1: val - (val % 1) );
@@ -34,15 +34,15 @@ public class Maths {
     public static int constrain(int val, int low, int high) {
 		return (val < low) ? low : ((val > high) ? high : val);
     }
-    
+
     public static double constrain(double val, double low, double high) {
 		return ((val < low) ? low : ((val > high) ? high : val));
     }
-    
+
     public static double dist(double x1, double y1, double x2, double y2) {
         return Math.sqrt(sq(abs(x1 - x2)) + sq(abs(y1 - y2)));
     }
-    
+
     public static double dist(double x1, double y1, double z1, double x2, double y2, double z2) {
         return Math.sqrt(sq(abs(x1 - x2)) + sq(abs(y1 - y2)) + sq(abs(z1 - z2)));
     }
@@ -184,9 +184,9 @@ public class Maths {
     public static double tan(double a) {
         return Math.tan(a);
     }
-    
+
     // Random
-    
+
     static Random internalRandom;
     static Random perlinRandom;
 
@@ -273,7 +273,7 @@ public class Maths {
         return r;
 
 	}
-    
+
     // noiseDetail()
 
     public void noiseDetail(int lod) {
@@ -284,7 +284,7 @@ public class Maths {
         if (lod > 0) perlinOctaves = lod;
         if (falloff > 0) perlinAmpFalloff = falloff;
     }
-    
+
     // noiseSeed()
 
     public void noiseSeed(long seed) {
@@ -292,7 +292,7 @@ public class Maths {
         perlinRandom.setSeed(seed);
         perlin = null;
     }
-    
+
     // random()
 
     public static final double random(double high) {
@@ -303,7 +303,7 @@ public class Maths {
         if (internalRandom == null) internalRandom = new Random();
         return (low + (high - low) * internalRandom.nextDouble());
     }
-    
+
     // randomGaussian()
 
     public static final double randomGaussian() {
@@ -333,5 +333,5 @@ public class Maths {
         }
         return false;
     }
-    
+
 }

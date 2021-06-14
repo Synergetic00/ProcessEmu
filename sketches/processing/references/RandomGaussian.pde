@@ -1,8 +1,8 @@
 float[] distribution = new float[360];
 
 void setup() {
-  size(200,100); 
-  
+  size(200,100);
+
   for (int i = 0; i < distribution.length; i++) {
     distribution[i] = int(randomGaussian() * 15);
   }
@@ -15,7 +15,7 @@ void draw() {
     float x = randomGaussian() * 15;
     line(50, y, 50 + x, y);
   }
-  
+
   translate(width/2, height/2);
 
   for (int i = 0; i < distribution.length; i++) {

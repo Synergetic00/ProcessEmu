@@ -30,7 +30,7 @@ void draw() {
     rectX += speedX;
     rectY += speedY;
 
-    
+
 
     if (rectX > width - sizeW || rectX < 0) speedX *= -1;
     if (rectY > height - sizeH || rectY < 0) speedY *= -1;

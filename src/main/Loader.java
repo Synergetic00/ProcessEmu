@@ -139,7 +139,7 @@ public class Loader {
         } catch (Exception e) {}
         event.consume();
     }
-    
+
     static Method mousePressedMethod;
     public static void handleMousePressed(MouseEvent event) {
         try {
@@ -268,7 +268,7 @@ public class Loader {
         settingsMethod = programClass.getMethod("handleSettings");
         setupMethod = programClass.getMethod("handleSetup");
         drawMethod = programClass.getMethod("handleDraw");
-        
+
         keyPressedMethod = programClass.getMethod("handleKeyPressed", KeyEvent.class);
         keyReleasedMethod = programClass.getMethod("handleKeyReleased", KeyEvent.class);
         keyTypedMethod = programClass.getMethod("handleKeyTyped", KeyEvent.class);

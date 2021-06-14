@@ -25,7 +25,7 @@ public class PSurface {
     }
 
     Cursor lastCursor = Cursor.DEFAULT;
-    
+
     public void setCursor(int kind) {
 		Cursor c;
 		switch (kind) {
@@ -58,5 +58,5 @@ public class PSurface {
 	public void hideCursor() {
 		Main.canvas.getScene().setCursor(Cursor.NONE);
 	}
-    
+
 }

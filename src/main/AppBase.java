@@ -95,7 +95,7 @@ public class AppBase {
     }
 
     public void popStyle() {
-        
+
     }
 
     public void push() {
@@ -197,11 +197,11 @@ public class AppBase {
     }
 
     public void noSmooth() {
-        
+
     }
 
     public void pixelDensity(int density) {
-        
+
     }
 
     public int pixelHeight;
@@ -241,7 +241,7 @@ public class AppBase {
     public PShape createShape(int kind, double... p) {
         return null;
     }
-	
+
     public PShape loadShape(String filename) {
         return null;
     }
@@ -333,7 +333,7 @@ public class AppBase {
         double sy = Constants.offsetH() + startY;
         double ex = Constants.offsetW() + endX;
         double ey = Constants.offsetH() + endY;
-        
+
         gc.strokeLine(sx, sy, ex, ey);
     }
 
@@ -349,7 +349,7 @@ public class AppBase {
         if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
-    
+
     public void rect(double x, double y, double w, double h) {
 
         double nx = x;
@@ -443,7 +443,7 @@ public class AppBase {
 
         openContour = true;
     }
-    
+
     public void beginShape(int kind) {
         shape = kind;
         vertexCount = 0;
@@ -505,7 +505,7 @@ public class AppBase {
             fpathCoordsBuffer[i] = (float) pathCoordsBuffer[i];
         }
     }
-    
+
     private void drawShape(Shape s) {
         gc.beginPath();
         PathIterator pi = s.getPathIterator(null);
@@ -550,7 +550,7 @@ public class AppBase {
         vertices[vertexCount][X] = x;
         vertices[vertexCount][Y] = y;
         vertexCount++;
-    
+
         switch (shape) {
             case POINTS: {
                 point(x, y);
@@ -662,7 +662,7 @@ public class AppBase {
     public boolean mousePressed;
 
     public void mouseReleased() {}
-    
+
     public void mouseWheel(utils.MouseEvent event) {}
 
     public double mouseX;
@@ -678,7 +678,7 @@ public class AppBase {
     ///////////////////////
 
     public char key;
-    
+
     public KeyCode keyCode;
 
     public void keyPressed() {}
@@ -688,7 +688,7 @@ public class AppBase {
     public void keyReleased() {}
 
     public void keyTyped() {}
-    
+
     ////////////////////
     // Input // Files //
     ////////////////////
@@ -970,7 +970,7 @@ public class AppBase {
     }
 
     public void textFont(PFont font, int size) {
-        
+
     }
 
 
@@ -1078,7 +1078,7 @@ public class AppBase {
         if (inside(event.getSceneX(), event.getSceneY(), Constants.offsetW(), Constants.offsetH(), width, height)) {
             pmouseX = mouseX;
             pmouseY = mouseY;
-    
+
             mouseX = Maths.clamp((int)(event.getSceneX()-Constants.offsetW()), 0, width);
             mouseY = Maths.clamp((int)(event.getSceneY()-Constants.offsetH()), 0, height);
         }
@@ -1101,7 +1101,7 @@ public class AppBase {
         //if (Main.scaled) {
         //    double scaleAmount = min(Constants.screenW() / width, Constants.screenH() / height);
         //    scale(scaleAmount);
-        //}       
+        //}
 
         if (looping) {
             render();
@@ -1244,9 +1244,9 @@ public class AppBase {
         gc.fillText(text, x, y);
     }
 
-    
 
-    
+
+
 
     // More Stuff
 

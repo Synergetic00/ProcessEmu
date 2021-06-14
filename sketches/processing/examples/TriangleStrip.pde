@@ -15,13 +15,13 @@ void setup() {
 
 void draw() {
   background(204);
-  
+
   int numPoints = (int)(map(mouseX, 0, width, 6, 60));
   float angle = 0;
   float angleStep = 180.0/numPoints;
   //System.out.println("Points: "+numPoints+" MouseX: "+mouseX+" Width: "+width);
-    
-  beginShape(TRIANGLE_STRIP); 
+
+  beginShape(TRIANGLE_STRIP);
   for (int i = 0; i <= numPoints; i++) {
     float px = x + cos(radians(angle)) * outsideRadius;
     float py = y + sin(radians(angle)) * outsideRadius;
@@ -29,7 +29,7 @@ void draw() {
     vertex(px, py);
     px = x + cos(radians(angle)) * insideRadius;
     py = y + sin(radians(angle)) * insideRadius;
-    vertex(px, py); 
+    vertex(px, py);
     angle += angleStep;
   }
   endShape();

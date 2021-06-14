@@ -216,22 +216,22 @@ public class PVector {
     }
 
     public PVector cross(PVector v) {
-        double crossX = y * v.z - z * v.y; 
-        double crossY = z * v.x - x * v.z; 
-        double crossZ = x * v.y - y * v.x; 
+        double crossX = y * v.z - z * v.y;
+        double crossY = z * v.x - x * v.z;
+        double crossZ = x * v.y - y * v.x;
         return new PVector(crossX, crossY, crossZ);
     }
 
     public PVector cross(PVector v, PVector target) {
-        target.x = y * v.z - z * v.y; 
-        target.y = z * v.x - x * v.z; 
-        target.z = x * v.y - y * v.x; 
+        target.x = y * v.z - z * v.y;
+        target.y = z * v.x - x * v.z;
+        target.z = x * v.y - y * v.x;
         return target;
     }
 
     public static PVector cross(PVector v1, PVector v2, PVector target) {
-        target.x = v1.y * v2.z - v1.z * v2.y; 
-        target.y = v1.z * v2.x - v1.x * v2.z; 
+        target.x = v1.y * v2.z - v1.z * v2.y;
+        target.y = v1.z * v2.x - v1.x * v2.z;
         target.z = v1.x * v2.y - v1.y * v2.x;
         return target;
     }
@@ -324,7 +324,7 @@ public class PVector {
 
         double dot = dot(v1, v2);
         double amt = dot / (v1.mag() * v2.mag());
-        
+
         if (amt <= -1) return PI;
         else if (amt >= 1) return 0;
         return (float) Math.acos(amt);

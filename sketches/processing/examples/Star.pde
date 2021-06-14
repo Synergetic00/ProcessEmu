@@ -4,23 +4,23 @@ void setup() {
 
 void draw() {
   background(102);
-  
+
   pushMatrix();
   translate(width*0.2, height*0.5);
   rotate(frameCount / 200.0);
-  star(0, 0, 5, 70, 3); 
+  star(0, 0, 5, 70, 3);
   popMatrix();
-  
+
   pushMatrix();
   translate(width*0.5, height*0.5);
   rotate(frameCount / 400.0);
-  star(0, 0, 80, 100, 40); 
+  star(0, 0, 80, 100, 40);
   popMatrix();
-  
+
   pushMatrix();
   translate(width*0.8, height*0.5);
   rotate(frameCount / -100.0);
-  star(0, 0, 30, 70, 5); 
+  star(0, 0, 30, 70, 5);
   popMatrix();
 }
 
