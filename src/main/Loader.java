@@ -181,8 +181,20 @@ public class Loader {
         BufferedReader br = new BufferedReader(fr);
 
         String title = file.getName().substring(0, file.getName().length() - 4);
-        String authour = br.readLine().substring(2);
-        String desc = br.readLine().substring(2);
+        String authour;
+        String desc;
+
+        try {
+            authour = br.readLine().substring(2);
+        } catch (StringIndexOutOfBoundsException e) {
+            authour = "Unknown Authour";
+        }
+
+        try {
+            desc = br.readLine().substring(2);
+        } catch (StringIndexOutOfBoundsException e) {
+            desc = "Default description";
+        }
         Main.apps.add(new AppEntry(title, authour, desc, file.toString()));
 
         br.close();
@@ -210,11 +222,11 @@ public class Loader {
         program = program.replace("Float", "Double");
         program = program.replace("FLOAT", "DOUBLE");
         program = program.replace("color ", "int ");
-        program = program.replace("\bboolean(", "parseBoolean(");
-        program = program.replace("\bbyte(", "parseByte(");
-        program = program.replace("\bchar(", "parseChar(");
-        program = program.replace("\bdouble(", "parseDouble(");
-        program = program.replace("\bint(", "parseInt(");
+        program = program.replace(" boolean(", "parseBoolean(");
+        program = program.replace(" byte(", "parseByte(");
+        program = program.replace(" char(", "parseChar(");
+        program = program.replace(" double(", "parseDouble(");
+        program = program.replace(" int(", "parseInt(");
 
         return program;
     }

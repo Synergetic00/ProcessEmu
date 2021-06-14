@@ -203,10 +203,6 @@ public class Maths {
     static double[] perlinCosTable;
     static double[] perlin;
 
-    private static void setupRandom(Random random) {
-        if (random == null) random = new Random();
-    }
-
     private static double noiseFsc(double i) {
         return 0.5 * (1 - perlinCosTable[(int)(i * perlinPi) % perlinTwoPi]);
     }
@@ -222,7 +218,7 @@ public class Maths {
 	}
 
 	public static double noise(double x, double y, double z) {
-		setupRandom(perlinRandom);
+		if (perlinRandom == null) perlinRandom = new Random();
         if (perlin == null) {
             perlin = new double[PERLIN_SIZE + 1];
             for (int i = 0; i < PERLIN_SIZE + 1; i++) {
@@ -292,7 +288,7 @@ public class Maths {
     // noiseSeed()
 
     public void noiseSeed(long seed) {
-        setupRandom(perlinRandom);
+        if (perlinRandom == null) perlinRandom = new Random();
         perlinRandom.setSeed(seed);
         perlin = null;
     }
@@ -311,14 +307,14 @@ public class Maths {
     // randomGaussian()
 
     public static final double randomGaussian() {
-        setupRandom(internalRandom);
+        if (internalRandom == null) internalRandom = new Random();
         return internalRandom.nextGaussian();
     }
 
     // randomSeed()
 
     public static final void randomSeed(long seed) {
-        setupRandom(internalRandom);
+        if (internalRandom == null) internalRandom = new Random();
         internalRandom.setSeed(seed);
     }
 

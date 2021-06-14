@@ -1,5 +1,8 @@
 package main;
 
+import com.sun.javafx.geom.Path2D;
+import com.sun.javafx.geom.PathIterator;
+import com.sun.javafx.geom.Shape;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -397,9 +400,246 @@ public class AppBase {
     // Shape // Attributes //
     /////////////////////////
 
+    public void ellipseMode(int mode) {
+        ellipseMode = mode;
+    }
+
+    public void rectMode(int mode) {
+        rectMode = mode;
+    }
+
     /////////////////////
     // Shape // Vertex //
     /////////////////////
+
+    int shape;
+    final int DEFAULT_VERTICES = 512;
+    final int VERTEX_FIELD_COUNT = 37;
+    double[][] vertices = new double[DEFAULT_VERTICES][VERTEX_FIELD_COUNT];
+    int vertexCount;
+    boolean openContour;
+    boolean adjustedForThinLines;
+    /// break the shape at the next vertex (next vertex() call is a moveto())
+    boolean breakShape;
+    float[] pathCoordsBuffer = new float[6];
+    Path2D workPath = new Path2D();
+    Path2D auxPath = new Path2D();
+    double[][] curveVertices;
+    int curveVertexCount;
+
+    public void beginContour() {
+        if (openContour) {
+            System.out.println("Already called beginContour()");
+            return;
+        }
+
+        Path2D contourPath = auxPath;
+        auxPath = workPath;
+        workPath = contourPath;
+
+        if (contourPath.getNumCommands() > 0) {
+            breakShape = true;
+        }
+
+        openContour = true;
+    }
+    
+    public void beginShape(int kind) {
+        shape = kind;
+        vertexCount = 0;
+        curveVertexCount = 0;
+
+        workPath.reset();
+        auxPath.reset();
+    }
+
+    public void beginShape() {
+        beginShape(POLYGON);
+    }
+
+    public void endContour() {
+        if (!openContour) {
+            System.out.println("Need to call beginContour() first");
+            return;
+        }
+
+        if (workPath.getNumCommands() > 0)
+            workPath.closePath();
+
+        Path2D temp = workPath;
+        workPath = auxPath;
+        auxPath = temp;
+
+        openContour = false;
+    }
+
+    public void endShape() {
+        endShape(OPEN);
+    }
+
+    public void endShape(int mode) {
+        if (openContour) {
+            endContour();
+            System.out.println("Missing endContour() before endShape()");
+        }
+
+        if (workPath.getNumCommands() > 0) {
+            if (shape == POLYGON) {
+                if (mode == CLOSE) {
+                    workPath.closePath();
+                }
+                if (auxPath.getNumCommands() > 0) {
+                    workPath.append(auxPath, false);
+                }
+                drawShape(workPath);
+            }
+        }
+
+        shape = 0;
+    }
+
+    private float[] fpathCoordsBuffer = new float[pathCoordsBuffer.length];
+
+    private void copyCoordsBuffer() {
+        for (int i = 0; i < pathCoordsBuffer.length; i++) {
+            fpathCoordsBuffer[i] = (float) pathCoordsBuffer[i];
+        }
+    }
+    
+    private void drawShape(Shape s) {
+        gc.beginPath();
+        PathIterator pi = s.getPathIterator(null);
+        copyCoordsBuffer();
+        while (!pi.isDone()) {
+
+            int pitype = pi.currentSegment(fpathCoordsBuffer);
+            switch (pitype) {
+                case PathIterator.SEG_MOVETO:
+                    gc.moveTo(pathCoordsBuffer[0], pathCoordsBuffer[1]);
+                    break;
+                case PathIterator.SEG_LINETO:
+                    gc.lineTo(pathCoordsBuffer[0], pathCoordsBuffer[1]);
+                    break;
+                case PathIterator.SEG_QUADTO:
+                    gc.quadraticCurveTo(pathCoordsBuffer[0], pathCoordsBuffer[1], pathCoordsBuffer[2],
+                            pathCoordsBuffer[3]);
+                    break;
+                case PathIterator.SEG_CUBICTO:
+                    gc.bezierCurveTo(pathCoordsBuffer[0], pathCoordsBuffer[1], pathCoordsBuffer[2],
+                            pathCoordsBuffer[3], pathCoordsBuffer[4], pathCoordsBuffer[5]);
+                    break;
+                case PathIterator.SEG_CLOSE:
+                    gc.closePath();
+                    break;
+                default:
+                    System.out.println("Unknown segment type " + pitype);
+            }
+            pi.next();
+        }
+        if (hasFill) gc.fill();
+        if (hasStroke) gc.stroke();
+    }
+
+    public void vertex(double x, double y) {
+        if (vertexCount == vertices.length) {
+          double[][] temp = new double[vertexCount<<1][VERTEX_FIELD_COUNT];
+          System.arraycopy(vertices, 0, temp, 0, vertexCount);
+          vertices = temp;
+        }
+
+        vertices[vertexCount][X] = x;
+        vertices[vertexCount][Y] = y;
+        vertexCount++;
+    
+        switch (shape) {
+            case POINTS: {
+                point(x, y);
+                break;
+            }
+
+            case LINES: {
+                if ((vertexCount % 2) == 0) {
+                    line(vertices[vertexCount-2][X],
+                        vertices[vertexCount-2][Y], x, y);
+                }
+                break;
+            }
+
+            case TRIANGLES: {
+                if ((vertexCount % 3) == 0) {
+                    triangle(vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
+                        x, y);
+                }
+                break;
+            }
+
+            case TRIANGLE_STRIP: {
+                if (vertexCount >= 3) {
+                    triangle(vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
+                        vertices[vertexCount - 1][X],
+                        vertices[vertexCount - 1][Y],
+                        vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y]);
+                }
+                break;
+            }
+
+            case TRIANGLE_FAN: {
+                if (vertexCount >= 3) {
+                    triangle(vertices[0][X],
+                        vertices[0][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
+                        x, y);
+                }
+                break;
+            }
+
+            case QUAD: {
+                break;
+            }
+
+            case QUADS: {
+                if ((vertexCount % 4) == 0) {
+                    quad(vertices[vertexCount - 4][X],
+                        vertices[vertexCount - 4][Y],
+                        vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
+                        x, y);
+                }
+                break;
+            }
+
+            case QUAD_STRIP: {
+                if ((vertexCount >= 4) && ((vertexCount % 2) == 0)) {
+                    quad(vertices[vertexCount - 4][X],
+                        vertices[vertexCount - 4][Y],
+                        vertices[vertexCount - 2][X],
+                        vertices[vertexCount - 2][Y],
+                        x, y,
+                        vertices[vertexCount - 3][X],
+                        vertices[vertexCount - 3][Y]);
+                }
+                break;
+            }
+
+            case POLYGON: {
+                if (workPath.getNumCommands() == 0 || breakShape) {
+                    workPath.moveTo((float) x, (float) y);
+                    breakShape = false;
+                } else {
+                    workPath.lineTo((float) x, (float) y);
+                }
+                break;
+            }
+        }
+    }
 
     ///////////////////////////////////
     // Shape // Loading & Displaying //
@@ -812,14 +1052,6 @@ public class AppBase {
     // Handled Default Methods //
     /////////////////////////////
 
-    public void rectMode(int mode) {
-        rectMode = mode;
-    }
-
-    public void ellipseMode(int mode) {
-        ellipseMode = mode;
-    }
-
     public void updateMouse(javafx.scene.input.MouseEvent event) {
         switch(event.getButton()) {
             case MIDDLE: {
@@ -879,7 +1111,9 @@ public class AppBase {
     }
 
     private void render() {
+        pushMatrix();
         draw();
+        popMatrix();
         coverEdges();
     }
 
