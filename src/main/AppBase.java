@@ -937,10 +937,6 @@ public class AppBase {
         gc.setStroke(Colours.decodeColour(colorMode, encodedValue));
     }
 
-    // Input // Time & Date
-
-    // Transform
-
     // Color
 
     public int color(double gray) {
@@ -968,9 +964,94 @@ public class AppBase {
         double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
         return Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO);
     }
+    
+    ////////////////
+    // Typography //
+    ////////////////
 
-    public void textFont(PFont font, int size) {
+    private TextAlignment alignH = TextAlignment.LEFT;
+    private VPos alignV = VPos.BASELINE;
 
+    public PFont createFont(String name, double size) {
+        return null;
+    }
+
+    public PFont createFont(String name, double size, boolean smooth) {
+        return null;
+    }
+    
+    public PFont createFont(String name, double size, boolean smooth, char[] charset) {
+        return null;
+    }
+
+    public PFont loadFont(String filename) {
+        return null;
+    }
+
+    public void text(String text, double x, double y) {
+        gc.fillText(text, x, y);
+    }
+
+    public void textFont(PFont which) {
+
+    }
+
+    public void textFont(PFont which, int size) {
+
+    }
+
+    public void textAlign(int newAlignX) {
+
+        switch (newAlignX) {
+            case LEFT: {
+                alignH = TextAlignment.LEFT;
+                break;
+            }
+            case CENTER: {
+                alignH = TextAlignment.CENTER;
+                break;
+            }
+            case RIGHT: {
+                alignH = TextAlignment.RIGHT;
+                break;
+            }
+        }
+
+        textAlign(alignH, alignV);
+    }
+
+    public void textAlign(int newAlignX, int newAlignY) {
+        textAlign(newAlignX);
+
+        switch (newAlignY) {
+            case TOP: {
+                alignV = VPos.TOP;
+                break;
+            }
+            case BOTTOM: {
+                alignV = VPos.BOTTOM;
+                break;
+            }
+            case CENTER: {
+                alignV = VPos.CENTER;
+                break;
+            }
+            case BASELINE: {
+                alignV = VPos.BASELINE;
+                break;
+            }
+        }
+
+        textAlign(alignH, alignV);
+    }
+
+    public void textAlign(TextAlignment alignH, VPos alignV) {
+        gc.setTextAlign(alignH);
+        gc.setTextBaseline(alignV);
+    }
+
+    public void textSize(double size) {
+        gc.setFont(new Font(size));
     }
 
 
@@ -1085,6 +1166,7 @@ public class AppBase {
     }
 
     private ArrayList<KeyCode> pressedKeys = new ArrayList<>(20);
+    private ArrayList<MouseButton> pressedMouseBtns = new ArrayList<>(3);
 
     public void handleSettings() {
         settings();
@@ -1133,11 +1215,15 @@ public class AppBase {
 
     public void handleMousePressed(javafx.scene.input.MouseEvent event) {
         updateMouse(event);
+        if (!pressedMouseBtns.contains(event.getButton())) pressedMouseBtns.add(event.getButton());
+        mousePressed = true;
         mousePressed();
     }
 
     public void handleMouseReleased(javafx.scene.input.MouseEvent event) {
         updateMouse(event);
+        pressedMouseBtns.remove(event.getButton());
+        mousePressed = !pressedMouseBtns.isEmpty();
         mouseReleased();
     }
 
@@ -1179,73 +1265,12 @@ public class AppBase {
     // Environment //
     /////////////////
 
-    private TextAlignment alignH = TextAlignment.LEFT;
-    private VPos alignV = VPos.BASELINE;
 
-    public void textAlign(int newAlignX) {
 
-        switch (newAlignX) {
-            case LEFT: {
-                alignH = TextAlignment.LEFT;
-                break;
-            }
-            case CENTER: {
-                alignH = TextAlignment.CENTER;
-                break;
-            }
-            case RIGHT: {
-                alignH = TextAlignment.RIGHT;
-                break;
-            }
-        }
-
-        textAlign(alignH, alignV);
-    }
-
-    public void textAlign(int newAlignX, int newAlignY) {
-        textAlign(newAlignX);
-
-        switch (newAlignY) {
-            case TOP: {
-                alignV = VPos.TOP;
-                break;
-            }
-            case BOTTOM: {
-                alignV = VPos.BOTTOM;
-                break;
-            }
-            case CENTER: {
-                alignV = VPos.CENTER;
-                break;
-            }
-            case BASELINE: {
-                alignV = VPos.BASELINE;
-                break;
-            }
-        }
-
-        textAlign(alignH, alignV);
-    }
-
-    public void textAlign(TextAlignment alignH, VPos alignV) {
-        gc.setTextAlign(alignH);
-        gc.setTextBaseline(alignV);
-    }
 
     public void strokeWeight(double weight) {
         gc.setLineWidth(weight);
     }
-
-    public void textSize(double size) {
-        gc.setFont(new Font(size));
-    }
-
-    public void text(String text, double x, double y) {
-        gc.fillText(text, x, y);
-    }
-
-
-
 
 
     // More Stuff
