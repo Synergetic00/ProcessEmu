@@ -30,7 +30,6 @@ void draw() {
     toRender = (calcNum == tailNum) ? tailNum : displayNum;
 
     background(0);
-    textAlign(LEFT, CENTER);
 
     for (int i = 0; i < toRender; i++) {
         actualIndex = i + (pageCount * displayNum);
@@ -49,12 +48,16 @@ void draw() {
         } else {
             fill(255);
         }
+        textAlign(LEFT, CENTER);
         textSize(30);
-        text(Main.apps.get(actualIndex).title, rectX + spacing, yPos+(30));
+        text(Main.apps.get(actualIndex).title(), rectX + spacing, yPos+(30));
         textSize(15);
-        text(Main.apps.get(actualIndex).authour, rectX + spacing, yPos+(rectH/2)+(3));
+        text(Main.apps.get(actualIndex).authour(), rectX + spacing, yPos+(rectH/2)+(3));
         textSize(20);
-        text(Main.apps.get(actualIndex).description, rectX + spacing, yPos+(rectH)-(30));
+        text(Main.apps.get(actualIndex).description(), rectX + spacing, yPos+(rectH)-(30));
+        textAlign(RIGHT, CENTER);
+        textSize(15);
+        text(Main.apps.get(actualIndex).path(), width - (spacing*2), yPos+(30));
     }
 
     for (int i = 0; i < pageTotal; i++) {
