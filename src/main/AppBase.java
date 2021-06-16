@@ -408,6 +408,10 @@ public class AppBase {
         rectMode = mode;
     }
 
+    public void strokeWeight(double weight) {
+        gc.setLineWidth(weight);
+    }
+
     /////////////////////
     // Shape // Vertex //
     /////////////////////
@@ -972,6 +976,8 @@ public class AppBase {
     private TextAlignment alignH = TextAlignment.LEFT;
     private VPos alignV = VPos.BASELINE;
 
+    // createFont()
+
     public PFont createFont(String name, double size) {
         return null;
     }
@@ -984,25 +990,73 @@ public class AppBase {
         return null;
     }
 
+    // loadFont()
+
     public PFont loadFont(String filename) {
         return null;
     }
 
-    public void text(String text, double x, double y) {
-        gc.fillText(text, x, y);
+    // text()
+
+    public void text(char c, double x, double y) {
+
     }
+    
+    public void text(char c, double x, double y, double z) {
+    
+    }
+    
+    public void text(String str, double x, double y) {
+        gc.fillText(str, x, y);
+    }
+    
+    public void text(char[] chars, int start, int stop, double x, double y) {
+    
+    }
+    
+    public void text(String str, double x, double y, double z) {
+    
+    }
+    
+    public void text(char[] chars, int start, int stop, double x, double y, double z) {
+    
+    }
+    
+    public void text(String str, double x1, double y1, double x2, double y2) {
+    
+    }
+    
+    public void text(int num, double x, double y) {
+    
+    }
+    
+    public void text(int num, double x, double y, double z) {
+    
+    }
+    
+    public void text(double num, double x, double y) {
+    
+    }
+    
+    public void text(double num, double x, double y, double z) {
+    
+    }
+
+    // textFont()
 
     public void textFont(PFont which) {
 
     }
 
-    public void textFont(PFont which, int size) {
+    public void textFont(PFont which, double size) {
 
     }
 
-    public void textAlign(int newAlignX) {
+    // textAlign()
 
-        switch (newAlignX) {
+    public void textAlign(int alignX) {
+
+        switch (alignX) {
             case LEFT: {
                 alignH = TextAlignment.LEFT;
                 break;
@@ -1017,13 +1071,13 @@ public class AppBase {
             }
         }
 
-        textAlign(alignH, alignV);
+        setTextAlign(alignH, alignV);
     }
 
-    public void textAlign(int newAlignX, int newAlignY) {
-        textAlign(newAlignX);
+    public void textAlign(int alignX, int alignY) {
+        textAlign(alignX);
 
-        switch (newAlignY) {
+        switch (alignY) {
             case TOP: {
                 alignV = VPos.TOP;
                 break;
@@ -1042,98 +1096,88 @@ public class AppBase {
             }
         }
 
-        textAlign(alignH, alignV);
+        setTextAlign(alignH, alignV);
     }
 
-    public void textAlign(TextAlignment alignH, VPos alignV) {
-        gc.setTextAlign(alignH);
-        gc.setTextBaseline(alignV);
+    // textLeading()
+
+    public void textLeading(double leading) {
+
     }
+
+    // textMode()
+
+    public void textMode(int mode) {
+        
+    }
+
+    // textSize()
 
     public void textSize(double size) {
         gc.setFont(new Font(size));
     }
 
+    // textWidth()
 
+    public double textWidth(char c) {
+        return 0;
+    }
 
+    public double textWidth(String str) {
+        return 0;
+    }
 
+    // textAscent()
 
+    public double textAscent() {
+        return 0;
+    }
 
+    // textDescent()
 
+    public double textDescent() {
+        return 0;
+    }
 
+    //////////////////////
+    // Internal Methods //
+    //////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    private void render() {
+        pushMatrix();
+        draw();
+        popMatrix();
+        coverEdges();
+    }
 
     private void resetSurface() {
         //surface.setLocation((Constants.displayW() - Constants.windowW()) / 2, (Constants.displayH() - Constants.windowH()) / 2);
         //surface.setTitle(Main.title);
     }
 
+    private void setTextAlign(TextAlignment alignH, VPos alignV) {
+        gc.setTextAlign(alignH);
+        gc.setTextBaseline(alignV);
+    }
 
+    private void updateTime() {
+        date.setTimeInMillis(System.currentTimeMillis());
+    }
 
+    private void coverEdges() {
+        pushMatrix();
+        resetMatrix();
+        gc.save();
+        gc.setFill(Color.gray(0.08));
+        gc.fillRect(0, 0, Constants.screenW(), Constants.offsetH());                            // Top
+        gc.fillRect(0, Constants.offsetH() + height, Constants.screenW(), Constants.offsetH()); // Bottom
+        gc.fillRect(0, 0, Constants.offsetW(), Constants.screenH());                            // Left
+        gc.fillRect(Constants.offsetW() + width, 0, Constants.offsetW(), Constants.screenH());  // Right
+        gc.restore();
+        popMatrix();
+    }
 
-
-
-
-
-
-
-
-
-    /////////////////////////////
-    // Handled Default Methods //
-    /////////////////////////////
-
-    public void updateMouse(javafx.scene.input.MouseEvent event) {
+    private void updateMouse(javafx.scene.input.MouseEvent event) {
         switch(event.getButton()) {
             case MIDDLE: {
                 mouseButton = CENTER;
@@ -1165,6 +1209,15 @@ public class AppBase {
         }
     }
 
+    private void updateKeys(KeyEvent event) {
+        keyCode = event.getCode();
+        key = event.getCharacter().charAt(0);
+    }
+
+    /////////////////////////////
+    // Handled Default Methods //
+    /////////////////////////////
+
     private ArrayList<KeyCode> pressedKeys = new ArrayList<>(20);
     private ArrayList<MouseButton> pressedMouseBtns = new ArrayList<>(3);
 
@@ -1190,13 +1243,6 @@ public class AppBase {
         }
 
         frameCount++;
-    }
-
-    private void render() {
-        pushMatrix();
-        draw();
-        popMatrix();
-        coverEdges();
     }
 
     public void handleMouseClicked(javafx.scene.input.MouseEvent event) {
@@ -1250,69 +1296,6 @@ public class AppBase {
     public void handleKeyTyped(KeyEvent event) {
         updateKeys(event);
         keyTyped();
-    }
-
-    private void updateKeys(KeyEvent event) {
-        keyCode = event.getCode();
-        key = event.getCharacter().charAt(0);
-    }
-
-    ///////////////
-    // Structure //
-    ///////////////
-
-    /////////////////
-    // Environment //
-    /////////////////
-
-
-
-
-    public void strokeWeight(double weight) {
-        gc.setLineWidth(weight);
-    }
-
-
-    // More Stuff
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    // Other
-
-    private void updateTime() {
-        date.setTimeInMillis(System.currentTimeMillis());
-    }
-
-    private void coverEdges() {
-        pushMatrix();
-        resetMatrix();
-        gc.save();
-        gc.setFill(Color.gray(0.08));
-        gc.fillRect(0, 0, Constants.screenW(), Constants.offsetH());                            // Top
-        gc.fillRect(0, Constants.offsetH() + height, Constants.screenW(), Constants.offsetH()); // Bottom
-        gc.fillRect(0, 0, Constants.offsetW(), Constants.screenH());                            // Left
-        gc.fillRect(Constants.offsetW() + width, 0, Constants.offsetW(), Constants.screenH());  // Right
-        gc.restore();
-        popMatrix();
     }
 
 }
