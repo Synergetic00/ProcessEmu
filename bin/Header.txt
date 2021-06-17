@@ -10,8 +10,6 @@ import utils.Maths;
 import utils.MouseEvent;
 import ptypes.*;
 
-import java.util.Map;
-
 import static utils.Colours.*;
 import static utils.Constants.*;
 import static utils.Data.*;
