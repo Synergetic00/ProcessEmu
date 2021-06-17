@@ -25,6 +25,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
@@ -204,17 +206,31 @@ public class Loader {
     public static String getFileContents(String path) throws IOException {
 
         // Read the contents of the desired file into a complete java 'file'
-        byte[] header = Files.readAllBytes(Paths.get("src/Header.txt"));
-        byte[] bytes = Files.readAllBytes(Paths.get(path));
-        Charset charset = Charset.forName("UTF-8");
+        Charset utf8 = Charset.forName("UTF-8");
 
-        String program = new String(bytes, charset);
+        String headerPackage = "package sketches;";
+        String headerClass = "public class ProcessingApp extends AppBase {\n\tpublic ProcessingApp(GraphicsContext gc) { super(gc); }\n";
+        String headerImports = new String(Files.readAllBytes(Paths.get("src/Imports.txt")), utf8);
+
+        byte[] bytes = Files.readAllBytes(Paths.get(path));
+        String program = new String(bytes, utf8);
+
+        Pattern p = Pattern.compile("import .*;");
+        Matcher m = p.matcher(program);
+
+        while (m.find()) {
+            String newImport = m.group(0);
+            program = program.replace(newImport, "");
+            headerImports += newImport + '\n';
+        }
+
+        String header = headerPackage + '\n' + headerImports + '\n' + headerClass;
 
         if (!(program.contains("void setup()") || program.contains("void draw()"))) {
             program = new String("void setup() {\n".concat(program).concat("\n}"));
         }
 
-        program = new String(header, charset).concat(program).concat("\n\n}");
+        program = header.concat(program).concat("\n\n}");
 
         program = program.replace("public void ", "void ");
         program = program.replace("void ", "public void ");

@@ -1,5 +1,3 @@
-package sketches;
-
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.input.KeyCode;
 
@@ -16,9 +14,4 @@ import static utils.Data.*;
 import static utils.Maths.*;
 
 import java.util.ArrayList;
-import java.util.Map;
 import java.util.HashMap;
-
-public class ProcessingApp extends AppBase {
-
-public ProcessingApp(GraphicsContext gc) { super(gc); }

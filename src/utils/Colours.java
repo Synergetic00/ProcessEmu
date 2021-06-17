@@ -7,6 +7,11 @@ import static utils.Maths.*;
 
 public class Colours {
 
+    public static int colorToInt(Color color) {
+        System.out.println(color.getRed());
+        return 0;
+    }
+
     public static int encodeColour(double rh, double gs, double bv, double ao) {
         int encodedAO = (int)(ao) << 24;
         int encodedRH = (int)(rh) << 16;

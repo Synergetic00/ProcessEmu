@@ -1,6 +1,8 @@
 //Mark - Zepplin Games
 //Pixel art animation tool
 
+import java.util.Map;
+
 HashMap<PVector, Integer> allPixels = new HashMap<PVector, Integer>();
 PVector artSize = new PVector(16, 16);
 color currDrawColour = color(0);

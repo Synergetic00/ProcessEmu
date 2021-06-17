@@ -10,6 +10,7 @@ import java.util.Calendar;
 
 import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.ArcType;
 import javafx.scene.text.Font;
@@ -1148,6 +1149,16 @@ public class AppBase {
     // textDescent()
 
     public double textDescent() {
+        return 0;
+    }
+
+    ////////////
+    // Pixels //
+    ////////////
+
+    public int get(double x, double y) {
+        WritableImage snap = gc.getCanvas().snapshot(null, null);
+        snap.getPixelReader().getColor((int)x, (int)y);
         return 0;
     }
 

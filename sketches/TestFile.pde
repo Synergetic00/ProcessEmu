@@ -1,6 +1,10 @@
 //Firstname Surname
 //Description of application
 
+import java.util.ArrayList;
+import java.util.Map;
+import java.util.HashMap;
+
 int rectX, rectY, sizeW, sizeH, speedX, speedY;
 boolean isHoveringBox;
 

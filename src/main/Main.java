@@ -46,7 +46,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "RaspberryPiFX";
-        Main.version = "v4.2.7";
+        Main.version = "v4.2.8";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 
