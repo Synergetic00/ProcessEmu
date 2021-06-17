@@ -383,6 +383,10 @@ public class AppBase {
         if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
     }
 
+    public void square(double x, double y, double extent) {
+        rect(x, y, extent, extent);
+    }
+
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
         double[] xPoints = {x1, x2, x3};
         for (int i = 0; i < 3; i++) xPoints[i] += Constants.offsetW();
@@ -406,6 +410,14 @@ public class AppBase {
 
     public void rectMode(int mode) {
         rectMode = mode;
+    }
+
+    public void strokeCap(int type) {
+
+    }
+
+    public void strokeJoin(int type) {
+        
     }
 
     public void strokeWeight(double weight) {
@@ -1178,6 +1190,11 @@ public class AppBase {
     }
 
     private void updateMouse(javafx.scene.input.MouseEvent event) {
+        updateMouseButton(event);
+        updateMousePos(event);
+    }
+
+    private void updateMouseButton(javafx.scene.input.MouseEvent event) {
         switch(event.getButton()) {
             case MIDDLE: {
                 mouseButton = CENTER;
@@ -1199,7 +1216,9 @@ public class AppBase {
                 break;
             }
         }
+    }
 
+    private void updateMousePos(javafx.scene.input.MouseEvent event) {
         if (inside(event.getSceneX(), event.getSceneY(), Constants.offsetW(), Constants.offsetH(), width, height)) {
             pmouseX = mouseX;
             pmouseY = mouseY;
@@ -1251,6 +1270,7 @@ public class AppBase {
     }
 
     public void handleMouseDragged(javafx.scene.input.MouseEvent event) {
+        updateMousePos(event);
         mouseDragged();
     }
 

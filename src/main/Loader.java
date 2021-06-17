@@ -223,10 +223,15 @@ public class Loader {
         program = program.replace("FLOAT", "DOUBLE");
         program = program.replace("color ", "int ");
         program = program.replace(" boolean(", "parseBoolean(");
+        program = program.replace("(boolean(", "(parseBoolean(");
         program = program.replace(" byte(", "parseByte(");
+        program = program.replace("(byte(", "(parseByte(");
         program = program.replace(" char(", "parseChar(");
+        program = program.replace("(char(", "(parseChar(");
         program = program.replace(" double(", "parseDouble(");
+        program = program.replace("(double(", "(parseDouble(");
         program = program.replace(" int(", "parseInt(");
+        program = program.replace("(int(", "(parseInt(");
 
         return program;
     }

@@ -168,6 +168,12 @@ public class Constants {
 	public static final int CONTROL = 205;
 	public static final int SHIFT = 206;
 
+    public static final int SQUARE   = 1 << 0;  // called 'butt' in the svg spec
+    public static final int ROUND    = 1 << 1;
+    public static final int PROJECT  = 1 << 2;  // called 'square' in the svg spec
+    public static final int MITER    = 1 << 3;
+    public static final int BEVEL    = 1 << 5;
+
     public static final String WHITESPACE = " \t\n\r\f\u00A0";
 
 }
