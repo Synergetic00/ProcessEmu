@@ -46,7 +46,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "RaspberryPiFX";
-        Main.version = "v4.3.0";
+        Main.version = "v4.3.1";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 
@@ -70,8 +70,6 @@ public class Main extends Application {
         animation.setCycleCount(Animation.INDEFINITE);
         animation.setRate(-60);
         animation.play();
-
-        //new AnimationTimer() { public void handle(long now) { updateApplication(); }}.start();
 
         Main.stage.setOnCloseRequest(value -> closeApplication());
         Main.stage.setTitle(Main.title);

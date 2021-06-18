@@ -75,43 +75,67 @@ public class AppBase {
         ellipseMode = CENTER;
     }
 
-    // Structure
+    ///////////////
+    // Structure //
+    ///////////////
+
+    // draw()
 
     public void draw() {}
+
+    // exit()
 
     public void exit() {
         Loader.launchHomeScreen();
     }
 
+    // loop()
+
     public void loop() {
         looping = true;
     }
+
+    // noLoop()
 
     public void noLoop() {
         looping = false;
     }
 
+    // pop()
+
     public void pop() {
-        gc.restore();
+
     }
+
+    // popStyle()
 
     public void popStyle() {
 
     }
 
+    // push()
+
     public void push() {
-        gc.save();
+
     }
+
+    // pushStyle()
 
     public void pushStyle() {
 
     }
 
+    // redraw()
+
     public void redraw() {
         render();
     }
 
+    // setup()
+
     public void setup() {}
+
+    // thread()
 
     public void thread(final String name) {
         Thread later = new Thread() {
@@ -122,6 +146,169 @@ public class AppBase {
         };
         later.start();
     }
+
+    /////////////////
+    // Environment //
+    /////////////////
+
+    // cursor()
+
+    public void cursor() {
+        surface.showCursor();
+    }
+
+    public void cursor(int kind) {
+        surface.setCursor(kind);
+    }
+
+    public void cursor(PImage img) {
+        cursor(img, img.width / 2, img.height / 2);
+    }
+
+    public void cursor(PImage img, int x, int y) {
+        surface.setCursor(img, x, y);
+    }
+
+    // delay()
+
+    public void delay(int napTime) {
+        try {
+            Thread.sleep(napTime);
+        } catch (InterruptedException ie) {}
+    }
+
+    // displayDensity()
+
+    public int displayDensity() {
+        return 1;
+    }
+
+    public int displayDensity(int display) {
+        return 1;
+    }
+
+    // focused
+
+    public boolean focused;
+
+    // frameCount
+
+    public int frameCount;
+
+    // frameRate()
+
+    public void frameRate(double fps) {
+        if (fps > 0) {
+            frameRate = fps;
+			Main.animation.setRate(-frameRate);
+		}
+    }
+
+    // frameRate
+
+    public double frameRate;
+
+    // fullScreen()
+
+    public void fullScreen() {
+        size(Constants.screenW(), Constants.screenH());
+    }
+
+    // height
+
+    public int height;
+
+    // noCursor()
+
+    public void noCursor() {
+        surface.hideCursor();
+    }
+
+    // noSmooth()
+
+    public void noSmooth() {
+
+    }
+
+    // pixelDensity()
+
+    public void pixelDensity(int density) {
+
+    }
+
+    // pixelHeight
+
+    public int pixelHeight;
+
+    // pixelWidth
+
+    public int pixelWidth;
+
+    // settings()
+
+    public void settings() {}
+
+    // size()
+
+    public void size(int width, int height) {
+        this.width = width;
+        this.height = height;
+
+        Constants.offsetW((Constants.screenW() - width) / 2);
+        Constants.offsetH((Constants.screenH() - height) / 2);
+
+        background(204);
+    }
+
+    // smooth()
+
+    public void smooth(int level) {
+
+    }
+
+    // width
+
+    public int width;
+
+    ///////////
+    // Shape //
+    ///////////
+
+    ///////////
+    // Input //
+    ///////////
+
+    ////////////
+    // Output //
+    ////////////
+
+    ///////////////
+    // Transform //
+    ///////////////
+
+    ////////////////////
+    // Lights, Camera //
+    ////////////////////
+
+    ///////////
+    // Color //
+    ///////////
+
+    ///////////
+    // Image //
+    ///////////
+
+    ///////////////
+    // Rendering //
+    ///////////////
+
+    ////////////////
+    // Typography //
+    ////////////////
+
+    //////////////////////
+    // Internal Methods //
+    //////////////////////
 
     private void method(String name) {
         try {
@@ -140,92 +327,100 @@ public class AppBase {
         }
     }
 
-    /////////////////
-    // Environment //
-    /////////////////
 
-    public void cursor() {
-        surface.showCursor();
-    }
 
-    public void cursor(int kind) {
-        surface.setCursor(kind);
-    }
 
-    public void cursor(PImage img) {
-        cursor(img, img.width / 2, img.height / 2);
-    }
 
-    public void cursor(PImage img, int x, int y) {
-        surface.setCursor(img, x, y);
-    }
 
-    public void delay(int napTime) {
-        try {
-            Thread.sleep(napTime);
-        } catch (InterruptedException ie) {}
-    }
 
-    public int displayDensity() {
-        return 1;
-    }
 
-    public int displayDensity(int display) {
-        return 1;
-    }
 
-    public boolean focused;
 
-    public int frameCount;
 
-    public void frameRate(double fps) {
-        if (fps > 0) {
-            frameRate = fps;
-			Main.animation.setRate(-frameRate);
-		}
-    }
 
-    public double frameRate;
 
-    public void fullScreen() {
-        size(Constants.screenW(), Constants.screenH());
-    }
 
-    public int height;
 
-    public void noCursor() {
 
-    }
 
-    public void noSmooth() {
 
-    }
 
-    public void pixelDensity(int density) {
 
-    }
 
-    public int pixelHeight;
 
-    public int pixelWidth;
 
-    public void size(int width, int height) {
-        this.width = width;
-        this.height = height;
 
-        Constants.offsetW((Constants.screenW() - width) / 2);
-        Constants.offsetH((Constants.screenH() - height) / 2);
 
-        background(204);
-    }
 
-    public void settings() {}
 
-    public void smooth(int level) {
 
-    }
 
-    public int width;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     ///////////
     // Shape //

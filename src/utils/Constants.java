@@ -162,8 +162,8 @@ public class Constants {
 
 	public static final int UP = 200;
 	public static final int DOWN = 201;
-    public static final int LEFT = 202;
-    public static final int RIGHT = 203;
+    public static final int LEFT = 37;
+    public static final int RIGHT = 39;
 	public static final int ALT = 204;
 	public static final int CONTROL = 205;
 	public static final int SHIFT = 206;
