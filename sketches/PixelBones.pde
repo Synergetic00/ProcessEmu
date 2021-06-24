@@ -113,7 +113,6 @@ void PlotPixel() {
                     if (pixelPos.x < artSize.x && pixelPos.y < artSize.y) {
                         if (!allPixels.containsKey(pixelPos)) {
                             //If pixel doesnt exist at location, add one
-                            println("Added"+pixelPos.x+" "+pixelPos.y);
                             allPixels.put(pixelPos, currDrawColour);
                         } else {
                             //Pixel does exist at location

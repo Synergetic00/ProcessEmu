@@ -18,6 +18,7 @@ import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Shear;
 import ptypes.PFont;
+import ptypes.PGraphics;
 import ptypes.PImage;
 import ptypes.PShape;
 import ptypes.PSurface;
@@ -26,7 +27,6 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import utils.Colours;
-import utils.Constants;
 import utils.Maths;
 
 import static utils.Maths.*;
@@ -211,7 +211,7 @@ public class AppBase {
     // fullScreen()
 
     public void fullScreen() {
-        size(Constants.screenW(), Constants.screenH());
+        size(AppState.screenW(), AppState.screenH());
     }
 
     // height
@@ -254,8 +254,8 @@ public class AppBase {
         this.width = width;
         this.height = height;
 
-        Constants.offsetW((Constants.screenW() - width) / 2);
-        Constants.offsetH((Constants.screenH() - height) / 2);
+        AppState.offsetW((AppState.screenW() - width) / 2);
+        AppState.offsetH((AppState.screenH() - height) / 2);
 
         background(204);
     }
@@ -301,6 +301,20 @@ public class AppBase {
     ///////////////
     // Rendering //
     ///////////////
+
+    // blendMode()
+
+    // clip()
+
+    // createGraphics()
+
+    public PGraphics createGraphics(int w, int h) {
+        return new PGraphics(w, h);
+    }
+
+    // hint()
+
+    // noClip()
 
     ////////////////
     // Typography //
@@ -451,8 +465,8 @@ public class AppBase {
         double degStop = -degrees(stop);
         degStop -= degStart;
 
-        double nx = Constants.offsetW() + x - width/2;
-        double ny = Constants.offsetH() + y - height/2;
+        double nx = AppState.offsetW() + x - width/2;
+        double ny = AppState.offsetH() + y - height/2;
 
         if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
         if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
@@ -479,8 +493,8 @@ public class AppBase {
         double degStop = -degrees(stop);
         degStop -= degStart;
 
-        double nx = Constants.offsetW() + x - width/2;
-        double ny = Constants.offsetH() + y - height/2;
+        double nx = AppState.offsetW() + x - width/2;
+        double ny = AppState.offsetH() + y - height/2;
 
         if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
         if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
@@ -517,18 +531,18 @@ public class AppBase {
             }
         }
 
-        nx += Constants.offsetW();
-        ny += Constants.offsetH();
+        nx += AppState.offsetW();
+        ny += AppState.offsetH();
 
         if (hasFill) gc.fillOval(nx, ny, nw, nh);
         if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
     }
 
     public void line(double startX, double startY, double endX, double endY) {
-        double sx = Constants.offsetW() + startX;
-        double sy = Constants.offsetH() + startY;
-        double ex = Constants.offsetW() + endX;
-        double ey = Constants.offsetH() + endY;
+        double sx = AppState.offsetW() + startX;
+        double sy = AppState.offsetH() + startY;
+        double ex = AppState.offsetW() + endX;
+        double ey = AppState.offsetH() + endY;
 
         gc.strokeLine(sx, sy, ex, ey);
     }
@@ -539,9 +553,9 @@ public class AppBase {
 
     public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
         double[] xPoints = {x1, x2, x3, x4};
-        for (int i = 0; i < 4; i++) xPoints[i] += Constants.offsetW();
+        for (int i = 0; i < 4; i++) xPoints[i] += AppState.offsetW();
         double[] yPoints = {y1, y2, y3, y4};
-        for (int i = 0; i < 4; i++) yPoints[i] += Constants.offsetH();
+        for (int i = 0; i < 4; i++) yPoints[i] += AppState.offsetH();
         if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
@@ -572,8 +586,8 @@ public class AppBase {
             }
         }
 
-        nx += Constants.offsetW();
-        ny += Constants.offsetH();
+        nx += AppState.offsetW();
+        ny += AppState.offsetH();
 
         if (hasFill) gc.fillRect(nx, ny, nw, nh);
         if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
@@ -585,9 +599,9 @@ public class AppBase {
 
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
         double[] xPoints = {x1, x2, x3};
-        for (int i = 0; i < 3; i++) xPoints[i] += Constants.offsetW();
+        for (int i = 0; i < 3; i++) xPoints[i] += AppState.offsetW();
         double[] yPoints = {y1, y2, y3};
-        for (int i = 0; i < 3; i++) yPoints[i] += Constants.offsetH();
+        for (int i = 0; i < 3; i++) yPoints[i] += AppState.offsetH();
         if (hasFill) gc.fillPolygon(xPoints, yPoints, 3);
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }
@@ -954,8 +968,8 @@ public class AppBase {
 	public void rotate(double radians) {
         currentRotationY += radians;
 
-        double sideA = Constants.offsetW();
-        double sideB = Constants.offsetH();
+        double sideA = AppState.offsetW();
+        double sideB = AppState.offsetH();
         double sideC = sqrt(sq(sideA)+sq(sideB));
         double anglB = degrees(acos((sq(sideA)+sq(sideC)-sq(sideB))/(2*sideA*sideC)));
         double finalAmt = degrees(radians) + anglB;
@@ -1053,7 +1067,7 @@ public class AppBase {
         resetMatrix();
         gc.save();
         gc.setFill(Colours.decodeColour(colorMode, encodedValue));
-        gc.fillRect(Constants.offsetW(), Constants.offsetH(), width, height);
+        gc.fillRect(AppState.offsetW(), AppState.offsetH(), width, height);
         gc.restore();
         popMatrix();
     }
@@ -1369,7 +1383,7 @@ public class AppBase {
     }
 
     private void resetSurface() {
-        //surface.setLocation((Constants.displayW() - Constants.windowW()) / 2, (Constants.displayH() - Constants.windowH()) / 2);
+        //surface.setLocation((AppState.displayW() - AppState.windowW()) / 2, (AppState.displayH() - AppState.windowH()) / 2);
         //surface.setTitle(Main.title);
     }
 
@@ -1387,10 +1401,10 @@ public class AppBase {
         resetMatrix();
         gc.save();
         gc.setFill(Color.gray(0.08));
-        gc.fillRect(0, 0, Constants.screenW(), Constants.offsetH());                            // Top
-        gc.fillRect(0, Constants.offsetH() + height, Constants.screenW(), Constants.offsetH()); // Bottom
-        gc.fillRect(0, 0, Constants.offsetW(), Constants.screenH());                            // Left
-        gc.fillRect(Constants.offsetW() + width, 0, Constants.offsetW(), Constants.screenH());  // Right
+        gc.fillRect(0, 0, AppState.screenW(), AppState.offsetH());                            // Top
+        gc.fillRect(0, AppState.offsetH() + height, AppState.screenW(), AppState.offsetH()); // Bottom
+        gc.fillRect(0, 0, AppState.offsetW(), AppState.screenH());                            // Left
+        gc.fillRect(AppState.offsetW() + width, 0, AppState.offsetW(), AppState.screenH());  // Right
         gc.restore();
         popMatrix();
     }
@@ -1425,12 +1439,12 @@ public class AppBase {
     }
 
     private void updateMousePos(javafx.scene.input.MouseEvent event) {
-        if (inside(event.getSceneX(), event.getSceneY(), Constants.offsetW(), Constants.offsetH(), width, height)) {
+        if (inside(event.getSceneX(), event.getSceneY(), AppState.offsetW(), AppState.offsetH(), width, height)) {
             pmouseX = mouseX;
             pmouseY = mouseY;
 
-            mouseX = Maths.clamp((int)(event.getSceneX()-Constants.offsetW()), 0, width);
-            mouseY = Maths.clamp((int)(event.getSceneY()-Constants.offsetH()), 0, height);
+            mouseX = Maths.clamp((int)(event.getSceneX()-AppState.offsetW()), 0, width);
+            mouseY = Maths.clamp((int)(event.getSceneY()-AppState.offsetH()), 0, height);
         }
     }
 
@@ -1459,7 +1473,7 @@ public class AppBase {
         updateTime();
 
         //if (Main.scaled) {
-        //    double scaleAmount = min(Constants.screenW() / width, Constants.screenH() / height);
+        //    double scaleAmount = min(AppState.screenW() / width, AppState.screenH() / height);
         //    scale(scaleAmount);
         //}
 
@@ -1477,6 +1491,9 @@ public class AppBase {
 
     public void handleMouseDragged(javafx.scene.input.MouseEvent event) {
         updateMousePos(event);
+        if (!mousePressed) {
+            updateMouseButton(event);
+        }
         mouseDragged();
     }
 

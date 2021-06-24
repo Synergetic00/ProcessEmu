@@ -15,7 +15,6 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-import utils.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,14 +34,14 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        Constants.displayW((int) Screen.getPrimary().getBounds().getWidth());
-        Constants.displayH((int) Screen.getPrimary().getBounds().getHeight());
-        Constants.screenW(1280);
-        Constants.screenH(720);
+        AppState.displayW((int) Screen.getPrimary().getBounds().getWidth());
+        AppState.displayH((int) Screen.getPrimary().getBounds().getHeight());
+        AppState.screenW(1280);
+        AppState.screenH(720);
 
         Group root = new Group();
         Scene scene = new Scene(root, Color.BLACK);
-        canvas = new Canvas(Constants.screenW(), Constants.screenH());
+        canvas = new Canvas(AppState.screenW(), AppState.screenH());
         root.getChildren().add(canvas);
 
         Main.title = "RaspberryPiFX";
@@ -78,8 +77,8 @@ public class Main extends Application {
         Main.stage.setResizable(false);
         Main.stage.show();
 
-        Constants.windowW((int) Main.stage.getWidth());
-        Constants.windowH((int) Main.stage.getHeight());
+        AppState.windowW((int) Main.stage.getWidth());
+        AppState.windowH((int) Main.stage.getHeight());
 
         /*try { // Logo for MacOS Window
             URL iconURL = new File("RPFXLogo.png").toURI().toURL();
