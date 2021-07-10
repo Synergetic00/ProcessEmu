@@ -1,67 +1,114 @@
 package main;
 
-import misc.*;
-
-import static misc.DynLoader.*;
-import static utils.Constants.*;
-
-import java.io.File;
-import java.util.ArrayList;
-
-import javafx.animation.AnimationTimer;
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Group;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 import javafx.scene.paint.Color;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.util.Duration;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
 
 public class Main extends Application {
 
+    public static ArrayList<AppEntry> apps;
     public static GraphicsContext gc;
-    public static ArrayList<AppTemplate> apps;
+    public static Canvas canvas;
+    public static Animation animation;
     public static Stage stage;
-    public static int index = 1;
-
-    public static void main(String[] args) { launch(args); }
+    public static int appIndex;
+    public static String title;
+    public static String version;
+    public static boolean scaled;
 
     @Override
     public void start(Stage stage) throws Exception {
-        Main.stage = stage;
+        AppState.displayW((int) Screen.getPrimary().getBounds().getWidth());
+        AppState.displayH((int) Screen.getPrimary().getBounds().getHeight());
+        AppState.screenW(1280);
+        AppState.screenH(720);
+
         Group root = new Group();
         Scene scene = new Scene(root, Color.BLACK);
-        Canvas canvas = new Canvas(WIDTH, HEIGHT);
+        canvas = new Canvas(AppState.screenW(), AppState.screenH());
         root.getChildren().add(canvas);
-        gc = canvas.getGraphicsContext2D();
-        apps = new ArrayList<AppTemplate>();
-        loadFolder(new File("src/programs"));
-        apps.get(index).launch(gc);
-        //runTestCode();
 
-        scene.setOnKeyPressed(event -> { handleKeyPressed(event); });
-        scene.setOnKeyReleased(event -> { handleKeyReleased(event); });
-        scene.setOnKeyTyped(event -> { handleKeyTyped(event); });
-        scene.setOnMouseClicked(event -> { handleMouseClicked(event); });
-        scene.setOnMouseDragged(event -> { handleMouseDragged(event); });
-        scene.setOnMouseMoved(event -> { handleMouseMoved(event); });
-        scene.setOnMousePressed(event -> { handleMousePressed(event); });
-        scene.setOnMouseReleased(event -> { handleMouseReleased(event); });
-        scene.setOnScroll(event -> { handleMouseWheel(event); });
+        Main.title = "RaspberryPiFX";
+        Main.version = "v4.3.1";
+        Main.stage = stage;
+        Main.gc = canvas.getGraphicsContext2D();
 
-        new AnimationTimer() { public void handle(long now) { handleDraw(); }}.start();
+        scene.setOnKeyPressed(event -> { Loader.handleKeyPressed(event); });
+        scene.setOnKeyReleased(event -> { Loader.handleKeyReleased(event); });
+        scene.setOnKeyTyped(event -> { Loader.handleKeyTyped(event); });
+        scene.setOnMouseClicked(event -> { Loader.handleMouseClicked(event); });
+        scene.setOnMouseDragged(event -> { Loader.handleMouseDragged(event); });
+        scene.setOnMouseMoved(event -> { Loader.handleMouseMoved(event); });
+        scene.setOnMousePressed(event -> { Loader.handleMousePressed(event); });
+        scene.setOnMouseReleased(event -> { Loader.handleMouseReleased(event); });
+        scene.setOnScroll(event -> { Loader.handleMouseWheel(event); });
 
-        stage.setOnCloseRequest(value -> { System.exit(0); });
-        stage.setTitle("RaspberryPiFX");
-        Image icon = new Image("file:RPFXLogo.png");
-        stage.getIcons().add(icon);
-        stage.setScene(scene);
-        stage.setResizable(false);
-        stage.show();
+        KeyFrame keyFrame = new KeyFrame(Duration.millis(1000), new EventHandler<ActionEvent>() {
+            public void handle(ActionEvent event) {
+                updateApplication();
+            }
+        });
+
+        animation = new Timeline(keyFrame);
+        animation.setCycleCount(Animation.INDEFINITE);
+        animation.setRate(-60);
+        animation.play();
+
+        Main.stage.setOnCloseRequest(value -> closeApplication());
+        Main.stage.setTitle(Main.title);
+        Main.stage.getIcons().add(new Image("file:RPFXLogo.png"));
+        Main.stage.setScene(scene);
+        Main.stage.setResizable(false);
+        Main.stage.show();
+
+        AppState.windowW((int) Main.stage.getWidth());
+        AppState.windowH((int) Main.stage.getHeight());
+
+        /*try { // Logo for MacOS Window
+            URL iconURL = new File("RPFXLogo.png").toURI().toURL();
+            java.awt.Image image = new ImageIcon(iconURL).getImage();
+            com.apple.eawt.Application.getApplication().setDockIconImage(image);
+        } catch (Exception e) {}*/
+
+        Main.apps = new ArrayList<AppEntry>();
+        Main.scaled = false;
+
+        try {
+            Loader.searchFolder(new File("sketches"));
+            System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Loader.launchHomeScreen();
     }
 
-    public void runTestCode() {
-
+    protected void updateApplication() {
+        Loader.handleDraw();
     }
+
+    private void closeApplication() {
+        System.exit(0);
+    }
+
+    public static void main(String[] args) {
+        launch(args);
+    }
+
 }
