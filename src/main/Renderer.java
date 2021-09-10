@@ -66,5 +66,17 @@ public class Renderer {
 
     public void scale(double scaleX, double scaleY, PGraphics pg) {
     }
+
+    public void fill(double rh, double gs, double bv, double ao) {
+
+    }
+
+    public void stroke(double rh, double gs, double bv, double ao) {
+
+    }
+
+    public void text(String str, double x, double y) {
+        gc.fillText(str, x, y);
+    }
     
 }

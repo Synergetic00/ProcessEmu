@@ -9,9 +9,10 @@ import utils.Actions;
 
 public class PGraphics {
 
+    private LinkedList<Action> actions;
+
     public int width;
     public int height;
-    private LinkedList<Action> actions;
 
     public boolean hasFill;
     public boolean hasStroke;
@@ -23,6 +24,11 @@ public class PGraphics {
     public final int MATRIX_STACK_DEPTH = 32;
     public int transformCount;
     public Affine[] transformStack = new Affine[MATRIX_STACK_DEPTH];
+
+    public double maxRH;
+    public double maxGS;
+    public double maxBB;
+    public double maxAO;
     
     public PGraphics(int w, int h) {
         width = w;
@@ -34,6 +40,34 @@ public class PGraphics {
     }
     
     public void endDraw() {
+
+    }
+
+    public void background(double gray) {
+
+    }
+
+    public void fill(double gray) {
+        actions.add(new Action(this, Actions.FILL, gray, gray, gray, maxAO));
+    }
+
+    public void fill(double gray, double alpha) {
+        actions.add(new Action(this, Actions.FILL, gray, gray, gray, alpha));
+    }
+
+    public void fill(double rh, double gs, double bv) {
+        actions.add(new Action(this, Actions.FILL, rh, gs, bv, maxAO));
+    }
+
+    public void fill(double rh, double gs, double bv, double ao) {
+        actions.add(new Action(this, Actions.FILL, rh, gs, bv, ao));
+    }
+
+    public void text(String str, double x, double y) {
+        actions.add(new Action(str, x, y));
+    }
+
+    public void textSize(double size) {
 
     }
 
