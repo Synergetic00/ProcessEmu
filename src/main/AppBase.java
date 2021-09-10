@@ -274,6 +274,181 @@ public class AppBase {
     // Shape //
     ///////////
 
+    // createShape()
+
+    public PShape createShape() {
+        return null;
+    }
+
+    public PShape createShape(int type) {
+        return null;
+    }
+
+    public PShape createShape(int kind, double... p) {
+        return null;
+    }
+
+    // loadShape()
+
+    public PShape loadShape(String filename) {
+        return null;
+    }
+
+    // arc()
+
+    public void arc(double x, double y, double width, double height, double start, double stop) {
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
+
+        double nx = AppState.offsetW() + x - width/2;
+        double ny = AppState.offsetH() + y - height/2;
+
+        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
+        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
+    }
+
+    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
+        clamp(mode, OPEN, PIE);
+        ArcType arcMode = ArcType.OPEN;
+        switch (mode) {
+            case OPEN: { arcMode = ArcType.OPEN; break; }
+            case CHORD: { arcMode = ArcType.CHORD; break; }
+            case PIE: { arcMode = ArcType.ROUND; break; }
+        }
+        double degStart = -degrees(start);
+        double degStop = -degrees(stop);
+        degStop -= degStart;
+
+        double nx = AppState.offsetW() + x - width/2;
+        double ny = AppState.offsetH() + y - height/2;
+
+        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
+        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
+    }
+
+    // circle()
+
+    public void circle(double x, double y, double s) {
+        ellipse(x, y, s, s);
+    }
+
+    // ellipse()
+
+    public void ellipse(double x, double y, double w, double h) {
+
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (ellipseMode) {
+            case CORNER: {
+                nw *= 2;
+                nh *= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+        }
+
+        nx += AppState.offsetW();
+        ny += AppState.offsetH();
+
+        if (hasFill) gc.fillOval(nx, ny, nw, nh);
+        if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
+    }
+
+    // line()
+
+    public void line(double startX, double startY, double endX, double endY) {
+        double sx = AppState.offsetW() + startX;
+        double sy = AppState.offsetH() + startY;
+        double ex = AppState.offsetW() + endX;
+        double ey = AppState.offsetH() + endY;
+
+        gc.strokeLine(sx, sy, ex, ey);
+    }
+
+    // point()
+
+    public void point(double x, double y) {
+        rect(x, y, 1, 1);
+    }
+
+    // quad()
+
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        double[] xPoints = {x1, x2, x3, x4};
+        for (int i = 0; i < 4; i++) xPoints[i] += AppState.offsetW();
+        double[] yPoints = {y1, y2, y3, y4};
+        for (int i = 0; i < 4; i++) yPoints[i] += AppState.offsetH();
+        if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
+        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
+    }
+
+    // rect()
+
+    public void rect(double x, double y, double w, double h) {
+
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        switch (rectMode) {
+            case CORNERS: {
+                nw /= 2;
+                nh /= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+            }
+        }
+
+        nx += AppState.offsetW();
+        ny += AppState.offsetH();
+
+        if (hasFill) gc.fillRect(nx, ny, nw, nh);
+        if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
+    }
+
+    // square()
+
+    public void square(double x, double y, double extent) {
+        rect(x, y, extent, extent);
+    }
+
+    // triangle()
+
+    public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+        double[] xPoints = {x1, x2, x3};
+        for (int i = 0; i < 3; i++) xPoints[i] += AppState.offsetW();
+        double[] yPoints = {y1, y2, y3};
+        for (int i = 0; i < 3; i++) yPoints[i] += AppState.offsetH();
+        if (hasFill) gc.fillPolygon(xPoints, yPoints, 3);
+        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
+    }
+
     ///////////
     // Input //
     ///////////
@@ -297,6 +472,24 @@ public class AppBase {
     ///////////
     // Image //
     ///////////
+
+    public void image(PGraphics pg, double x, double y) {
+        gc.save();
+        gc.beginPath();
+        gc.rect(AppState.offsetW(), AppState.offsetH(), pg.width, pg.height);
+        gc.clip();
+        pg.render(x, y);
+        gc.restore();
+    }
+
+    public void image(PGraphics pg, double x, double y, double w, double h) {
+        gc.save();
+        gc.beginPath();
+        gc.rect(AppState.offsetW() + x, AppState.offsetH() + y, w, h);
+        gc.clip();
+        pg.render(x, y, w, h);
+        gc.restore();
+    }
 
     ///////////////
     // Rendering //
@@ -440,171 +633,9 @@ public class AppBase {
     // Shape //
     ///////////
 
-    public PShape createShape() {
-        return null;
-    }
-
-    public PShape createShape(int type) {
-        return null;
-    }
-
-    public PShape createShape(int kind, double... p) {
-        return null;
-    }
-
-    public PShape loadShape(String filename) {
-        return null;
-    }
-
     ////////////////////////////
     // Shape // 2D Primatives //
     ////////////////////////////
-
-    public void arc(double x, double y, double width, double height, double start, double stop) {
-        double degStart = -degrees(start);
-        double degStop = -degrees(stop);
-        degStop -= degStart;
-
-        double nx = AppState.offsetW() + x - width/2;
-        double ny = AppState.offsetH() + y - height/2;
-
-        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, ArcType.ROUND);
-        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, ArcType.OPEN);
-    }
-
-    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
-        clamp(mode, OPEN, PIE);
-        ArcType arcMode = ArcType.OPEN;
-        switch (mode) {
-            case OPEN: {
-                arcMode = ArcType.OPEN;
-                break;
-            }
-            case CHORD: {
-                arcMode = ArcType.CHORD;
-                break;
-            }
-            case PIE: {
-                arcMode = ArcType.ROUND;
-                break;
-            }
-        }
-        double degStart = -degrees(start);
-        double degStop = -degrees(stop);
-        degStop -= degStart;
-
-        double nx = AppState.offsetW() + x - width/2;
-        double ny = AppState.offsetH() + y - height/2;
-
-        if (hasFill) gc.fillArc(nx, ny, width, height, degStart, degStop, arcMode);
-        if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
-    }
-
-    public void circle(double x, double y, double s) {
-        ellipse(x, y, s, s);
-    }
-
-    public void ellipse(double x, double y, double w, double h) {
-
-        double nx = x;
-        double ny = y;
-        double nw = w;
-        double nh = h;
-
-        switch (ellipseMode) {
-            case CORNER: {
-                nw *= 2;
-                nh *= 2;
-                break;
-            }
-            case RADIUS: {
-                nw *= 2;
-                nh *= 2;
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-            case CENTER: {
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-        }
-
-        nx += AppState.offsetW();
-        ny += AppState.offsetH();
-
-        if (hasFill) gc.fillOval(nx, ny, nw, nh);
-        if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
-    }
-
-    public void line(double startX, double startY, double endX, double endY) {
-        double sx = AppState.offsetW() + startX;
-        double sy = AppState.offsetH() + startY;
-        double ex = AppState.offsetW() + endX;
-        double ey = AppState.offsetH() + endY;
-
-        gc.strokeLine(sx, sy, ex, ey);
-    }
-
-    public void point(double x, double y) {
-        rect(x, y, 1, 1);
-    }
-
-    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
-        double[] xPoints = {x1, x2, x3, x4};
-        for (int i = 0; i < 4; i++) xPoints[i] += AppState.offsetW();
-        double[] yPoints = {y1, y2, y3, y4};
-        for (int i = 0; i < 4; i++) yPoints[i] += AppState.offsetH();
-        if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
-        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
-    }
-
-    public void rect(double x, double y, double w, double h) {
-
-        double nx = x;
-        double ny = y;
-        double nw = w;
-        double nh = h;
-
-        switch (rectMode) {
-            case CORNERS: {
-                nw /= 2;
-                nh /= 2;
-                break;
-            }
-            case RADIUS: {
-                nw *= 2;
-                nh *= 2;
-                nx -= nw / 2;
-                ny -= nh / 2;
-                break;
-            }
-            case CENTER: {
-                nx -= nw / 2;
-                ny -= nh / 2;
-            }
-        }
-
-        nx += AppState.offsetW();
-        ny += AppState.offsetH();
-
-        if (hasFill) gc.fillRect(nx, ny, nw, nh);
-        if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
-    }
-
-    public void square(double x, double y, double extent) {
-        rect(x, y, extent, extent);
-    }
-
-    public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
-        double[] xPoints = {x1, x2, x3};
-        for (int i = 0; i < 3; i++) xPoints[i] += AppState.offsetW();
-        double[] yPoints = {y1, y2, y3};
-        for (int i = 0; i < 3; i++) yPoints[i] += AppState.offsetH();
-        if (hasFill) gc.fillPolygon(xPoints, yPoints, 3);
-        if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
-    }
 
     /////////////////////
     // Shape // Curves //

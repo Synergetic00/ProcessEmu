@@ -31,6 +31,7 @@ public class Main extends Application {
     public static String title;
     public static String version;
     public static boolean scaled;
+    public static Renderer renderer;
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -88,6 +89,7 @@ public class Main extends Application {
 
         Main.apps = new ArrayList<AppEntry>();
         Main.scaled = false;
+        renderer = new Renderer(gc);
 
         try {
             Loader.searchFolder(new File("sketches"));
