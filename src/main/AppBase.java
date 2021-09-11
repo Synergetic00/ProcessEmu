@@ -1261,7 +1261,7 @@ public class AppBase {
     }
     
     public void text(String str, double x, double y) {
-        gc.fillText(str, x, y);
+        gc.fillText(str, AppState.offsetW() + x, AppState.offsetH() + y);
     }
     
     public void text(char[] chars, int start, int stop, double x, double y) {

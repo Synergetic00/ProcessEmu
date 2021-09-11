@@ -3,7 +3,6 @@ package utils;
 import main.Main;
 import ptypes.PGraphics;
 
-@SuppressWarnings("unused")
 public class Action {
 
     private Actions type;
@@ -26,7 +25,9 @@ public class Action {
 
     public Action(String str, double x, double y) {
         this.type = Actions.TEXT;
-        this.values = new double[] {x, y};
+        this.values = new double[2];
+        this.values[0] = x;
+        this.values[1] = y;
         this.str = str;
     }
 
@@ -51,18 +52,20 @@ public class Action {
             case ELLIPSE:
                 break;
             case FILL:
-                Main.renderer.fill(values[0], values[1], values[2], values[3]);
+                Main.renderer.fill(pg, values[0], values[1], values[2], values[3]);
                 break;
             case LINE:
                 break;
             case POINT:
                 break;
             case STROKE:
+            Main.renderer.stroke(pg, values[0], values[1], values[2], values[3]);
                 break;
             case TEXT:
-                Main.renderer.text(str, values[0], values[1]);
+                Main.renderer.text(str, values[0] + x, values[1] + y);
                 break;
             case TEXTSIZE:
+                Main.renderer.textSize(values[0]);
                 break;
             default:
                 break;

@@ -1,6 +1,7 @@
 package ptypes;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
+//import java.util.LinkedList;
 
 import javafx.scene.transform.Affine;
 import main.Main;
@@ -13,7 +14,7 @@ import static utils.Constants.*;
 
 public class PGraphics {
 
-    private LinkedList<Action> actions;
+    private ArrayList<Action> actions;
 
     public int width;
     public int height;
@@ -36,6 +37,11 @@ public class PGraphics {
 
     public void defaultSettings() {
         colorMode(RGB, 255, 255, 255, 255);
+        fill(255);
+        stroke(0);
+        //strokeWeight(1);
+        rectMode = CORNER;
+        ellipseMode = CENTER;
     }
     
     public PGraphics(int w, int h) {
@@ -44,9 +50,8 @@ public class PGraphics {
     }
 
     public void beginDraw() {
-        actions = new LinkedList<Action>();
+        actions = new ArrayList<Action>();
         defaultSettings();
-        System.out.println("HERE 1");
     }
     
     public void endDraw() {
@@ -74,7 +79,6 @@ public class PGraphics {
     }
 
     public void background(double gray) {
-        System.out.println("HERE 2");
         setBackground(gray, gray, gray, maxAO);
     }
 
@@ -100,19 +104,35 @@ public class PGraphics {
     }
 
     public void fill(double gray) {
-        actions.add(new Action(null, Actions.FILL, gray, gray, gray, maxAO));
+        actions.add(new Action(this, Actions.FILL, gray, gray, gray, maxAO));
     }
 
     public void fill(double gray, double alpha) {
-        actions.add(new Action(null, Actions.FILL, gray, gray, gray, alpha));
+        actions.add(new Action(this, Actions.FILL, gray, gray, gray, alpha));
     }
 
     public void fill(double rh, double gs, double bv) {
-        actions.add(new Action(null, Actions.FILL, rh, gs, bv, maxAO));
+        actions.add(new Action(this, Actions.FILL, rh, gs, bv, maxAO));
     }
 
     public void fill(double rh, double gs, double bv, double ao) {
-        actions.add(new Action(null, Actions.FILL, rh, gs, bv, ao));
+        actions.add(new Action(this, Actions.FILL, rh, gs, bv, ao));
+    }
+
+    public void stroke(double gray) {
+        actions.add(new Action(this, Actions.STROKE, gray, gray, gray, maxAO));
+    }
+
+    public void stroke(double gray, double alpha) {
+        actions.add(new Action(this, Actions.STROKE, gray, gray, gray, alpha));
+    }
+
+    public void stroke(double rh, double gs, double bv) {
+        actions.add(new Action(this, Actions.STROKE, rh, gs, bv, maxAO));
+    }
+
+    public void stroke(double rh, double gs, double bv, double ao) {
+        actions.add(new Action(this, Actions.STROKE, rh, gs, bv, ao));
     }
 
     public void text(String str, double x, double y) {

@@ -82,7 +82,7 @@ void draw() {
     text(timeNow, (rectX/2), height - 150);
     fill(54, 205, 255);
     textSize(70);
-    text("RaspberryPiFX",(rectX/2),100);
+    text(Main.title,(rectX/2),100);
     textSize(40);
     text(Main.version, (rectX/2),200);
 }

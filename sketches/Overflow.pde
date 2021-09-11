@@ -15,4 +15,7 @@ void setup() {
   pg1.endDraw();
   image(pg1,75,100);
   rect(75,100,15,15);
+  fill(255);
+  textSize(60);
+  text("Hello", 125, 240);
 }
