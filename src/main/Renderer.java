@@ -1,7 +1,9 @@
 package main;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.transform.Affine;
 import ptypes.PGraphics;
+import utils.Colours;
 
 import static utils.Constants.*;
 
@@ -54,6 +56,10 @@ public class Renderer {
             pg.transformCount++;
         }
     }
+    
+    public void resetMatrix() {
+        gc.setTransform(new Affine());
+    }
 
     public void popMatrix(PGraphics pg) {
         if (pg.transformCount == 0) {
@@ -77,6 +83,16 @@ public class Renderer {
 
     public void text(String str, double x, double y) {
         gc.fillText(str, x, y);
+    }
+
+    public void background(PGraphics pg, int encodedValue, double x, double y) {
+        pushMatrix(pg);
+        resetMatrix();
+        gc.save();
+        gc.setFill(Colours.decodeColour(pg.colorMode, encodedValue));
+        gc.fillRect(AppState.offsetW() + x, AppState.offsetH() + y, pg.width, pg.height);
+        gc.restore();
+        popMatrix(pg);
     }
     
 }

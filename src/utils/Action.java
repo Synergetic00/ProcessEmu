@@ -10,11 +10,18 @@ public class Action {
     private PGraphics pg;
     private double[] values;
     private String str;
+    private int value;
 
     public Action(PGraphics pg, Actions type, double... params) {
         this.pg = pg;
         this.type = type;
         this.values = params;
+    }
+
+    public Action(PGraphics pg, Actions type, int value) {
+        this.pg = pg;
+        this.type = type;
+        this.value = value;
     }
 
     public Action(String str, double x, double y) {
@@ -26,6 +33,7 @@ public class Action {
     public void act(double x, double y) {
         switch (type) {
             case BACKGROUND:
+                Main.renderer.background(pg, value, x, y);
                 break;
             case QUAD:
                 break;

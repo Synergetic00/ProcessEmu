@@ -2,7 +2,7 @@ PGraphics pg1;
 
 void setup() {
   size(600,600);
-  background(10);
+  background(40);
   fill(255,0,0);
   pg1 = createGraphics(300,300);
   pg1.beginDraw();

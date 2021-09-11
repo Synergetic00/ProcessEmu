@@ -45,8 +45,8 @@ public class Main extends Application {
         canvas = new Canvas(AppState.screenW(), AppState.screenH());
         root.getChildren().add(canvas);
 
-        Main.title = "RaspberryPiFX";
-        Main.version = "v4.3.1";
+        Main.title = "ProcessEmuFX";
+        Main.version = "v4.3.5";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 

@@ -476,8 +476,9 @@ public class AppBase {
     public void image(PGraphics pg, double x, double y) {
         gc.save();
         gc.beginPath();
-        gc.rect(AppState.offsetW(), AppState.offsetH(), pg.width, pg.height);
+        gc.rect(AppState.offsetW() + x, AppState.offsetH() + y, pg.width, pg.height);
         gc.clip();
+        //background(255);
         pg.render(x, y);
         gc.restore();
     }
