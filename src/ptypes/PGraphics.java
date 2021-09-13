@@ -1,7 +1,6 @@
 package ptypes;
 
-import java.util.ArrayList;
-//import java.util.LinkedList;
+import java.util.LinkedList;
 
 import javafx.scene.transform.Affine;
 import main.Main;
@@ -14,7 +13,7 @@ import static utils.Constants.*;
 
 public class PGraphics {
 
-    private ArrayList<Action> actions;
+    private LinkedList<Action> actions;
 
     public int width;
     public int height;
@@ -50,13 +49,11 @@ public class PGraphics {
     }
 
     public void beginDraw() {
-        actions = new ArrayList<Action>();
+        actions = new LinkedList<Action>();
         defaultSettings();
     }
     
-    public void endDraw() {
-
-    }
+    public void endDraw() {}
 
     public void colorMode(int mode) {
         colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, maxAO);
@@ -143,8 +140,46 @@ public class PGraphics {
         actions.add(new Action(null, Actions.TEXTSIZE, size));
     }
 
+    // Shapes
+
+    public void arc(double x, double y, double width, double height, double start, double stop) {
+        actions.add(new Action(this, Actions.ARC, x, y, width, height, start, stop));
+    }
+
+    public void arc(double x, double y, double width, double height, double start, double stop, int mode) {
+        actions.add(new Action(this, Actions.ARC, mode, x, y, width, height, start, stop));
+    }
+
+    public void circle(double x, double y, double s) {
+        actions.add(new Action(this, Actions.CIRCLE, x, y, s));
+    }
+
+    public void ellipse(double x, double y, double w, double h) {
+        actions.add(new Action(this, Actions.ELLIPSE, x, y, w, h));
+    }
+
+    public void line(double startX, double startY, double endX, double endY) {
+        actions.add(new Action(this, Actions.LINE, startX, startY, endX, endY));
+    }
+
+    public void point(double x, double y) {
+        actions.add(new Action(this, Actions.POINT, x, y));
+    }
+
+    public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        quad(x1, y1, x2, y2, x3, y3, x4, y4);
+    }
+
     public void rect(double x, double y, double w, double h) {
         actions.add(new Action(this, Actions.RECT, x, y, w, h));
+    }
+
+    public void square(double x, double y, double extent) {
+        actions.add(new Action(this, Actions.SQUARE, x, y, extent));
+    }
+
+    public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
+        actions.add(new Action(this, Actions.TRIANGLE, x1, y1, x2, y2, x3, y3));
     }
 
     public void render(double x, double y) {

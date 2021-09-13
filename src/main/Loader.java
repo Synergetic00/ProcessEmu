@@ -235,15 +235,17 @@ public class Loader {
         program = program.replace("public void ", "void ");
         program = program.replace("void ", "public void ");
         program = program.replace("float", "double");
-        program = program.replace("Float", "Double");
+        program = program.replace("Float", "Double"); 
         program = program.replace("FLOAT", "DOUBLE");
         program = program.replace("color ", "int ");
 
-        program = program.replaceAll("([ \\+\\*-/=\\(\\)\\[\\]])boolean\\(", "$1parseBoolean(");
-        program = program.replaceAll("([ \\+\\*-/=\\(\\)\\[\\]])byte\\(", "$1parseByte(");
-        program = program.replaceAll("([ \\+\\*-/=\\(\\)\\[\\]])char\\(", "$1parseChar(");
-        program = program.replaceAll("([ \\+\\*-/=\\(\\)\\[\\]])double\\(", "$1parseDouble(");
-        program = program.replaceAll("([ \\+\\*-/=\\(\\)\\[\\]])int\\(", "$1parseInt(");
+
+
+        program = program.replace("\bboolean(", "parseBoolean(");
+        program = program.replace("\bbyte(", "parseByte(");
+        program = program.replace("\bchar(", "parseChar(");
+        program = program.replace("\bdouble(", "parseDouble(");
+        program = program.replace("\bint(", "parseInt(");
 
         return program;
     }

@@ -987,6 +987,12 @@ public class AppBase {
     // Output // Image //
     /////////////////////
 
+    // saveFrame()
+
+    public void saveFrame() {}
+
+    public void saveFrame(String fileName) {}
+
     ///////////////
     // Transform //
     ///////////////
