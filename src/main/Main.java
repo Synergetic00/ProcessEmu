@@ -46,7 +46,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "ProcessEmuFX";
-        Main.version = "v4.4.2";
+        Main.version = "v4.4.4";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 
@@ -111,6 +111,12 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    public static void throw3DError() {
+        try {
+            Loader.launchProgram("src/Error.pde");
+        } catch (Exception e) {}
     }
 
 }

@@ -4,7 +4,7 @@ public class AppState {
 
     // window = the interactable application box
     // screen = what is displayed inside the window
-    // offset = how far to move the processing window to center
+    // offset = how far to move the processing window to centre
     // display = your actual monitor
 
     private static int windowW, windowH;

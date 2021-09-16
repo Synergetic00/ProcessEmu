@@ -82,18 +82,18 @@ void draw() {
     text(timeNow, (rectX/2), height - 150);
     fill(54, 205, 255);
     textSize(70);
-    text("RaspberryPiFX",(rectX/2),100);
+    text(Main.title,(rectX/2),100);
     textSize(40);
     text(Main.version, (rectX/2),200);
 }
 
 void keyPressed() {
 
-    if (keyCode == KeyCode.ENTER) {
+    if (keyCode == ENTER) {
         Loader.launchProgram(Main.appIndex);
     }
 
-    if (keyCode == KeyCode.UP) {
+    if (keyCode == UP) {
         Main.appIndex--;
 
         if (Main.appIndex < 0) {
@@ -101,7 +101,7 @@ void keyPressed() {
         }
     }
 
-    if (keyCode == KeyCode.DOWN) {
+    if (keyCode == DOWN) {
         Main.appIndex++;
 
         if (Main.appIndex >= Main.apps.size()) {

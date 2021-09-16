@@ -182,7 +182,12 @@ public class Loader {
         FileReader fr = new FileReader(file);
         BufferedReader br = new BufferedReader(fr);
 
-        String title = file.getName().substring(0, file.getName().length() - 4);
+        String fileName = file.getName();
+        if (fileName.equals(".DS_Store")) {
+            br.close();
+            return;
+        }
+        String title = fileName.substring(0, fileName.length() - 4);
         String authour;
         String desc;
 
@@ -197,6 +202,7 @@ public class Loader {
         } catch (StringIndexOutOfBoundsException e) {
             desc = "Default description";
         }
+
         Main.apps.add(new AppEntry(title, authour, desc, file.toString()));
 
         br.close();

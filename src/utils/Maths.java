@@ -1,6 +1,7 @@
 package utils;
 
 import java.util.Random;
+import ptypes.PVector;
 
 public class Maths {
 
@@ -332,6 +333,24 @@ public class Maths {
             }
         }
         return false;
+    }
+
+    public static PVector centre(double x1, double y1, double x2, double y2) {
+        double avgx = (x1 + x2) / 2d;
+        double avgy = (y1 + y2) / 2d;
+        return new PVector(avgx, avgy);
+    }
+
+    public static PVector centre(double x1, double y1, double x2, double y2, double x3, double y3) {
+        double avgx = (x1 + x2 + x3) / 3d;
+        double avgy = (y1 + y2 + y3) / 3d;
+        return new PVector(avgx, avgy);
+    }
+
+    public static PVector centre(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        double avgx = (x1 + x2 + x3 + x4) / 4d;
+        double avgy = (y1 + y2 + y3 + y4) / 4d;
+        return new PVector(avgx, avgy);
     }
 
 }

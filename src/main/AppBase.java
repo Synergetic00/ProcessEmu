@@ -22,6 +22,7 @@ import ptypes.PGraphics;
 import ptypes.PImage;
 import ptypes.PShape;
 import ptypes.PSurface;
+import ptypes.PVector;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseButton;
@@ -646,6 +647,33 @@ public class AppBase {
     /////////////////////
     // Shape // Curves //
     /////////////////////
+
+    // bezier()
+
+    public void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        PVector centre = centre(x1, y1, x2, y2, x3, y3, x4, y4);
+        PVector top = centre(x1, y1, x2, y2);
+        PVector btm = centre(x3, y3, x4, y4);
+        gc.beginPath();
+        gc.bezierCurveTo(AppState.offsetW() + x1, AppState.offsetH() + y1, AppState.offsetW() + top.x, AppState.offsetH() + top.y, AppState.offsetW() + centre.x, AppState.offsetH() + centre.y);
+        gc.stroke();
+        gc.beginPath();
+        gc.bezierCurveTo(AppState.offsetW() + x4, AppState.offsetH() + y4, AppState.offsetW() + btm.x, AppState.offsetH() + btm.y, AppState.offsetW() + centre.x, AppState.offsetH() + centre.y);
+        gc.stroke();
+    }
+
+    public void bezier(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4) {
+        Main.throw3DError();
+    }
+
+    // bezierDetail()
+    // bezierPoint()
+    // bezierTangent()
+    // curve()
+    // curveDetail()
+    // curvePoint()
+    // curveTangent()
+    // curveTightness()
 
     /////////////////////////
     // Shape // Attributes //
