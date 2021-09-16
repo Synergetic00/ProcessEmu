@@ -67,23 +67,23 @@ public class Constants {
     public static final int BOX = 41;
 
     // key constants
-	public static final char BACKSPACE = 8;
-	public static final char TAB       = 9;
-	public static final char ENTER     = 10;
-	public static final char RETURN    = 13;
-	public static final char ESC       = 27;
+	public static final char BACKSPACE = 1;
+	public static final char TAB       = 2;
+	public static final char ENTER     = 0;
+	public static final char RETURN    = 0;
+	public static final char ESC       = 10;
 	public static final char DELETE    = 127;
 
 	// i.e. if ((key == CODED) && (keyCode == UP))
 	public static final int CODED     = 0xffff;
 
-	public static final int UP = 200;
-	public static final int DOWN = 201;
-    public static final int LEFT = 37;
-    public static final int RIGHT = 39;
-	public static final int ALT = 204;
-	public static final int CONTROL = 205;
-	public static final int SHIFT = 206;
+	public static final int UP = 17;
+	public static final int DOWN = 19;
+    public static final int LEFT = 16;
+    public static final int RIGHT = 18;
+	public static final int ALT = 7;
+	public static final int CONTROL = 6;
+	public static final int SHIFT = 5;
 
     public static final int SQUARE   = 1 << 0;  // called 'butt' in the svg spec
     public static final int ROUND    = 1 << 1;

@@ -89,11 +89,11 @@ void draw() {
 
 void keyPressed() {
 
-    if (keyCode == KeyCode.ENTER) {
+    if (keyCode == ENTER) {
         Loader.launchProgram(Main.appIndex);
     }
 
-    if (keyCode == KeyCode.UP) {
+    if (keyCode == UP) {
         Main.appIndex--;
 
         if (Main.appIndex < 0) {
@@ -101,7 +101,7 @@ void keyPressed() {
         }
     }
 
-    if (keyCode == KeyCode.DOWN) {
+    if (keyCode == DOWN) {
         Main.appIndex++;
 
         if (Main.appIndex >= Main.apps.size()) {

@@ -251,8 +251,13 @@ public class AppBase {
     // size()
 
     public void size(int width, int height) {
+        double widthMul = min(1d, AppState.screenW() / (double)width);
+        double heightMul = min(1d, AppState.screenH() / (double)height);
+
         this.width = width;
         this.height = height;
+
+        //scale(min(widthMul, heightMul));
 
         AppState.offsetW((AppState.screenW() - width) / 2);
         AppState.offsetH((AppState.screenH() - height) / 2);
@@ -937,7 +942,7 @@ public class AppBase {
 
     public char key;
 
-    public KeyCode keyCode;
+    public int keyCode;
 
     public void keyPressed() {}
 
@@ -1487,15 +1492,21 @@ public class AppBase {
     }
 
     private void updateKeys(KeyEvent event) {
-        keyCode = event.getCode();
-        key = event.getCharacter().charAt(0);
+        keyCode = event.getCode().ordinal();
+        if (event.getCode().isDigitKey() || event.getCode().isLetterKey()) {
+            key = event.getCharacter().charAt(0);
+        } else {
+            if (event.getCode().equals(KeyCode.ENTER)) key = '\n';
+            else if (event.getCode().equals(KeyCode.SPACE)) key = ' ';
+            else if (event.getCode().equals(KeyCode.TAB)) key = '\t';
+        }
     }
 
     /////////////////////////////
     // Handled Default Methods //
     /////////////////////////////
 
-    private ArrayList<KeyCode> pressedKeys = new ArrayList<>(20);
+    private ArrayList<Integer> pressedKeys = new ArrayList<>(20);
     private ArrayList<MouseButton> pressedMouseBtns = new ArrayList<>(3);
 
     public void handleSettings() {
