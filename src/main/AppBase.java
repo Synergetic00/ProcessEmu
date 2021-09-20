@@ -654,12 +654,12 @@ public class AppBase {
         PVector centre = centre(x1, y1, x2, y2, x3, y3, x4, y4);
         PVector top = centre(x1, y1, x2, y2);
         PVector btm = centre(x3, y3, x4, y4);
+        gc.save();
         gc.beginPath();
-        gc.bezierCurveTo(AppState.offsetW() + x1, AppState.offsetH() + y1, AppState.offsetW() + top.x, AppState.offsetH() + top.y, AppState.offsetW() + centre.x, AppState.offsetH() + centre.y);
+        gc.moveTo(AppState.offsetW() + x1, AppState.offsetH() + y1);
+        gc.bezierCurveTo(AppState.offsetW() + x2, AppState.offsetH() + y2, AppState.offsetW() + x3, AppState.offsetH() + y3, AppState.offsetW() + x4, AppState.offsetH() + y4);
         gc.stroke();
-        gc.beginPath();
-        gc.bezierCurveTo(AppState.offsetW() + x4, AppState.offsetH() + y4, AppState.offsetW() + btm.x, AppState.offsetH() + btm.y, AppState.offsetW() + centre.x, AppState.offsetH() + centre.y);
-        gc.stroke();
+        gc.restore();
     }
 
     public void bezier(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4) {

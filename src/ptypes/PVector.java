@@ -317,7 +317,7 @@ public class PVector {
     }
 
     public static void print(PVector v) {
-        System.out.println("["+v.x+", "+v.y+", "+v.z+"]");
+        System.out.println("[ "+v.x+", "+v.y+", "+v.z+"] ");
     }
 
     public static double angleBetween(PVector v1, PVector v2) {
@@ -330,6 +330,10 @@ public class PVector {
         if (amt <= -1) return PI;
         else if (amt >= 1) return 0;
         return (double) Math.acos(amt);
+    }
+
+    public String toString() {
+        return String.format("[ %.1f, %.1f, %.1f ]");
     }
 
 }

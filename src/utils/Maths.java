@@ -57,7 +57,7 @@ public class Maths {
     }
 
     public static double lerp(double start, double stop, double amt) {
-        return (start + amt * (stop - amt));
+        return start + (stop - start) * amt;
     }
 
     public static double log(double n) {
