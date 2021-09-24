@@ -12,7 +12,10 @@ import javafx.geometry.VPos;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.WritableImage;
 import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
@@ -105,25 +108,50 @@ public class AppBase {
     // pop()
 
     public void pop() {
+        if (modeStates.size() > 0) {
+            ModeState ms = modeStates.remove(modeStates.size()-1);
+            rectMode = ms.rectMode;
+            ellipseMode = ms.ellipseMode;
+            colorMode = ms.colorMode;
+        } else {
+            throw new RuntimeException("pop() needs corresponding push() statement");
+        }
 
+        gc.restore();
     }
 
     // popStyle()
 
     public void popStyle() {
+        if (styleStates.size() > 0) {
+            setState(styleStates.remove(styleStates.size()-1));
+        } else {
+            throw new RuntimeException("popStyle() needs corresponding pushStyle() statement");
+        }
 
+        if (styleStates.size() > 0) {
+            ModeState ms = modeStates.remove(modeStates.size()-1);
+            rectMode = ms.rectMode;
+            ellipseMode = ms.ellipseMode;
+            colorMode = ms.colorMode;
+        }
     }
 
     // push()
 
     public void push() {
-
+        modeStates.add(new ModeState(0, rectMode, ellipseMode, colorMode));
+        gc.save();
     }
 
     // pushStyle()
 
-    public void pushStyle() {
+    private ArrayList<StyleState> styleStates = new ArrayList<>();
+    private ArrayList<ModeState> modeStates = new ArrayList<>();
 
+    public void pushStyle() {
+        modeStates.add(new ModeState(0, rectMode, ellipseMode, colorMode));
+        styleStates.add(new StyleState(gc));
     }
 
     // redraw()
@@ -1618,4 +1646,59 @@ public class AppBase {
         keyTyped();
     }
 
+    public void setState(StyleState ss) {
+        gc.setFill(ss.fill);
+        gc.setStroke(ss.stroke);
+        gc.setLineWidth(ss.linewidth);
+        gc.setLineCap(ss.linecap);
+        gc.setLineJoin(ss.linejoin);
+        gc.setMiterLimit(ss.miterlimit);
+        gc.setLineDashes(ss.dashes);
+        gc.setLineDashOffset(ss.dashOffset);
+        gc.setFont(ss.font);
+        gc.setTextAlign(ss.textalign);
+        gc.setTextBaseline(ss.textbaseline);
+    }
+}
+
+class StyleState {
+    Paint fill;
+    Paint stroke;
+    double linewidth;
+    StrokeLineCap linecap;
+    StrokeLineJoin linejoin;
+    double miterlimit;
+    double dashes[];
+    double dashOffset;
+    Font font;
+    TextAlignment textalign;
+    VPos textbaseline;
+
+    public StyleState(GraphicsContext gc) {
+        this.fill = gc.getFill();
+        this.stroke = gc.getStroke();
+        this.linewidth = gc.getLineWidth();
+        this.linecap = gc.getLineCap();
+        this.linejoin = gc.getLineJoin();
+        this.miterlimit = gc.getMiterLimit();
+        this.dashes = gc.getLineDashes();
+        this.dashOffset = gc.getLineDashOffset();
+        this.font = gc.getFont();
+        this.textalign = gc.getTextAlign();
+        this.textbaseline = gc.getTextBaseline();
+    }
+}
+
+class ModeState {
+    int imageMode;
+    int rectMode;
+    int ellipseMode;
+    int colorMode;
+
+    public ModeState(int i, int r, int e, int c) {
+        this.imageMode = i;
+        this.rectMode = r;
+        this.ellipseMode = e;
+        this.colorMode = c;
+    }
 }

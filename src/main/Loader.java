@@ -191,14 +191,25 @@ public class Loader {
         String authour;
         String desc;
 
+
         try {
-            authour = br.readLine().substring(2);
+            String input = br.readLine();
+            if (input.substring(0, 2).equals("//")) {
+                authour = input.substring(2);
+            } else {
+                authour = "Unknown Authour";
+            }
         } catch (StringIndexOutOfBoundsException e) {
             authour = "Unknown Authour";
         }
 
         try {
-            desc = br.readLine().substring(2);
+            String input = br.readLine();
+            if (input.substring(0, 2).equals("//")) {
+                desc = input.substring(2);
+            } else {
+                desc = "Default description";
+            }
         } catch (StringIndexOutOfBoundsException e) {
             desc = "Default description";
         }
