@@ -108,16 +108,8 @@ public class AppBase {
     // pop()
 
     public void pop() {
-        if (modeStates.size() > 0) {
-            ModeState ms = modeStates.remove(modeStates.size()-1);
-            rectMode = ms.rectMode;
-            ellipseMode = ms.ellipseMode;
-            colorMode = ms.colorMode;
-        } else {
-            throw new RuntimeException("pop() needs corresponding push() statement");
-        }
-
-        gc.restore();
+        popMatrix();
+        popStyle();
     }
 
     // popStyle()
@@ -140,8 +132,8 @@ public class AppBase {
     // push()
 
     public void push() {
-        modeStates.add(new ModeState(0, rectMode, ellipseMode, colorMode));
-        gc.save();
+        pushMatrix();
+        pushStyle();
     }
 
     // pushStyle()
@@ -286,7 +278,15 @@ public class AppBase {
         this.width = width;
         this.height = height;
 
-        //scale(min(widthMul, heightMul));
+        double minMul = min(widthMul, heightMul);
+
+        //System.out.println(minMul);
+
+        if (minMul < 1) {
+            gc.translate(0, 320);
+            gc.scale(minMul, minMul);
+        }
+
 
         AppState.offsetW((AppState.screenW() - width) / 2);
         AppState.offsetH((AppState.screenH() - height) / 2);
@@ -1479,6 +1479,9 @@ public class AppBase {
         draw();
         popMatrix();
         coverEdges();
+        if (!mouseOnSketch) {
+            surface.setCursor(ARROW);
+        }
     }
 
     private void resetSurface() {
@@ -1537,13 +1540,18 @@ public class AppBase {
         }
     }
 
+    boolean mouseOnSketch;
+
     private void updateMousePos(javafx.scene.input.MouseEvent event) {
         if (inside(event.getSceneX(), event.getSceneY(), AppState.offsetW(), AppState.offsetH(), width, height)) {
+            mouseOnSketch = true;
             pmouseX = mouseX;
             pmouseY = mouseY;
 
             mouseX = Maths.clamp((int)(event.getSceneX()-AppState.offsetW()), 0, width);
             mouseY = Maths.clamp((int)(event.getSceneY()-AppState.offsetH()), 0, height);
+        } else {
+            mouseOnSketch = false;
         }
     }
 
