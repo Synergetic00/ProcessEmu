@@ -1,4 +1,4 @@
-size(6480, 6480);
+size(1000, 1000);
 
 int num = 10;
 int size = width / num;

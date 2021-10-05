@@ -221,8 +221,8 @@ public class AppBase {
     public void frameRate(double fps) {
         if (fps > 0) {
             frameRate = fps;
-			Main.animation.setRate(-frameRate);
-		}
+            Main.animation.setRate(-frameRate);
+        }
     }
 
     // frameRate
@@ -247,15 +247,11 @@ public class AppBase {
 
     // noSmooth()
 
-    public void noSmooth() {
-
-    }
+    public void noSmooth() {}
 
     // pixelDensity()
 
-    public void pixelDensity(int density) {
-
-    }
+    public void pixelDensity(int density) {}
 
     // pixelHeight
 
@@ -296,9 +292,7 @@ public class AppBase {
 
     // smooth()
 
-    public void smooth(int level) {
-
-    }
+    public void smooth(int level) {}
 
     // width
 
@@ -327,6 +321,10 @@ public class AppBase {
     public PShape loadShape(String filename) {
         return null;
     }
+
+    ////////////////////////////
+    // Shape // 2D Primatives //
+    ////////////////////////////
 
     // arc()
 
@@ -482,6 +480,72 @@ public class AppBase {
         if (hasFill) gc.fillPolygon(xPoints, yPoints, 3);
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }
+    /////////////////////
+    // Shape // Curves //
+    /////////////////////
+
+    // bezier()
+
+    public void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
+        PVector centre = centre(x1, y1, x2, y2, x3, y3, x4, y4);
+        PVector top = centre(x1, y1, x2, y2);
+        PVector btm = centre(x3, y3, x4, y4);
+        gc.save();
+        gc.beginPath();
+        gc.moveTo(AppState.offsetW() + x1, AppState.offsetH() + y1);
+        gc.bezierCurveTo(AppState.offsetW() + x2, AppState.offsetH() + y2, AppState.offsetW() + x3, AppState.offsetH() + y3, AppState.offsetW() + x4, AppState.offsetH() + y4);
+        gc.stroke();
+        gc.restore();
+    }
+
+    public void bezier(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4) {
+        Main.throw3DError();
+    }
+
+    // bezierDetail()
+
+    public void bezierDetail(int detail) {}
+
+    // bezierPoint()
+
+    public double bezierPoint(double a, double b, double c, double d, double t) {
+        double t1 = 1.0 - t;
+        return (a * t1 + 3 * b * t) * t1 * t1 + (3 * c * t1 + d * t) * t * t;
+    }
+
+    // bezierTangent()
+
+    public double bezierTangent(double a, double b, double c, double d, double t) {
+        return (3*t*t * (-a+3*b-3*c+d) + 6*t * (a-2*b+c) + 3 * (-a+b));
+    }
+
+    // curve()
+
+    public void curve(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {}
+
+    public void curve(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4) {
+        Main.throw3DError();
+    }
+
+    // curveDetail()
+
+    public void curveDetail(int detail) {}
+
+    // curvePoint()
+
+    public double curvePoint(double a, double b, double c, double d, double t) {
+        return 0;
+    }
+
+    // curveTangent()
+
+    public double curveTangent(double a, double b, double c, double d, double t) {
+        return 0;
+    }
+    
+    // curveTightness()
+
+    public void curveTightness(float tightness) {}   
 
     ///////////
     // Input //
@@ -498,6 +562,104 @@ public class AppBase {
     ////////////////////
     // Lights, Camera //
     ////////////////////
+
+    //////////////////////////////
+    // Lights, Camera // Lights //
+    //////////////////////////////
+
+    public void ambientLight(double v1, double v2, double v3) {}
+
+    public void ambientLight(double v1, double v2, double v3, double x, double y, double z) {}
+    
+    public void directionalLight(double v1, double v2, double v3, double nx, double ny, double nz) {}
+    
+    public void lightFalloff(double constant, double linear, double quadratic) {}
+    
+    public void lights() {}
+    
+    public void lightSpecular(double v1, double v2, double v3) {}
+    
+    public void noLights() {}
+    
+    public void normal(double v1, double v2, double v3) {}
+    
+    public void pointLight(double v1, double v2, double v3, double x, double y, double z) {}
+    
+    public void spotLight(double v1, double v2, double v3, double x, double y, double z, double nx, double ny, double nz, double angle, double concerntration) {}
+
+    //////////////////////////////
+    // Lights, Camera // Camera //
+    //////////////////////////////
+    
+    public void beginCamera() {}
+    
+    public void camera() {}
+
+    public void camera(double eyeX, double eyeY, double eyeZ, double centerX, double centerY, double centerZ, double upX, double upY, double upZ) {}
+    
+    public void endCamera() {}
+    
+    public void frustum(double left, double right, double bottom, double top, double near, double far) {}
+    
+    public void ortho() {}
+    
+    public void ortho(double left, double right, double bottom, double top) {}
+    
+    public void ortho(double left, double right, double bottom, double top, double near, double far) {}
+    
+    public void perspective() {}
+    
+    public void perspective(double fovy, double aspect, double zNear, double zFar) {}
+    
+    public void printCamera() {}
+    
+    public void printProjection() {}
+
+    ///////////////////////////////////
+    // Lights, Camera // Coordinates //
+    ///////////////////////////////////
+    
+    public double modelX(double x, double y, double z) { return 0; }
+    
+    public double modelY(double x, double y, double z) { return 0; }
+    
+    public double modelZ(double x, double y, double z) { return 0; }
+    
+    public double screenX(double x, double y) { return 0; }
+    
+    public double screenX(double x, double y, double z) { return 0; }
+    
+    public double screenY(double x, double y) { return 0; }
+    
+    public double screenY(double x, double y, double z) { return 0; }
+    
+    public double screenZ(double x, double y) { return 0; }
+    
+    public double screenZ(double x, double y, double z) { return 0; }
+
+    ///////////////////////////////////////////
+    // Lights, Camera // Material Properties //
+    ///////////////////////////////////////////
+    
+    public void ambient(int rgb) {}
+    
+    public void ambient(double gray) {}
+    
+    public void ambient(double v1, double v2, double v3) {}
+    
+    public void emissive(int rgb) {}
+    
+    public void emissive(double gray) {}
+    
+    public void emissive(double v1, double v2, double v3) {}
+    
+    public void shininess(double shine) {}
+    
+    public void specular(int rgb) {}
+    
+    public void specular(double gray) {}
+    
+    public void specular(double v1, double v2, double v3) {}
 
     ///////////
     // Color //
@@ -664,44 +826,7 @@ public class AppBase {
 
 
 
-    ///////////
-    // Shape //
-    ///////////
 
-    ////////////////////////////
-    // Shape // 2D Primatives //
-    ////////////////////////////
-
-    /////////////////////
-    // Shape // Curves //
-    /////////////////////
-
-    // bezier()
-
-    public void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
-        PVector centre = centre(x1, y1, x2, y2, x3, y3, x4, y4);
-        PVector top = centre(x1, y1, x2, y2);
-        PVector btm = centre(x3, y3, x4, y4);
-        gc.save();
-        gc.beginPath();
-        gc.moveTo(AppState.offsetW() + x1, AppState.offsetH() + y1);
-        gc.bezierCurveTo(AppState.offsetW() + x2, AppState.offsetH() + y2, AppState.offsetW() + x3, AppState.offsetH() + y3, AppState.offsetW() + x4, AppState.offsetH() + y4);
-        gc.stroke();
-        gc.restore();
-    }
-
-    public void bezier(double x1, double y1, double z1, double x2, double y2, double z2, double x3, double y3, double z3, double x4, double y4, double z4) {
-        Main.throw3DError();
-    }
-
-    // bezierDetail()
-    // bezierPoint()
-    // bezierTangent()
-    // curve()
-    // curveDetail()
-    // curvePoint()
-    // curveTangent()
-    // curveTightness()
 
     /////////////////////////
     // Shape // Attributes //
@@ -715,9 +840,7 @@ public class AppBase {
         rectMode = mode;
     }
 
-    public void strokeCap(int type) {
-
-    }
+    public void strokeCap(int type) {}
 
     public void strokeJoin(int type) {
         
@@ -1064,7 +1187,7 @@ public class AppBase {
     private double currentTranslateX = 0;
     private double currentTranslateY = 0;
 
-	public void rotate(double radians) {
+    public void rotate(double radians) {
         currentRotationY += radians;
 
         double sideA = AppState.offsetW();
@@ -1079,18 +1202,18 @@ public class AppBase {
         gc.translate(diffX, diffY);
         gc.rotate(degrees(radians));
         //gc.translate(-diffX, -diffY);
-	}
+    }
 
-	public void scale(double amount) {
+    public void scale(double amount) {
         scale(amount, amount);
-	}
+    }
 
-	public void scale(double amountX, double amountY) {
+    public void scale(double amountX, double amountY) {
         currentScaleX *= amountX;
         currentScaleY *= amountX;
 
         gc.scale(amountX, amountY);
-	}
+    }
 
     public void shearX(double amount) {
         Shear shear = Affine.shear(amount, 0);
@@ -1100,12 +1223,12 @@ public class AppBase {
         Shear shear = Affine.shear(0, amount);
     }
 
-	public void translate(double amountX, double amountY) {
+    public void translate(double amountX, double amountY) {
         currentTranslateX += amountX;
         currentTranslateY += amountX;
 
         gc.translate(amountX, amountY);
-	}
+    }
 
     private final int MATRIX_STACK_DEPTH = 32;
     private int transformCount;
@@ -1129,7 +1252,7 @@ public class AppBase {
         }
     }
 
-	public void resetMatrix() {
+    public void resetMatrix() {
         gc.setTransform(new Affine());
     }
 
@@ -1319,9 +1442,7 @@ public class AppBase {
 
     // text()
 
-    public void text(char c, double x, double y) {
-
-    }
+    public void text(char c, double x, double y) {}
     
     public void text(char c, double x, double y, double z) {
     
@@ -1365,13 +1486,9 @@ public class AppBase {
 
     // textFont()
 
-    public void textFont(PFont which) {
+    public void textFont(PFont which) {}
 
-    }
-
-    public void textFont(PFont which, double size) {
-
-    }
+    public void textFont(PFont which, double size) {}
 
     // textAlign()
 
@@ -1422,9 +1539,7 @@ public class AppBase {
 
     // textLeading()
 
-    public void textLeading(double leading) {
-
-    }
+    public void textLeading(double leading) {}
 
     // textMode()
 
