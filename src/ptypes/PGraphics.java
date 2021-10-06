@@ -1,12 +1,15 @@
 package ptypes;
 
 import java.util.LinkedList;
+import java.util.ArrayList;
 
 import javafx.scene.transform.Affine;
 import main.Main;
 import utils.Action;
 import utils.Actions;
 import utils.Colours;
+import utils.ModeState;
+import utils.StyleState;
 
 import static utils.Maths.*;
 import static utils.Constants.*;
@@ -47,6 +50,40 @@ public class PGraphics {
         width = w;
         height = h;
     }
+
+    ///////////////
+    // Structure //
+    ///////////////
+
+    public ArrayList<StyleState> styleStates = new ArrayList<>();
+    public ArrayList<ModeState> modeStates = new ArrayList<>();
+
+    public void pop() {
+        
+    }
+
+    public void popStyle() {
+        
+    }
+
+    public void push() {
+
+    }
+
+    public void pushStyle() {
+        
+    }
+
+
+
+
+
+
+
+
+
+
+
 
     public void beginDraw() {
         actions = new LinkedList<Action>();

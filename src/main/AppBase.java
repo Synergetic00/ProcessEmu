@@ -32,6 +32,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import utils.Colours;
 import utils.Maths;
+import utils.ModeState;
+import utils.StyleState;
 
 import static utils.Maths.*;
 import static utils.Constants.*;
@@ -77,42 +79,34 @@ public class AppBase {
         looping = true;
         rectMode = CORNER;
         ellipseMode = CENTER;
+        surface.reset();
     }
 
     ///////////////
     // Structure //
     ///////////////
 
-    // draw()
+    private ArrayList<StyleState> styleStates = new ArrayList<>();
+    private ArrayList<ModeState> modeStates = new ArrayList<>();
 
     public void draw() {}
-
-    // exit()
 
     public void exit() {
         Loader.launchHomeScreen();
     }
 
-    // loop()
-
     public void loop() {
         looping = true;
     }
-
-    // noLoop()
 
     public void noLoop() {
         looping = false;
     }
 
-    // pop()
-
     public void pop() {
         popMatrix();
         popStyle();
     }
-
-    // popStyle()
 
     public void popStyle() {
         if (styleStates.size() > 0) {
@@ -129,17 +123,10 @@ public class AppBase {
         }
     }
 
-    // push()
-
     public void push() {
         pushMatrix();
         pushStyle();
     }
-
-    // pushStyle()
-
-    private ArrayList<StyleState> styleStates = new ArrayList<>();
-    private ArrayList<ModeState> modeStates = new ArrayList<>();
 
     public void pushStyle() {
         modeStates.add(new ModeState(0, rectMode, ellipseMode, colorMode));
@@ -1769,59 +1756,17 @@ public class AppBase {
         keyTyped();
     }
 
-    public void setState(StyleState ss) {
-        gc.setFill(ss.fill);
-        gc.setStroke(ss.stroke);
-        gc.setLineWidth(ss.linewidth);
-        gc.setLineCap(ss.linecap);
-        gc.setLineJoin(ss.linejoin);
-        gc.setMiterLimit(ss.miterlimit);
-        gc.setLineDashes(ss.dashes);
-        gc.setLineDashOffset(ss.dashOffset);
-        gc.setFont(ss.font);
-        gc.setTextAlign(ss.textalign);
-        gc.setTextBaseline(ss.textbaseline);
-    }
-}
-
-class StyleState {
-    Paint fill;
-    Paint stroke;
-    double linewidth;
-    StrokeLineCap linecap;
-    StrokeLineJoin linejoin;
-    double miterlimit;
-    double dashes[];
-    double dashOffset;
-    Font font;
-    TextAlignment textalign;
-    VPos textbaseline;
-
-    public StyleState(GraphicsContext gc) {
-        this.fill = gc.getFill();
-        this.stroke = gc.getStroke();
-        this.linewidth = gc.getLineWidth();
-        this.linecap = gc.getLineCap();
-        this.linejoin = gc.getLineJoin();
-        this.miterlimit = gc.getMiterLimit();
-        this.dashes = gc.getLineDashes();
-        this.dashOffset = gc.getLineDashOffset();
-        this.font = gc.getFont();
-        this.textalign = gc.getTextAlign();
-        this.textbaseline = gc.getTextBaseline();
-    }
-}
-
-class ModeState {
-    int imageMode;
-    int rectMode;
-    int ellipseMode;
-    int colorMode;
-
-    public ModeState(int i, int r, int e, int c) {
-        this.imageMode = i;
-        this.rectMode = r;
-        this.ellipseMode = e;
-        this.colorMode = c;
+    public static void setState(StyleState ss) {
+        Main.gc.setFill(ss.fill);
+        Main.gc.setStroke(ss.stroke);
+        Main.gc.setLineWidth(ss.linewidth);
+        Main.gc.setLineCap(ss.linecap);
+        Main.gc.setLineJoin(ss.linejoin);
+        Main.gc.setMiterLimit(ss.miterlimit);
+        Main.gc.setLineDashes(ss.dashes);
+        Main.gc.setLineDashOffset(ss.dashOffset);
+        Main.gc.setFont(ss.font);
+        Main.gc.setTextAlign(ss.textalign);
+        Main.gc.setTextBaseline(ss.textbaseline);
     }
 }

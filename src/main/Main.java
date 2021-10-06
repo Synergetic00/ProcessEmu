@@ -46,7 +46,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "ProcessEmuFX";
-        Main.version = "v4.4.7";
+        Main.version = "v4.5.1";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 
@@ -80,6 +80,8 @@ public class Main extends Application {
 
         AppState.windowW((int) Main.stage.getWidth());
         AppState.windowH((int) Main.stage.getHeight());
+
+        System.out.println(AppState.windowW() + " " + AppState.windowH());
 
         /*try { // Logo for MacOS Window
             URL iconURL = new File("RPFXLogo.png").toURI().toURL();

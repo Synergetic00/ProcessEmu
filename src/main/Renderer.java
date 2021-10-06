@@ -6,6 +6,8 @@ import javafx.scene.transform.Affine;
 import javafx.scene.text.Font;
 import ptypes.PGraphics;
 import utils.Colours;
+import utils.ModeState;
+import utils.StyleState;
 
 import static utils.Maths.*;
 import static utils.Constants.*;
@@ -17,6 +19,42 @@ public class Renderer {
     public Renderer(GraphicsContext gc) {
         this.gc = gc;
     }
+
+    ///////////////
+    // Structure //
+    ///////////////
+
+    public void pop(PGraphics pg) {
+        //popMatrix();
+        popStyle(pg);
+    }
+
+    public void popStyle(PGraphics pg) {
+        if (pg.styleStates.size() > 0) {
+            AppBase.setState(pg.styleStates.remove(pg.styleStates.size()-1));
+        } else {
+            throw new RuntimeException("popStyle() needs corresponding pushStyle() statement");
+        }
+
+        if (pg.styleStates.size() > 0) {
+            ModeState ms = pg.modeStates.remove(pg.modeStates.size()-1);
+            pg.rectMode = ms.rectMode;
+            pg.ellipseMode = ms.ellipseMode;
+            pg.colorMode = ms.colorMode;
+        }
+    }
+
+    public void push(PGraphics pg) {
+        //pushMatrix();
+        pushStyle(pg);
+    }
+
+    public void pushStyle(PGraphics pg) {
+        pg.modeStates.add(new ModeState(0, pg.rectMode, pg.ellipseMode, pg.colorMode));
+        pg.styleStates.add(new StyleState(gc));
+    }
+
+
 
     ////////////
     // Shapes //

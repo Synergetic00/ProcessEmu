@@ -2,6 +2,11 @@ package utils;
 
 public enum Actions {
 
+    POP,
+    POPSTYLE,
+    PUSH,
+    PUSHSTYLE,
+
     BACKGROUND,
     FILL,
     STROKE,
