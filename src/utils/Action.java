@@ -11,6 +11,11 @@ public class Action {
     private String str;
     private int value = -1;
 
+    public Action(PGraphics pg, Actions type) {
+        this.pg = pg;
+        this.type = type;
+    }
+
     public Action(PGraphics pg, Actions type, double... params) {
         this.pg = pg;
         this.type = type;
@@ -40,6 +45,22 @@ public class Action {
 
     public void act(double x, double y) {
         switch (type) {
+            case POP:
+                Main.renderer.pop(pg);
+                break;
+            case POPSTYLE:
+                Main.renderer.popStyle(pg);
+                break;
+            case PUSH:
+                Main.renderer.push(pg);
+                break;
+            case PUSHSTYLE:
+                Main.renderer.pushStyle(pg);
+                break;
+            case STROKEWEIGHT:
+                Main.renderer.strokeWeight(values[0]);
+                break;
+
             case BACKGROUND:
                 Main.renderer.background(pg, value, x, y);
                 break;

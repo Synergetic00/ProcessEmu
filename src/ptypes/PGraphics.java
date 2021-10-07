@@ -59,19 +59,19 @@ public class PGraphics {
     public ArrayList<ModeState> modeStates = new ArrayList<>();
 
     public void pop() {
-        
+        actions.add(new Action(this, Actions.POP));
     }
 
     public void popStyle() {
-        
+        actions.add(new Action(this, Actions.POPSTYLE));
     }
 
     public void push() {
-
+        actions.add(new Action(this, Actions.PUSH));
     }
 
     public void pushStyle() {
-        
+        actions.add(new Action(this, Actions.PUSHSTYLE));
     }
 
 
@@ -218,6 +218,17 @@ public class PGraphics {
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
         actions.add(new Action(this, Actions.TRIANGLE, x1, y1, x2, y2, x3, y3));
     }
+
+    /////////////////////////
+    // Shape // Attributes //
+    /////////////////////////
+
+    public void strokeWeight(double weight) {
+        actions.add(new Action(this, Actions.STROKEWEIGHT, weight));
+    }
+
+
+
 
     public void render(double x, double y) {
         for (Action action : actions) {

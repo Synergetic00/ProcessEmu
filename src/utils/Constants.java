@@ -2,6 +2,9 @@ package utils;
 
 public class Constants {
 
+    public static final int WIDTH = 1280;
+    public static final int HEIGHT = 720;
+
     public static final int RGB = 0;
 	public static final int HSB = 1;
 

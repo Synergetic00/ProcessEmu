@@ -20,6 +20,8 @@ public enum Actions {
     QUAD,
     RECT,
     SQUARE,
-    TRIANGLE
+    TRIANGLE,
+
+    STROKEWEIGHT
     
 }

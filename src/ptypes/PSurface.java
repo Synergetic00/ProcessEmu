@@ -10,6 +10,7 @@ import javafx.stage.Screen;
 import static utils.Constants.*;
 
 import main.Main;
+import utils.Constants;
 
 public class PSurface {
 
@@ -29,16 +30,16 @@ public class PSurface {
 	public void reset() {
 		switch (System.getProperty("os.name")) {
 			case "Windows 10":
-				Main.stage.setWidth(1280);
-				Main.stage.setHeight(720);
+                Main.stage.setWidth(Constants.WIDTH + 16);
+                Main.stage.setHeight(Constants.HEIGHT + 39);
 				break;
 			case "Mac OS X":
-				Main.stage.setWidth(1280);
-				Main.stage.setHeight(748);
+				Main.stage.setWidth(Constants.WIDTH + 0);
+				Main.stage.setHeight(Constants.HEIGHT + 28);
 				break;
 			default:
-				Main.stage.setWidth(1280);
-				Main.stage.setHeight(720);
+                Main.stage.setWidth(Constants.WIDTH + 0);
+                Main.stage.setHeight(Constants.HEIGHT + 0);
 				break;
 		}
         Rectangle2D screen = Screen.getPrimary().getVisualBounds();

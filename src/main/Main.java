@@ -15,6 +15,7 @@ import javafx.scene.paint.Color;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import utils.Constants;
 
 import java.io.File;
 import java.io.IOException;
@@ -37,8 +38,8 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
         AppState.displayW((int) Screen.getPrimary().getBounds().getWidth());
         AppState.displayH((int) Screen.getPrimary().getBounds().getHeight());
-        AppState.screenW(1280);
-        AppState.screenH(720);
+        AppState.screenW(Constants.WIDTH);
+        AppState.screenH(Constants.HEIGHT);
 
         Group root = new Group();
         Scene scene = new Scene(root, Color.BLACK);
@@ -46,7 +47,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "ProcessEmuFX";
-        Main.version = "v4.5.1";
+        Main.version = "v4.5.2";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 
@@ -80,8 +81,6 @@ public class Main extends Application {
 
         AppState.windowW((int) Main.stage.getWidth());
         AppState.windowH((int) Main.stage.getHeight());
-
-        System.out.println(AppState.windowW() + " " + AppState.windowH());
 
         /*try { // Logo for MacOS Window
             URL iconURL = new File("RPFXLogo.png").toURI().toURL();

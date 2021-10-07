@@ -277,5 +277,13 @@ public class Renderer {
     public void textSize(double size) {
         gc.setFont(new Font(size));
     }
+
+    /////////////////////////
+    // Shape // Attributes //
+    /////////////////////////
+
+    public void strokeWeight(double weight) {
+        gc.setLineWidth(weight);
+    }
     
 }
