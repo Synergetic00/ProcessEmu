@@ -255,14 +255,19 @@ public class Loader {
         program = program.replace("Float", "Double"); 
         program = program.replace("FLOAT", "DOUBLE");
         program = program.replace("color ", "int ");
+        program = program.replace("color[", "int[");
 
+        program = program.replace(" boolean(", "parseBoolean(");
+        program = program.replace(" byte(", "parseByte(");
+        program = program.replace(" char(", "parseChar(");
+        program = program.replace(" double(", "parseDouble(");
+        program = program.replace(" int(", "parseInt(");
 
-
-        program = program.replace("\bboolean(", "parseBoolean(");
-        program = program.replace("\bbyte(", "parseByte(");
-        program = program.replace("\bchar(", "parseChar(");
-        program = program.replace("\bdouble(", "parseDouble(");
-        program = program.replace("\bint(", "parseInt(");
+        program = program.replace("=boolean(", "parseBoolean(");
+        program = program.replace("=byte(", "parseByte(");
+        program = program.replace("=char(", "parseChar(");
+        program = program.replace("=double(", "parseDouble(");
+        program = program.replace("=int(", "parseInt(");
 
         return program;
     }

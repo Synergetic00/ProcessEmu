@@ -107,6 +107,18 @@ public class Action {
             case TEXTSIZE:
                 Main.renderer.textSize(values[0]);
                 break;
+            case ELLIPSEMODE:
+                Main.renderer.ellipseMode(pg, value);
+                break;
+            case RECTMODE:
+                Main.renderer.rectMode(pg, value);
+                break;
+            case STROKECAP:
+                Main.renderer.strokeCap(value);
+                break;
+            case STROKEJOIN:
+                Main.renderer.strokeJoin(value);
+                break;
             default:
                 break;
         }

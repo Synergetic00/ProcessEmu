@@ -22,6 +22,10 @@ public enum Actions {
     SQUARE,
     TRIANGLE,
 
+    ELLIPSEMODE,
+    RECTMODE,
+    STROKECAP,
+    STROKEJOIN,
     STROKEWEIGHT
     
 }

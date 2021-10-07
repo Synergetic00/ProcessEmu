@@ -223,6 +223,22 @@ public class PGraphics {
     // Shape // Attributes //
     /////////////////////////
 
+    public void ellipseMode(int mode) {
+        actions.add(new Action(this, Actions.ELLIPSEMODE, mode));
+    }
+
+    public void rectMode(int mode) {
+        actions.add(new Action(this, Actions.RECTMODE, mode));
+    }
+
+    public void strokeCap(int type) {
+        actions.add(new Action(this, Actions.STROKECAP, type));
+    }
+
+    public void strokeJoin(int type) {
+        actions.add(new Action(this, Actions.STROKEJOIN, type));
+    }
+
     public void strokeWeight(double weight) {
         actions.add(new Action(this, Actions.STROKEWEIGHT, weight));
     }

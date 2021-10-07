@@ -47,7 +47,7 @@ public class Main extends Application {
         root.getChildren().add(canvas);
 
         Main.title = "ProcessEmuFX";
-        Main.version = "v4.5.2";
+        Main.version = "v4.5.3";
         Main.stage = stage;
         Main.gc = canvas.getGraphicsContext2D();
 

@@ -17,12 +17,14 @@ import javafx.scene.shape.ArcType;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
 import javafx.scene.transform.Affine;
 import javafx.scene.transform.Shear;
 import ptypes.PFont;
 import ptypes.PGraphics;
 import ptypes.PImage;
+import ptypes.PMatrix2D;
 import ptypes.PShape;
 import ptypes.PSurface;
 import ptypes.PVector;
@@ -59,7 +61,6 @@ public class AppBase {
         this.gc = gc;
         this.date = new Calendar.Builder().build();
         this.surface = new PSurface();
-        resetSurface();
         defaultSettings();
     }
 
@@ -76,6 +77,9 @@ public class AppBase {
         fill(255);
         stroke(0);
         strokeWeight(1);
+        strokeCap(ROUND);
+        strokeJoin(MITER);
+        textAlign(LEFT, BASELINE);
         looping = true;
         rectMode = CORNER;
         ellipseMode = CENTER;
@@ -133,17 +137,11 @@ public class AppBase {
         styleStates.add(new StyleState(gc));
     }
 
-    // redraw()
-
     public void redraw() {
         render();
     }
 
-    // setup()
-
     public void setup() {}
-
-    // thread()
 
     public void thread(final String name) {
         Thread later = new Thread() {
@@ -158,8 +156,6 @@ public class AppBase {
     /////////////////
     // Environment //
     /////////////////
-
-    // cursor()
 
     public void cursor() {
         surface.showCursor();
@@ -177,15 +173,11 @@ public class AppBase {
         surface.setCursor(img, x, y);
     }
 
-    // delay()
-
     public void delay(int napTime) {
         try {
             Thread.sleep(napTime);
         } catch (InterruptedException ie) {}
     }
-
-    // displayDensity()
 
     public int displayDensity() {
         return 1;
@@ -195,15 +187,9 @@ public class AppBase {
         return 1;
     }
 
-    // focused
-
     public boolean focused;
 
-    // frameCount
-
     public int frameCount;
-
-    // frameRate()
 
     public void frameRate(double fps) {
         if (fps > 0) {
@@ -212,47 +198,27 @@ public class AppBase {
         }
     }
 
-    // frameRate
-
     public double frameRate;
-
-    // fullScreen()
 
     public void fullScreen() {
         size(AppState.screenW(), AppState.screenH());
     }
 
-    // height
-
     public int height;
-
-    // noCursor()
 
     public void noCursor() {
         surface.hideCursor();
     }
 
-    // noSmooth()
-
     public void noSmooth() {}
-
-    // pixelDensity()
 
     public void pixelDensity(int density) {}
 
-    // pixelHeight
-
     public int pixelHeight;
-
-    // pixelWidth
 
     public int pixelWidth;
 
-    // settings()
-
     public void settings() {}
-
-    // size()
 
     public void size(int width, int height) {
         double widthMul = min(1d, AppState.screenW() / (double)width);
@@ -263,13 +229,10 @@ public class AppBase {
 
         double minMul = min(widthMul, heightMul);
 
-        //System.out.println(minMul);
-
         if (minMul < 1) {
             gc.translate(0, 320);
             gc.scale(minMul, minMul);
         }
-
 
         AppState.offsetW((AppState.screenW() - width) / 2);
         AppState.offsetH((AppState.screenH() - height) / 2);
@@ -277,19 +240,13 @@ public class AppBase {
         background(204);
     }
 
-    // smooth()
-
     public void smooth(int level) {}
-
-    // width
 
     public int width;
 
     ///////////
     // Shape //
     ///////////
-
-    // createShape()
 
     public PShape createShape() {
         return null;
@@ -303,8 +260,6 @@ public class AppBase {
         return null;
     }
 
-    // loadShape()
-
     public PShape loadShape(String filename) {
         return null;
     }
@@ -312,8 +267,6 @@ public class AppBase {
     ////////////////////////////
     // Shape // 2D Primatives //
     ////////////////////////////
-
-    // arc()
 
     public void arc(double x, double y, double width, double height, double start, double stop) {
         double degStart = -degrees(start);
@@ -346,13 +299,9 @@ public class AppBase {
         if (hasStroke) gc.strokeArc(nx, ny, width, height, degStart, degStop, arcMode);
     }
 
-    // circle()
-
     public void circle(double x, double y, double s) {
         ellipse(x, y, s, s);
     }
-
-    // ellipse()
 
     public void ellipse(double x, double y, double w, double h) {
 
@@ -388,8 +337,6 @@ public class AppBase {
         if (hasStroke) gc.strokeOval(nx, ny, nw, nh);
     }
 
-    // line()
-
     public void line(double startX, double startY, double endX, double endY) {
         double sx = AppState.offsetW() + startX;
         double sy = AppState.offsetH() + startY;
@@ -399,13 +346,9 @@ public class AppBase {
         gc.strokeLine(sx, sy, ex, ey);
     }
 
-    // point()
-
     public void point(double x, double y) {
         rect(x, y, 1, 1);
     }
-
-    // quad()
 
     public void quad(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
         double[] xPoints = {x1, x2, x3, x4};
@@ -415,8 +358,6 @@ public class AppBase {
         if (hasFill) gc.fillPolygon(xPoints, yPoints, 4);
         if (hasStroke) gc.strokePolygon(xPoints, yPoints, 4);
     }
-
-    // rect()
 
     public void rect(double x, double y, double w, double h) {
 
@@ -451,13 +392,9 @@ public class AppBase {
         if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
     }
 
-    // square()
-
     public void square(double x, double y, double extent) {
         rect(x, y, extent, extent);
     }
-
-    // triangle()
 
     public void triangle(double x1, double y1, double x2, double y2, double x3, double y3) {
         double[] xPoints = {x1, x2, x3};
@@ -470,8 +407,6 @@ public class AppBase {
     /////////////////////
     // Shape // Curves //
     /////////////////////
-
-    // bezier()
 
     public void bezier(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {
         PVector centre = centre(x1, y1, x2, y2, x3, y3, x4, y4);
@@ -489,24 +424,16 @@ public class AppBase {
         Main.throw3DError();
     }
 
-    // bezierDetail()
-
     public void bezierDetail(int detail) {}
-
-    // bezierPoint()
 
     public double bezierPoint(double a, double b, double c, double d, double t) {
         double t1 = 1.0 - t;
         return (a * t1 + 3 * b * t) * t1 * t1 + (3 * c * t1 + d * t) * t * t;
     }
 
-    // bezierTangent()
-
     public double bezierTangent(double a, double b, double c, double d, double t) {
         return (3*t*t * (-a+3*b-3*c+d) + 6*t * (a-2*b+c) + 3 * (-a+b));
     }
-
-    // curve()
 
     public void curve(double x1, double y1, double x2, double y2, double x3, double y3, double x4, double y4) {}
 
@@ -514,37 +441,273 @@ public class AppBase {
         Main.throw3DError();
     }
 
-    // curveDetail()
-
     public void curveDetail(int detail) {}
-
-    // curvePoint()
 
     public double curvePoint(double a, double b, double c, double d, double t) {
         return 0;
     }
 
-    // curveTangent()
-
     public double curveTangent(double a, double b, double c, double d, double t) {
         return 0;
     }
-    
-    // curveTightness()
 
-    public void curveTightness(float tightness) {}   
+    public void curveTightness(float tightness) {}
+
+    ////////////////////////////
+    // Shape // 3D Primitives //
+    ////////////////////////////
+
+    public void box(double size) {}
+
+    public void box(double w, double h, double d) {}
+
+    public void sphereDetail(double res) {}
+
+    public void sphereDetail(double ures, double vres) {}
+
+    public void sphere(double r) {}
+
+    /////////////////////////
+    // Shape // Attributes //
+    /////////////////////////
+
+    public void ellipseMode(int mode) {
+        ellipseMode = mode;
+    }
+
+    public void rectMode(int mode) {
+        rectMode = mode;
+    }
+
+    public void strokeCap(int type) {
+        StrokeLineCap cap;
+        switch (type) {
+            case ROUND:
+                cap = StrokeLineCap.ROUND;
+                break;
+            case SQUARE:
+                cap = StrokeLineCap.BUTT;
+                break;
+            default:
+                cap = StrokeLineCap.SQUARE;
+                break;
+        }
+        gc.setLineCap(cap);
+    }
+
+    public void strokeJoin(int type) {
+        StrokeLineJoin join;
+        switch (type) {
+            case BEVEL:
+                join = StrokeLineJoin.BEVEL;
+                break;
+            case ROUND:
+                join = StrokeLineJoin.ROUND;
+                break;
+            default:
+                join = StrokeLineJoin.MITER;
+                break;
+        }
+        gc.setLineJoin(join);
+    }
+
+    public void strokeWeight(double weight) {
+        gc.setLineWidth(weight);
+    }
 
     ///////////
     // Input //
     ///////////
 
+    ////////////////////
+    // Input // Mouse //
+    ////////////////////
+
+    public int mouseButton;
+
+    public void mouseClicked() {}
+
+    public void mouseDragged() {}
+
+    public void mousedMoved() {}
+
+    public void mousePressed() {}
+
+    public boolean mousePressed;
+
+    public void mouseReleased() {}
+
+    public void mouseWheel(utils.MouseEvent event) {}
+
+    public double mouseX;
+
+    public double mouseY;
+
+    public double pmouseX;
+
+    public double pmouseY;
+
+    ///////////////////////
+    // Input // Keyboard //
+    ///////////////////////
+
+    public char key;
+
+    public int keyCode;
+
+    public void keyPressed() {}
+
+    public boolean keyPressed;
+
+    public void keyReleased() {}
+
+    public void keyTyped() {}
+
+    ////////////////////
+    // Input // Files //
+    ////////////////////
+
+    //////////////////////////
+    // Input // Time & Date //
+    //////////////////////////
+
+    public int day() {
+        return date.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public int hour() {
+        return date.get(Calendar.HOUR_OF_DAY);
+    }
+
+    public int millis() {
+        return date.get(Calendar.MILLISECOND);
+    }
+
+    public int minute() {
+        return date.get(Calendar.MINUTE);
+    }
+
+    public int month() {
+        return date.get(Calendar.MONTH) + 1;
+    }
+
+    public int second() {
+        return date.get(Calendar.SECOND);
+    }
+
+    public int year() {
+        return date.get(Calendar.YEAR);
+    }
+
     ////////////
     // Output //
     ////////////
 
+    /////////////////////
+    // Output // Image //
+    /////////////////////
+
+    public void saveFrame() {}
+
+    public void saveFrame(String fileName) {}
+
     ///////////////
     // Transform //
     ///////////////
+
+    private final int MATRIX_STACK_DEPTH = 32;
+    private int transformCount;
+    private Affine[] transformStack = new Affine[MATRIX_STACK_DEPTH];
+
+    private double currentRotationY = 0;
+    private double currentScaleX = 1;
+    private double currentScaleY = 1;
+    private double currentTranslateX = 0;
+    private double currentTranslateY = 0;
+    
+    public void applyMatrix(PMatrix2D source)	{
+        gc.transform(source.m00, source.m10, source.m01, source.m11, source.m02, source.m12);
+    }
+
+    public void applyMatrix(double n00, double n01, double n02, double n10, double n11, double n12)	{
+        gc.transform(n00, n10, n01, n11, n02, n12);
+    }
+
+    public void applyMatrix(double n00, double n01, double n02, double n03, double n10, double n11, double n12, double n13, double n20, double n21, double n22, double n23, double n30, double n31, double n32, double n33) {
+        Main.throw3DError();
+    }
+
+    private PMatrix2D getMatrix() {
+        PMatrix2D output;
+        Affine t = gc.getTransform();
+        output = new PMatrix2D(t.getMxx(), t.getMxy(), t.getTx(), t.getMyx(), t.getMyy(), t.getTy());
+        return output;
+    }
+
+    public void popMatrix() {
+        if (transformCount == 0) {
+            throw new RuntimeException("popMatrix() needs corresponding pushMatrix() statement");
+        } else {
+            transformCount--;
+            gc.setTransform(transformStack[transformCount]);
+        }
+    }
+
+    public void printMatrix() {
+        System.out.println(getMatrix());
+    }
+
+    public void pushMatrix() {
+        if (transformCount == transformStack.length) {
+            throw new RuntimeException("StackOverflow: Reached the maximum amount of pushed matrixes");
+        } else {
+            transformStack[transformCount] = gc.getTransform(transformStack[transformCount]);
+            transformCount++;
+        }
+    }
+
+    public void resetMatrix() {
+        gc.setTransform(new Affine());
+    }
+
+    public void rotate(double radians) {
+        currentRotationY += radians;
+        double sideA = AppState.offsetW();
+        double sideB = AppState.offsetH();
+        double sideC = sqrt(sq(sideA)+sq(sideB));
+        double anglB = degrees(acos((sq(sideA)+sq(sideC)-sq(sideB))/(2*sideA*sideC)));
+        double finalAmt = degrees(radians) + anglB;
+        double rtsdA = sideC*sin(radians(finalAmt));
+        double rtsdB = sideC*cos(radians(finalAmt));
+        double diffX = sideA - rtsdB;
+        double diffY = sideB - rtsdA;
+        gc.translate(diffX, diffY);
+        gc.rotate(degrees(radians));
+    }
+
+    public void scale(double amount) {
+        scale(amount, amount);
+    }
+
+    public void scale(double amountX, double amountY) {
+        currentScaleX *= amountX;
+        currentScaleY *= amountX;
+        gc.scale(amountX, amountY);
+    }
+
+    public void shearX(double amount) {
+        Shear shear = Affine.shear(amount, 0);
+    }
+
+    public void shearY(double amount) {
+        Shear shear = Affine.shear(0, amount);
+    }
+
+    public void translate(double amountX, double amountY) {
+        currentTranslateX += amountX;
+        currentTranslateY += amountX;
+        gc.translate(amountX, amountY);
+    }
 
     ////////////////////
     // Lights, Camera //
@@ -652,6 +815,161 @@ public class AppBase {
     // Color //
     ///////////
 
+    private double maxRH;
+    private double maxGS;
+    private double maxBB;
+    private double maxAO;
+
+    //////////////////////
+    // Color // Setting //
+    //////////////////////
+
+    public void background(double gray) {
+        if (between(gray, 0, maxRH)) {
+            background(gray, gray, gray, maxAO);
+        } else {
+            setBackground((int) gray);
+        }
+    }
+
+    public void background(double gray, double alpha) {
+        background(gray, gray, gray, alpha);
+    }
+
+    public void background(double rh, double gs, double bv) {
+        background(rh, gs, bv, maxAO);
+    }
+
+    public void background(double rh, double gs, double bv, double ao) {
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        setBackground(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
+    }
+
+    private void setBackground(int encodedValue) {
+        pushMatrix();
+        resetMatrix();
+        gc.save();
+        gc.setFill(Colours.decodeColour(colorMode, encodedValue));
+        gc.fillRect(AppState.offsetW(), AppState.offsetH(), width, height);
+        gc.restore();
+        popMatrix();
+    }
+
+    public void colorMode(int mode) {
+        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, maxAO);
+    }
+
+    public void colorMode(int mode, double max) {
+        colorMode(mode, max, max, max, maxAO);
+    }
+
+    public void colorMode(int mode, double rh, double gs, double bb) {
+        colorMode(mode, rh, gs, bb, maxAO);
+    }
+
+    public void colorMode(int mode, double rh, double gs, double bb, double alpha) {
+        colorMode = mode;
+        maxRH = rh;
+        maxGS = gs;
+        maxBB = bb;
+        maxAO = alpha;
+    }
+
+    public void fill(double gray) {
+        if (between(gray, 0, maxRH)) {
+            fill(gray, gray, gray, maxAO);
+        } else {
+            setFill((int) gray);
+        }
+    }
+
+    public void fill(double gray, double alpha) {
+        fill(gray, gray, gray, alpha);
+    }
+
+    public void fill(double rh, double gs, double bv) {
+        fill(rh, gs, bv, maxAO);
+    }
+
+    public void fill(double rh, double gs, double bv, double ao) {
+        hasFill = true;
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        setFill(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
+    }
+
+    private void setFill(int encodedValue) {
+        gc.setFill(Colours.decodeColour(colorMode, encodedValue));
+    }
+
+    public void noFill() {
+        hasFill = false;
+    }
+
+    public void noStroke() {
+        hasStroke = false;
+    }
+
+    public void stroke(double gray) {
+        if (between(gray, 0, maxRH)) {
+            stroke(gray, gray, gray, maxAO);
+        } else {
+            setStroke((int) gray);
+        }
+    }
+
+    public void stroke(double gray, double alpha) {
+        stroke(gray, gray, gray, alpha);
+    }
+
+    public void stroke(double rh, double gs, double bv) {
+        stroke(rh, gs, bv, maxAO);
+    }
+
+    public void stroke(double rh, double gs, double bv, double ao) {
+        hasStroke = true;
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        setStroke(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
+    }
+
+    private void setStroke(int encodedValue) {
+        gc.setStroke(Colours.decodeColour(colorMode, encodedValue));
+    }
+
+    public int color(double gray) {
+        if (between(gray, 0, maxRH)) {
+            color(gray, gray, gray, maxAO);
+        } else {
+            return (int) gray;
+        }
+
+        return color(gray, gray, gray, maxAO);
+    }
+
+    public int color(double gray, double alpha) {
+        return color(gray, gray, gray, alpha);
+    }
+
+    public int color(double rh, double gs, double bv) {
+        return color(rh, gs, bv, maxAO);
+    }
+
+    public int color(double rh, double gs, double bv, double ao) {
+        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        return Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO);
+    }
+
     ///////////
     // Image //
     ///////////
@@ -661,7 +979,6 @@ public class AppBase {
         gc.beginPath();
         gc.rect(AppState.offsetW() + x, AppState.offsetH() + y, pg.width, pg.height);
         gc.clip();
-        //background(255);
         pg.render(x, y);
         gc.restore();
     }
@@ -696,6 +1013,155 @@ public class AppBase {
     ////////////////
     // Typography //
     ////////////////
+
+    ////////////////////////////////////////
+    // Typography // Loading & Displaying //
+    ////////////////////////////////////////
+
+    private TextAlignment alignH = TextAlignment.LEFT;
+    private VPos alignV = VPos.BASELINE;
+    private Text textCache = new Text("");
+
+    // createFont()
+
+    public PFont createFont(String name, double size) {
+        return null;
+    }
+
+    public PFont createFont(String name, double size, boolean smooth) {
+        return null;
+    }
+    
+    public PFont createFont(String name, double size, boolean smooth, char[] charset) {
+        return null;
+    }
+
+    // loadFont()
+
+    public PFont loadFont(String filename) {
+        return null;
+    }
+
+    // text()
+
+    public void text(char c, double x, double y) {
+        text(Character.toString(c), x, y);
+    }
+    
+    public void text(char c, double x, double y, double z) { Main.throw3DError(); }
+    
+    public void text(String str, double x, double y) {
+        gc.fillText(str, AppState.offsetW() + x, AppState.offsetH() + y);
+    }
+    
+    public void text(char[] chars, int start, int stop, double x, double y) {
+        text(new String(chars), x, y);
+    }
+    
+    public void text(String str, double x, double y, double z) { Main.throw3DError(); }
+    
+    public void text(char[] chars, int start, int stop, double x, double y, double z) { Main.throw3DError(); }
+    
+    public void text(String str, double x1, double y1, double x2, double y2) {
+        
+    }
+    
+    public void text(int num, double x, double y) {
+        text(Integer.toString(num), x, y);
+    }
+    
+    public void text(int num, double x, double y, double z) { Main.throw3DError(); }
+    
+    public void text(double num, double x, double y) {
+        text(Double.toString(num), x, y);
+    }
+    
+    public void text(double num, double x, double y, double z) { Main.throw3DError(); }
+
+    public void textFont(PFont which) {}
+
+    public void textFont(PFont which, double size) {}
+
+    //////////////////////////////
+    // Typography // Attributes //
+    //////////////////////////////
+
+    public void textAlign(int alignX) {
+
+        switch (alignX) {
+            case LEFT: {
+                alignH = TextAlignment.LEFT;
+                break;
+            }
+            case CENTER: {
+                alignH = TextAlignment.CENTER;
+                break;
+            }
+            case RIGHT: {
+                alignH = TextAlignment.RIGHT;
+                break;
+            }
+        }
+
+        setTextAlign(alignH, alignV);
+    }
+
+    public void textAlign(int alignX, int alignY) {
+        textAlign(alignX);
+
+        switch (alignY) {
+            case TOP: {
+                alignV = VPos.TOP;
+                break;
+            }
+            case BOTTOM: {
+                alignV = VPos.BOTTOM;
+                break;
+            }
+            case CENTER: {
+                alignV = VPos.CENTER;
+                break;
+            }
+            case BASELINE: {
+                alignV = VPos.BASELINE;
+                break;
+            }
+        }
+
+        setTextAlign(alignH, alignV);
+    }
+
+    public void textLeading(double leading) {}
+
+    public void textMode(int mode) {
+        
+    }
+
+    public void textSize(double size) {
+        textCache.setFont(new Font(size));
+        gc.setFont(new Font(size));
+    }
+
+    public double textWidth(char c) {
+        return textWidth(Character.toString(c));
+    }
+
+    public double textWidth(String str) {
+        textCache.setText(str);
+        return textCache.getLayoutBounds().getWidth();
+    }
+
+    ///////////////////////////
+    // Typography // Metrics //
+    ///////////////////////////
+
+    public double textAscent() {
+        return 0;
+    }
+
+    public double textDescent() {
+        return 0;
+    }
 
     //////////////////////
     // Internal Methods //
@@ -814,28 +1280,6 @@ public class AppBase {
 
 
 
-
-    /////////////////////////
-    // Shape // Attributes //
-    /////////////////////////
-
-    public void ellipseMode(int mode) {
-        ellipseMode = mode;
-    }
-
-    public void rectMode(int mode) {
-        rectMode = mode;
-    }
-
-    public void strokeCap(int type) {}
-
-    public void strokeJoin(int type) {
-        
-    }
-
-    public void strokeWeight(double weight) {
-        gc.setLineWidth(weight);
-    }
 
     /////////////////////
     // Shape // Vertex //
@@ -969,6 +1413,10 @@ public class AppBase {
         if (hasStroke) gc.stroke();
     }
 
+    public void vertexImpl(double x, double y) {
+        //vertexImpl(x + AppState.offsetW(), y + AppState.offsetH());
+    }
+
     public void vertex(double x, double y) {
         if (vertexCount == vertices.length) {
           double[][] temp = new double[vertexCount<<1][VERTEX_FIELD_COUNT];
@@ -1070,497 +1518,6 @@ public class AppBase {
         }
     }
 
-    ///////////////////////////////////
-    // Shape // Loading & Displaying //
-    ///////////////////////////////////
-
-    ////////////////////
-    // Input // Mouse //
-    ////////////////////
-
-    public int mouseButton;
-
-    public void mouseClicked() {}
-
-    public void mouseDragged() {}
-
-    public void mousedMoved() {}
-
-    public void mousePressed() {}
-
-    public boolean mousePressed;
-
-    public void mouseReleased() {}
-
-    public void mouseWheel(utils.MouseEvent event) {}
-
-    public double mouseX;
-
-    public double mouseY;
-
-    public double pmouseX;
-
-    public double pmouseY;
-
-    ///////////////////////
-    // Input // Keyboard //
-    ///////////////////////
-
-    public char key;
-
-    public int keyCode;
-
-    public void keyPressed() {}
-
-    public boolean keyPressed;
-
-    public void keyReleased() {}
-
-    public void keyTyped() {}
-
-    ////////////////////
-    // Input // Files //
-    ////////////////////
-
-    //////////////////////////
-    // Input // Time & Date //
-    //////////////////////////
-
-    public int day() {
-        return date.get(Calendar.DAY_OF_MONTH);
-    }
-
-    public int hour() {
-        return date.get(Calendar.HOUR_OF_DAY);
-    }
-
-    public int millis() {
-        return date.get(Calendar.MILLISECOND);
-    }
-
-    public int minute() {
-        return date.get(Calendar.MINUTE);
-    }
-
-    public int month() {
-        return date.get(Calendar.MONTH) + 1;
-    }
-
-    public int second() {
-        return date.get(Calendar.SECOND);
-    }
-
-    public int year() {
-        return date.get(Calendar.YEAR);
-    }
-
-    /////////////////////
-    // Output // Image //
-    /////////////////////
-
-    // saveFrame()
-
-    public void saveFrame() {}
-
-    public void saveFrame(String fileName) {}
-
-    ///////////////
-    // Transform //
-    ///////////////
-
-    private double currentRotationY = 0;
-    private double currentScaleX = 1;
-    private double currentScaleY = 1;
-    private double currentTranslateX = 0;
-    private double currentTranslateY = 0;
-
-    public void rotate(double radians) {
-        currentRotationY += radians;
-
-        double sideA = AppState.offsetW();
-        double sideB = AppState.offsetH();
-        double sideC = sqrt(sq(sideA)+sq(sideB));
-        double anglB = degrees(acos((sq(sideA)+sq(sideC)-sq(sideB))/(2*sideA*sideC)));
-        double finalAmt = degrees(radians) + anglB;
-        double rtsdA = sideC*sin(radians(finalAmt));
-        double rtsdB = sideC*cos(radians(finalAmt));
-        double diffX = sideA - rtsdB;
-        double diffY = sideB - rtsdA;
-        gc.translate(diffX, diffY);
-        gc.rotate(degrees(radians));
-        //gc.translate(-diffX, -diffY);
-    }
-
-    public void scale(double amount) {
-        scale(amount, amount);
-    }
-
-    public void scale(double amountX, double amountY) {
-        currentScaleX *= amountX;
-        currentScaleY *= amountX;
-
-        gc.scale(amountX, amountY);
-    }
-
-    public void shearX(double amount) {
-        Shear shear = Affine.shear(amount, 0);
-    }
-
-    public void shearY(double amount) {
-        Shear shear = Affine.shear(0, amount);
-    }
-
-    public void translate(double amountX, double amountY) {
-        currentTranslateX += amountX;
-        currentTranslateY += amountX;
-
-        gc.translate(amountX, amountY);
-    }
-
-    private final int MATRIX_STACK_DEPTH = 32;
-    private int transformCount;
-    private Affine[] transformStack = new Affine[MATRIX_STACK_DEPTH];
-
-    public void pushMatrix() {
-        if (transformCount == transformStack.length) {
-            throw new RuntimeException("StackOverflow: Reached the maximum amount of pushed matrixes");
-        } else {
-            transformStack[transformCount] = gc.getTransform(transformStack[transformCount]);
-            transformCount++;
-        }
-    }
-
-    public void popMatrix() {
-        if (transformCount == 0) {
-            throw new RuntimeException("popMatrix() needs corresponding pushMatrix() statement");
-        } else {
-            transformCount--;
-            gc.setTransform(transformStack[transformCount]);
-        }
-    }
-
-    public void resetMatrix() {
-        gc.setTransform(new Affine());
-    }
-
-    //////////////////////
-    // Color // Setting //
-    //////////////////////
-
-    public void background(double gray) {
-        if (between(gray, 0, maxRH)) {
-            background(gray, gray, gray, maxAO);
-        } else {
-            setBackground((int) gray);
-        }
-    }
-
-    public void background(double gray, double alpha) {
-        background(gray, gray, gray, alpha);
-    }
-
-    public void background(double rh, double gs, double bv) {
-        background(rh, gs, bv, maxAO);
-    }
-
-    public void background(double rh, double gs, double bv, double ao) {
-        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
-        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
-        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
-        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
-        setBackground(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
-    }
-
-    private void setBackground(int encodedValue) {
-        pushMatrix();
-        resetMatrix();
-        gc.save();
-        gc.setFill(Colours.decodeColour(colorMode, encodedValue));
-        gc.fillRect(AppState.offsetW(), AppState.offsetH(), width, height);
-        gc.restore();
-        popMatrix();
-    }
-
-    private double maxRH;
-    private double maxGS;
-    private double maxBB;
-    private double maxAO;
-
-    public void colorMode(int mode) {
-        colorMode(mode, (int)maxRH, (int)maxGS, (int)maxBB, maxAO);
-    }
-
-    public void colorMode(int mode, double max) {
-        colorMode(mode, max, max, max, maxAO);
-    }
-
-    public void colorMode(int mode, double rh, double gs, double bb) {
-        colorMode(mode, rh, gs, bb, maxAO);
-    }
-
-    public void colorMode(int mode, double rh, double gs, double bb, double alpha) {
-        colorMode = mode;
-        maxRH = rh;
-        maxGS = gs;
-        maxBB = bb;
-        maxAO = alpha;
-    }
-
-    public void fill(double gray) {
-        if (between(gray, 0, maxRH)) {
-            fill(gray, gray, gray, maxAO);
-        } else {
-            setFill((int) gray);
-        }
-    }
-
-    public void fill(double gray, double alpha) {
-        fill(gray, gray, gray, alpha);
-    }
-
-    public void fill(double rh, double gs, double bv) {
-        fill(rh, gs, bv, maxAO);
-    }
-
-    public void fill(double rh, double gs, double bv, double ao) {
-        hasFill = true;
-        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
-        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
-        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
-        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
-        setFill(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
-    }
-
-    private void setFill(int encodedValue) {
-        gc.setFill(Colours.decodeColour(colorMode, encodedValue));
-    }
-
-    public void noFill() {
-        hasFill = false;
-    }
-
-    public void noStroke() {
-        hasStroke = false;
-    }
-
-    public void stroke(double gray) {
-        if (between(gray, 0, maxRH)) {
-            stroke(gray, gray, gray, maxAO);
-        } else {
-            setStroke((int) gray);
-        }
-    }
-
-    public void stroke(double gray, double alpha) {
-        stroke(gray, gray, gray, alpha);
-    }
-
-    public void stroke(double rh, double gs, double bv) {
-        stroke(rh, gs, bv, maxAO);
-    }
-
-    public void stroke(double rh, double gs, double bv, double ao) {
-        hasStroke = true;
-        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
-        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
-        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
-        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
-        setStroke(Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO));
-    }
-
-    private void setStroke(int encodedValue) {
-        gc.setStroke(Colours.decodeColour(colorMode, encodedValue));
-    }
-
-    // Color
-
-    public int color(double gray) {
-        if (between(gray, 0, maxRH)) {
-            color(gray, gray, gray, maxAO);
-        } else {
-            return (int) gray;
-        }
-
-        return color(gray, gray, gray, maxAO);
-    }
-
-    public int color(double gray, double alpha) {
-        return color(gray, gray, gray, alpha);
-    }
-
-    public int color(double rh, double gs, double bv) {
-        return color(rh, gs, bv, maxAO);
-    }
-
-    public int color(double rh, double gs, double bv, double ao) {
-        double mappedRH = clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
-        double mappedGS = clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
-        double mappedBV = clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
-        double mappedAO = clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
-        return Colours.encodeColour(mappedRH, mappedGS, mappedBV, mappedAO);
-    }
-    
-    ////////////////
-    // Typography //
-    ////////////////
-
-    private TextAlignment alignH = TextAlignment.LEFT;
-    private VPos alignV = VPos.BASELINE;
-
-    // createFont()
-
-    public PFont createFont(String name, double size) {
-        return null;
-    }
-
-    public PFont createFont(String name, double size, boolean smooth) {
-        return null;
-    }
-    
-    public PFont createFont(String name, double size, boolean smooth, char[] charset) {
-        return null;
-    }
-
-    // loadFont()
-
-    public PFont loadFont(String filename) {
-        return null;
-    }
-
-    // text()
-
-    public void text(char c, double x, double y) {}
-    
-    public void text(char c, double x, double y, double z) {
-    
-    }
-    
-    public void text(String str, double x, double y) {
-        gc.fillText(str, AppState.offsetW() + x, AppState.offsetH() + y);
-    }
-    
-    public void text(char[] chars, int start, int stop, double x, double y) {
-    
-    }
-    
-    public void text(String str, double x, double y, double z) {
-    
-    }
-    
-    public void text(char[] chars, int start, int stop, double x, double y, double z) {
-    
-    }
-    
-    public void text(String str, double x1, double y1, double x2, double y2) {
-    
-    }
-    
-    public void text(int num, double x, double y) {
-    
-    }
-    
-    public void text(int num, double x, double y, double z) {
-    
-    }
-    
-    public void text(double num, double x, double y) {
-    
-    }
-    
-    public void text(double num, double x, double y, double z) {
-    
-    }
-
-    // textFont()
-
-    public void textFont(PFont which) {}
-
-    public void textFont(PFont which, double size) {}
-
-    // textAlign()
-
-    public void textAlign(int alignX) {
-
-        switch (alignX) {
-            case LEFT: {
-                alignH = TextAlignment.LEFT;
-                break;
-            }
-            case CENTER: {
-                alignH = TextAlignment.CENTER;
-                break;
-            }
-            case RIGHT: {
-                alignH = TextAlignment.RIGHT;
-                break;
-            }
-        }
-
-        setTextAlign(alignH, alignV);
-    }
-
-    public void textAlign(int alignX, int alignY) {
-        textAlign(alignX);
-
-        switch (alignY) {
-            case TOP: {
-                alignV = VPos.TOP;
-                break;
-            }
-            case BOTTOM: {
-                alignV = VPos.BOTTOM;
-                break;
-            }
-            case CENTER: {
-                alignV = VPos.CENTER;
-                break;
-            }
-            case BASELINE: {
-                alignV = VPos.BASELINE;
-                break;
-            }
-        }
-
-        setTextAlign(alignH, alignV);
-    }
-
-    // textLeading()
-
-    public void textLeading(double leading) {}
-
-    // textMode()
-
-    public void textMode(int mode) {
-        
-    }
-
-    // textSize()
-
-    public void textSize(double size) {
-        gc.setFont(new Font(size));
-    }
-
-    // textWidth()
-
-    public double textWidth(char c) {
-        return 0;
-    }
-
-    public double textWidth(String str) {
-        return 0;
-    }
-
-    // textAscent()
-
-    public double textAscent() {
-        return 0;
-    }
-
-    // textDescent()
-
-    public double textDescent() {
-        return 0;
-    }
 
     ////////////
     // Pixels //
@@ -1586,14 +1543,11 @@ public class AppBase {
         }
     }
 
-    private void resetSurface() {
-        //surface.setLocation((AppState.displayW() - AppState.windowW()) / 2, (AppState.displayH() - AppState.windowH()) / 2);
-        //surface.setTitle(Main.title);
-    }
-
     private void setTextAlign(TextAlignment alignH, VPos alignV) {
         gc.setTextAlign(alignH);
         gc.setTextBaseline(alignV);
+        textCache.setTextAlignment(alignH);
+        textCache.setTextOrigin(alignV);
     }
 
     private void updateTime() {

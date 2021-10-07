@@ -2,6 +2,8 @@ package main;
 
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.shape.ArcType;
+import javafx.scene.shape.StrokeLineCap;
+import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.text.Font;
 import ptypes.PGraphics;
@@ -215,6 +217,54 @@ public class Renderer {
         if (pg.hasStroke) gc.strokePolygon(xPoints, yPoints, 3);
     }
 
+    /////////////////////////
+    // Shape // Attributes //
+    /////////////////////////
+
+    public void ellipseMode(PGraphics pg, int mode) {
+        pg.ellipseMode = mode;
+    }
+
+    public void rectMode(PGraphics pg, int mode) {
+        pg.rectMode = mode;
+    }
+
+    public void strokeCap(int type) {
+        StrokeLineCap cap;
+        switch (type) {
+            case ROUND:
+                cap = StrokeLineCap.ROUND;
+                break;
+            case SQUARE:
+                cap = StrokeLineCap.BUTT;
+                break;
+            default:
+                cap = StrokeLineCap.SQUARE;
+                break;
+        }
+        gc.setLineCap(cap);
+    }
+
+    public void strokeJoin(int type) {
+        StrokeLineJoin join;
+        switch (type) {
+            case BEVEL:
+                join = StrokeLineJoin.BEVEL;
+                break;
+            case ROUND:
+                join = StrokeLineJoin.ROUND;
+                break;
+            default:
+                join = StrokeLineJoin.MITER;
+                break;
+        }
+        gc.setLineJoin(join);
+    }
+
+    public void strokeWeight(double weight) {
+        gc.setLineWidth(weight);
+    }
+
     public void pushMatrix(PGraphics pg) {
         if (pg.transformCount == pg.transformStack.length) {
             throw new RuntimeException("StackOverflow: Reached the maximum amount of pushed matrixes");
@@ -276,14 +326,6 @@ public class Renderer {
 
     public void textSize(double size) {
         gc.setFont(new Font(size));
-    }
-
-    /////////////////////////
-    // Shape // Attributes //
-    /////////////////////////
-
-    public void strokeWeight(double weight) {
-        gc.setLineWidth(weight);
     }
     
 }

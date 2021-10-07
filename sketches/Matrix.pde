@@ -1,0 +1,2 @@
+resetMatrix();
+printMatrix();
