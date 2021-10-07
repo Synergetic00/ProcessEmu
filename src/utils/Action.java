@@ -2,6 +2,7 @@ package utils;
 
 import main.Main;
 import ptypes.PGraphics;
+import ptypes.PMatrix2D;
 
 public class Action {
 
@@ -10,10 +11,17 @@ public class Action {
     private double[] values;
     private String str;
     private int value = -1;
+    private PMatrix2D matrix;
 
     public Action(PGraphics pg, Actions type) {
         this.pg = pg;
         this.type = type;
+    }
+
+    public Action(PGraphics pg, Actions type, PMatrix2D matrix) {
+        this.pg = pg;
+        this.type = type;
+        this.matrix = matrix;
     }
 
     public Action(PGraphics pg, Actions type, double... params) {
@@ -119,7 +127,39 @@ public class Action {
             case STROKEJOIN:
                 Main.renderer.strokeJoin(value);
                 break;
-            default:
+            case APPLYMATRIX:
+                if (values == null) {
+                    Main.renderer.applyMatrix(matrix);
+                } else {
+                    Main.renderer.applyMatrix(values[0], values[1], values[2], values[3], values[4], values[5]);
+                }
+                break;
+            case POPMATRIX:
+                Main.renderer.popMatrix(pg);
+                break;
+            case PRINTMATRIX:
+                Main.renderer.printMatrix(pg);
+                break;
+            case PUSHMATRIX:
+                Main.renderer.pushMatrix(pg);
+                break;
+            case RESETMATRIX:
+                Main.renderer.resetMatrix();
+                break;
+            case ROTATE:
+                Main.renderer.rotate(pg, values[0]);
+                break;
+            case SCALE:
+                Main.renderer.scale(pg, values[0], values[1]);
+                break;
+            case SHEARX:
+                Main.renderer.shearX(pg, values[0]);
+                break;
+            case SHEARY:
+                Main.renderer.shearY(pg, values[0]);
+                break;
+            case TRANSLATE:
+                Main.renderer.translate(pg, values[0], values[1]);
                 break;
         }
     }

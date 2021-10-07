@@ -243,6 +243,85 @@ public class PGraphics {
         actions.add(new Action(this, Actions.STROKEWEIGHT, weight));
     }
 
+    ///////////////
+    // Transform //
+    ///////////////
+
+    public double currentRotationY = 0;
+    public double currentScaleX = 1;
+    public double currentScaleY = 1;
+    public double currentShearX = 0;
+    public double currentShearY = 0;
+    public double currentTranslateX = 0;
+    public double currentTranslateY = 0;
+    
+    public void applyMatrix(PMatrix2D source)	{
+        actions.add(new Action(this, Actions.APPLYMATRIX, source));
+    }
+
+    public void applyMatrix(double n00, double n01, double n02, double n10, double n11, double n12)	{
+        actions.add(new Action(this, Actions.APPLYMATRIX, n00, n10, n01, n11, n02, n12));
+    }
+
+    public void applyMatrix(double n00, double n01, double n02, double n03, double n10, double n11, double n12, double n13, double n20, double n21, double n22, double n23, double n30, double n31, double n32, double n33) {
+        Main.throw3DError();
+    }
+
+    public PMatrix2D getMatrix() {
+        PMatrix2D output;
+        Affine t = Main.gc.getTransform();
+        output = new PMatrix2D(t.getMxx(), t.getMxy(), t.getTx(), t.getMyx(), t.getMyy(), t.getTy());
+        return output;
+    }
+
+    public void popMatrix() {
+        actions.add(new Action(this, Actions.POPMATRIX));
+    }
+
+    public void printMatrix() {
+        actions.add(new Action(this, Actions.PRINTMATRIX));
+    }
+
+    public void pushMatrix() {
+        actions.add(new Action(this, Actions.PUSHMATRIX));
+    }
+
+    public void resetMatrix() {
+        actions.add(new Action(this, Actions.RESETMATRIX));
+    }
+
+    public void rotate(double radians) {
+        actions.add(new Action(this, Actions.ROTATE, radians));
+    }
+
+    public void rotateX(double amount) { Main.throw3DError(); }
+
+    public void rotateY(double amount) { Main.throw3DError(); }
+
+    public void rotateZ(double amount) { Main.throw3DError(); }
+
+    public void scale(double amount) {
+        scale(amount, amount);
+    }
+
+    public void scale(double amountX, double amountY) {
+        actions.add(new Action(this, Actions.SCALE, amountX, amountY));
+    }
+
+    public void scale(double amountX, double amountY, double amountZ) { Main.throw3DError(); }
+
+    public void shearX(double amount) {
+        actions.add(new Action(this, Actions.SHEARX, amount));
+    }
+
+    public void shearY(double amount) {
+        actions.add(new Action(this, Actions.SHEARY, amount));
+    }
+
+    public void translate(double amountX, double amountY) {
+        actions.add(new Action(this, Actions.TRANSLATE, amountX, amountY));
+    }
+
 
 
 
@@ -256,7 +335,7 @@ public class PGraphics {
         double scaleX = w / width;
         double scaleY = h / height;
         Main.renderer.pushMatrix(this);
-        Main.renderer.scale(scaleX, scaleY, this);
+        Main.renderer.scale(this, scaleX, scaleY);
         for (Action action : actions) {
             action.act(x, y);
         }

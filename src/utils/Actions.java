@@ -26,6 +26,18 @@ public enum Actions {
     RECTMODE,
     STROKECAP,
     STROKEJOIN,
-    STROKEWEIGHT
+    STROKEWEIGHT,
+
+    APPLYMATRIX,
+    POPMATRIX,
+    PRINTMATRIX,
+    PUSHMATRIX,
+    RESETMATRIX,
+    ROTATE,
+    SCALE,
+    SHEARX,
+    SHEARY,
+    TRANSLATE
+
     
 }

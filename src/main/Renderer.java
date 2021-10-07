@@ -7,6 +7,7 @@ import javafx.scene.shape.StrokeLineJoin;
 import javafx.scene.transform.Affine;
 import javafx.scene.text.Font;
 import ptypes.PGraphics;
+import ptypes.PMatrix2D;
 import utils.Colours;
 import utils.ModeState;
 import utils.StyleState;
@@ -265,17 +266,20 @@ public class Renderer {
         gc.setLineWidth(weight);
     }
 
-    public void pushMatrix(PGraphics pg) {
-        if (pg.transformCount == pg.transformStack.length) {
-            throw new RuntimeException("StackOverflow: Reached the maximum amount of pushed matrixes");
-        } else {
-            pg.transformStack[pg.transformCount] = gc.getTransform(pg.transformStack[pg.transformCount]);
-            pg.transformCount++;
-        }
-    }
+    ///////////////
+    // Transform //
+    ///////////////
     
-    public void resetMatrix() {
-        gc.setTransform(new Affine());
+    public void applyMatrix(PMatrix2D source) {
+        gc.transform(source.m00, source.m10, source.m01, source.m11, source.m02, source.m12);
+    }
+
+    public void applyMatrix(double n00, double n01, double n02, double n10, double n11, double n12)	{
+        gc.transform(n00, n10, n01, n11, n02, n12);
+    }
+
+    public void applyMatrix(double n00, double n01, double n02, double n03, double n10, double n11, double n12, double n13, double n20, double n21, double n22, double n23, double n30, double n31, double n32, double n33) {
+        Main.throw3DError();
     }
 
     public void popMatrix(PGraphics pg) {
@@ -287,7 +291,66 @@ public class Renderer {
         }
     }
 
-    public void scale(double scaleX, double scaleY, PGraphics pg) {
+    public void printMatrix(PGraphics pg) {
+        System.out.println(pg.getMatrix());
+    }
+
+    public void pushMatrix(PGraphics pg) {
+        if (pg.transformCount == pg.transformStack.length) {
+            throw new RuntimeException("StackOverflow: Reached the maximum amount of pushed matrixes");
+        } else {
+            pg.transformStack[pg.transformCount] = gc.getTransform(pg.transformStack[pg.transformCount]);
+            pg.transformCount++;
+        }
+    }
+
+    public void resetMatrix() {
+        gc.setTransform(new Affine());
+    }
+
+    public void rotate(PGraphics pg, double radians) {
+        pg.currentRotationY += radians;
+        double sideA = AppState.offsetW();
+        double sideB = AppState.offsetH();
+        double sideC = sqrt(sq(sideA)+sq(sideB));
+        double anglB = degrees(acos((sq(sideA)+sq(sideC)-sq(sideB))/(2*sideA*sideC)));
+        double finalAmt = degrees(radians) + anglB;
+        double rtsdA = sideC*sin(radians(finalAmt));
+        double rtsdB = sideC*cos(radians(finalAmt));
+        double diffX = sideA - rtsdB;
+        double diffY = sideB - rtsdA;
+        gc.translate(diffX, diffY);
+        gc.rotate(degrees(radians));
+    }
+
+    public void scale(PGraphics pg, double amount) {
+        scale(pg, amount, amount);
+    }
+
+    public void scale(PGraphics pg, double amountX, double amountY) {
+        pg.currentScaleX *= amountX;
+        pg.currentScaleY *= amountX;
+        gc.scale(amountX, amountY);
+    }
+
+    public void shearX(PGraphics pg, double amount) {
+        pg.currentShearX += amount;
+        Affine temp = new Affine();
+        temp.appendShear(Math.tan(amount), 0);
+        gc.transform(temp);
+    }
+
+    public void shearY(PGraphics pg, double amount) {
+        pg.currentShearY += amount;
+        Affine temp = new Affine();
+        temp.appendShear(0, Math.tan(amount));
+        gc.transform(temp);
+    }
+
+    public void translate(PGraphics pg, double amountX, double amountY) {
+        pg.currentTranslateX += amountX;
+        pg.currentTranslateY += amountX;
+        gc.translate(amountX, amountY);
     }
 
     public void fill(PGraphics pg, double rh, double gs, double bv, double ao) {

@@ -622,6 +622,8 @@ public class AppBase {
     private double currentRotationY = 0;
     private double currentScaleX = 1;
     private double currentScaleY = 1;
+    private double currentShearX = 0;
+    private double currentShearY = 0;
     private double currentTranslateX = 0;
     private double currentTranslateY = 0;
     
@@ -637,7 +639,7 @@ public class AppBase {
         Main.throw3DError();
     }
 
-    private PMatrix2D getMatrix() {
+    public PMatrix2D getMatrix() {
         PMatrix2D output;
         Affine t = gc.getTransform();
         output = new PMatrix2D(t.getMxx(), t.getMxy(), t.getTx(), t.getMyx(), t.getMyy(), t.getTy());
@@ -685,6 +687,12 @@ public class AppBase {
         gc.rotate(degrees(radians));
     }
 
+    public void rotateX(double amount) { Main.throw3DError(); }
+
+    public void rotateY(double amount) { Main.throw3DError(); }
+
+    public void rotateZ(double amount) { Main.throw3DError(); }
+
     public void scale(double amount) {
         scale(amount, amount);
     }
@@ -695,12 +703,20 @@ public class AppBase {
         gc.scale(amountX, amountY);
     }
 
-    public void shearX(double amount) {
-        Shear shear = Affine.shear(amount, 0);
+    public void scale(double amountX, double amountY, double amountZ) { Main.throw3DError(); }
+
+    public void shearX(PGraphics pg, double amount) {
+        currentShearX += amount;
+        Affine temp = new Affine();
+        temp.appendShear(Math.tan(amount), 0);
+        gc.transform(temp);
     }
 
-    public void shearY(double amount) {
-        Shear shear = Affine.shear(0, amount);
+    public void shearY(PGraphics pg, double amount) {
+        currentShearY += amount;
+        Affine temp = new Affine();
+        temp.appendShear(0, Math.tan(amount));
+        gc.transform(temp);
     }
 
     public void translate(double amountX, double amountY) {
