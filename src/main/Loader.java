@@ -39,7 +39,16 @@ public class Loader {
     private static Constructor<?> programConstructor;
     private static Object programObject;
 
-    public static void searchFolder(File path) throws IOException {
+    public static void loadFolder(String folder) {
+        try {
+            Loader.searchFolder(new File(folder));
+            System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private static void searchFolder(File path) throws IOException {
         for (File entry : path.listFiles()) {
             if (entry.isDirectory()) {
                 searchFolder(entry);

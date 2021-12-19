@@ -1,15 +1,15 @@
 package main;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 
 import jgraphics.canvas.Canvas;
+import jgraphics.canvas.Display;
 import jgraphics.canvas.Graphics;
 
 public class Main {
 
     public static ArrayList<AppEntry> apps;
+    public static Display dp;
     public static Canvas cv;
     public static Graphics gc;
 
@@ -17,15 +17,11 @@ public class Main {
         cv = new Canvas();
         cv.setupCanvas(1280, 720);
         gc = cv.getGraphics();
+        dp = cv.getDisplay();
+        dp.setIcon("ProcessEmuLogo.png");
+        dp.setTitle("ProcessEmu");
         apps = new ArrayList<AppEntry>();
-
-        try {
-            Loader.searchFolder(new File("sketches"));
-            System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
+        Loader.loadFolder("sketches");
         Loader.launchProgram(0);
     }
 
