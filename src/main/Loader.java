@@ -1,13 +1,5 @@
 package main;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyCodeCombination;
-import javafx.scene.input.KeyCombination;
-import javafx.scene.input.KeyEvent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.ScrollEvent;
-
 import java.io.BufferedReader;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -32,141 +24,31 @@ import javax.tools.FileObject;
 import javax.tools.ForwardingJavaFileManager;
 import javax.tools.JavaCompiler;
 import javax.tools.JavaCompiler.CompilationTask;
+
+import jgraphics.canvas.Graphics;
+
 import javax.tools.JavaFileManager;
 import javax.tools.JavaFileObject;
 import javax.tools.SimpleJavaFileObject;
 import javax.tools.ToolProvider;
 
+@SuppressWarnings("unused")
 public class Loader {
 
-    final static KeyCombination quitComb = new KeyCodeCombination(KeyCode.Q, KeyCombination.CONTROL_DOWN);
-    final static KeyCombination scaleComb = new KeyCodeCombination(KeyCode.S, KeyCombination.CONTROL_DOWN);
-    final static KeyCombination reloadComb = new KeyCodeCombination(KeyCode.R, KeyCombination.CONTROL_DOWN);
+    private static Class<?> programClass;
+    private static Constructor<?> programConstructor;
+    private static Object programObject;
 
-    // Java object variables
-    static Class<?> programClass;
-    static Constructor<?> programConstructor;
-    static Object programObject;
-
-    // Rendering methods
-    static Method settingsMethod;
-    static Method setupMethod;
-    static Method drawMethod;
-
-    public static void handleSetup() {
+    public static void loadFolder(String folder) {
         try {
-            if (setupMethod != null) {
-                setupMethod.invoke(programObject);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error in setup()");
-        }
-    }
-
-    public static void handleDraw() {
-        try {
-            if (drawMethod != null) {
-                drawMethod.invoke(programObject);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-            System.out.println("Error in draw()");
-        }
-    }
-
-    // Keyboard input methods
-    static Method keyPressedMethod;
-    public static void handleKeyPressed(KeyEvent event) {
-        try {
-            keyPressedMethod.invoke(programObject, event);
-        } catch (Exception e) {
+            Loader.searchFolder(new File(folder));
+            System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
+        } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if (quitComb.match(event)) {
-            launchHomeScreen();
-        }
-
-        if (scaleComb.match(event)) {
-            Main.scaled = !Main.scaled;
-        }
-
-        if (reloadComb.match(event)) {
-            launchProgram(Main.appIndex);
-        }
-
-        event.consume();
     }
 
-    static Method keyReleasedMethod;
-    public static void handleKeyReleased(KeyEvent event) {
-        try {
-            keyReleasedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
-        event.consume();
-    }
-
-    static Method keyTypedMethod;
-    public static void handleKeyTyped(KeyEvent event) {
-        try {
-            keyTypedMethod.invoke(programObject, event);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        event.consume();
-    }
-
-    // Mouse input methods
-    static Method mouseClickedMethod;
-    public static void handleMouseClicked(MouseEvent event) {
-        try {
-            mouseClickedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
-        event.consume();
-    }
-
-    static Method mouseDraggedMethod;
-    public static void handleMouseDragged(MouseEvent event) {
-        try {
-            mouseDraggedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
-        event.consume();
-    }
-
-    static Method mouseMovedMethod;
-    public static void handleMouseMoved(MouseEvent event) {
-        try {
-            mouseMovedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
-        event.consume();
-    }
-
-    static Method mousePressedMethod;
-    public static void handleMousePressed(MouseEvent event) {
-        try {
-            mousePressedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
-        event.consume();
-    }
-
-    static Method mouseReleasedMethod;
-    public static void handleMouseReleased(MouseEvent event) {
-        try {
-            mouseReleasedMethod.invoke(programObject, event);
-        } catch (Exception e) {}
-        event.consume();
-    }
-
-    static Method mouseWheelMethod;
-    public static void handleMouseWheel(ScrollEvent event) {
-        try {
-            mouseWheelMethod.invoke(programObject, event);
-        } catch (Exception e) {}
-        event.consume();
-    }
-
-    public static void searchFolder(File path) throws IOException {
+    private static void searchFolder(File path) throws IOException {
         for (File entry : path.listFiles()) {
             if (entry.isDirectory()) {
                 searchFolder(entry);
@@ -226,7 +108,7 @@ public class Loader {
         Charset utf8 = Charset.forName("UTF-8");
 
         String headerPackage = "package sketches;";
-        String headerClass = "public class ProcessingApp extends AppBase {\n\tpublic ProcessingApp(GraphicsContext gc) { super(gc); }\n";
+        String headerClass = "public class ProcessingApp extends AppBase {\n\tpublic ProcessingApp(Graphics gc) { super(gc); }\n";
         String headerImports = new String(Files.readAllBytes(Paths.get("src/Imports.txt")), utf8);
 
         byte[] bytes = Files.readAllBytes(Paths.get(path));
@@ -303,26 +185,95 @@ public class Loader {
         CompiledClassLoader classLoader = new CompiledClassLoader(fileManager.getGeneratedOutputFiles());
 
         programClass = classLoader.loadClass("sketches.ProcessingApp");
-        programConstructor = programClass.getConstructor(GraphicsContext.class);
+        programConstructor = programClass.getConstructor(Graphics.class);
         programObject = programConstructor.newInstance(Main.gc);
 
-        settingsMethod = programClass.getMethod("handleSettings");
-        setupMethod = programClass.getMethod("handleSetup");
-        drawMethod = programClass.getMethod("handleDraw");
+        methodSettings = programClass.getMethod("handleSettings");
+        methodSetup = programClass.getMethod("handleSetup");
+        methodDraw = programClass.getMethod("handleDraw");
 
-        keyPressedMethod = programClass.getMethod("handleKeyPressed", KeyEvent.class);
-        keyReleasedMethod = programClass.getMethod("handleKeyReleased", KeyEvent.class);
-        keyTypedMethod = programClass.getMethod("handleKeyTyped", KeyEvent.class);
-        mouseClickedMethod = programClass.getMethod("handleMouseClicked", MouseEvent.class);
-        mouseDraggedMethod = programClass.getMethod("handleMouseDragged", MouseEvent.class);
-        mouseMovedMethod = programClass.getMethod("handleMouseMoved", MouseEvent.class);
-        mousePressedMethod = programClass.getMethod("handleMousePressed", MouseEvent.class);
-        mouseReleasedMethod = programClass.getMethod("handleMouseReleased", MouseEvent.class);
-        mouseWheelMethod = programClass.getMethod("handleMouseWheel", ScrollEvent.class);
+        // methodKeyPressed = programClass.getMethod("handleKeyPressed");
+        // methodKeyReleased = programClass.getMethod("handleKeyReleased");
+        // methodKeyTyped = programClass.getMethod("handleKeyTyped");
+        // methodMouseClicked = programClass.getMethod("handleMouseClicked");
+        // methodMouseDragged = programClass.getMethod("handleMouseDragged");
+        // methodMouseMoved = programClass.getMethod("handleMouseMoved");
+        // methodMousePressed = programClass.getMethod("handleMousePressed");
+        // methodMouseReleased = programClass.getMethod("handleMouseReleased");
+        // methodMouseWheel = programClass.getMethod("handleMouseWheel");
 
-        settingsMethod.invoke(programObject);
-        setupMethod.invoke(programObject);
+        methodSettings.invoke(programObject);
+        methodSetup.invoke(programObject);
     }
+
+    /////////////////////
+    // Handled Methods //
+    /////////////////////
+
+    private static Method methodSettings;
+    public static void handleSettings() {
+
+    }
+
+    private static Method methodSetup;
+    public static void handleSetup() {
+
+    }
+
+    private static Method methodDraw;
+    public static void handleDraw() {
+
+    }
+
+    private static Method methodKeyPressed;
+    public static void handleKeyPressed() {
+        
+    }
+
+    private static Method methodKeyReleased;
+    public static void handleKeyReleased() {
+        
+    }
+
+    private static Method methodKeyTyped;
+    public static void handleKeyTyped() {
+        
+    }
+
+    
+    private static Method methodMouseClicked;
+    public static void handleMouseClicked() {
+        
+    }
+
+    private static Method methodMouseDragged;
+    public static void handleMouseDragged() {
+        
+    }
+
+    private static Method methodMouseMoved;
+    public static void handleMouseMoved() {
+        
+    }
+
+    private static Method methodMousePressed;
+    public static void handleMousePressed() {
+        
+    }
+
+    private static Method methodMouseReleased;
+    public static void handleMouseReleased() {
+        
+    }
+
+    private static Method methodMouseWheel;
+    public static void handleMouseWheel() {
+        
+    }
+
+    ////////////////////
+    // Object Loading //
+    ////////////////////
 
     public static class StringJavaFileObject extends SimpleJavaFileObject {
         private final String code;
@@ -403,5 +354,5 @@ public class Loader {
             return super.findClass(name);
         }
     }
-
+    
 }

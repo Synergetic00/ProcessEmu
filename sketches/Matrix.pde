@@ -1,2 +1,0 @@
-resetMatrix();
-printMatrix();

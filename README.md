@@ -1,6 +1,6 @@
 # ProcessEmu
 
-Mass processing project folder loader using JavaFX with custom GUI loader and 2D capabilities, 3D if an updated library is able to be added
+Mass processing project folder loader with custom GUI loader and 2D capabilities, 3D features are planned
 
 ## Roadmap
 
