@@ -1,17 +1,32 @@
 package main;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.ArrayList;
+
 import jgraphics.canvas.Canvas;
 import jgraphics.canvas.Graphics;
-import jgraphics.utils.Colour;
 
 public class Main {
 
+    public static ArrayList<AppEntry> apps;
+    public static Canvas cv;
+    public static Graphics gc;
+
     public static void main(String[] args) {
-        Canvas cv = new Canvas();
+        cv = new Canvas();
         cv.setupCanvas(1280, 720);
-        Graphics gc = cv.getGraphics();
-        gc.setFill(Colour.RED);
-        gc.fillRect(100, 100, 300, 150);
+        gc = cv.getGraphics();
+        apps = new ArrayList<AppEntry>();
+
+        try {
+            Loader.searchFolder(new File("sketches"));
+            System.out.println(String.format("Loaded %d app(s)", Main.apps.size()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Loader.launchProgram(0);
     }
 
 }
