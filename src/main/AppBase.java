@@ -8,15 +8,23 @@ import jgraphics.utils.Colour;
 import ptypes.PImage;
 import ptypes.PSurface;
 
+import static utils.Maths.*;
+
+@SuppressWarnings("unused")
 public class AppBase {
 
     private Graphics gc;
     private boolean looping;
     private PSurface surface;
 
+    private boolean hasFill;
+    private boolean hasStroke;
+
     public AppBase(Graphics gc) {
         this.gc = gc;
         this.looping = true;
+        this.hasFill = true;
+        this.hasStroke = true;
     }
 
     ///////////////
@@ -214,6 +222,18 @@ public class AppBase {
     // Transform //
     ///////////////
 
+    public void popMatrix() {
+        
+    }
+
+    public void pushMatrix() {
+        
+    }
+
+    public void resetMatrix() {
+        
+    }
+
     ////////////////////
     // Lights, Camera //
     ////////////////////
@@ -238,9 +258,48 @@ public class AppBase {
     // Color //
     ///////////
 
+    private double maxRH;
+    private double maxGS;
+    private double maxBB;
+    private double maxAO;
+
     //////////////////////
     // Color // Setting //
     //////////////////////
+
+    public void background(double gray) {
+        if (between(gray, 0, maxRH)) {
+            background(gray, gray, gray, maxAO);
+        } else {
+            setBackground((int) gray);
+        }
+    }
+
+    public void background(double gray, double alpha) {
+        background(gray, gray, gray, alpha);
+    }
+
+    public void background(double rh, double gs, double bv) {
+        background(rh, gs, bv, maxAO);
+    }
+
+    public void background(double rh, double gs, double bv, double ao) {
+        int mappedRH = (int) clamp(map(rh, 0, maxRH, 0, 255), 0, 255);
+        int mappedGS = (int) clamp(map(gs, 0, maxGS, 0, 255), 0, 255);
+        int mappedBV = (int) clamp(map(bv, 0, maxBB, 0, 255), 0, 255);
+        int mappedAO = (int) clamp(map(ao, 0, maxAO, 0, 255), 0, 255);
+        setBackground(new Colour(mappedRH, mappedGS, mappedBV, mappedAO).getARGB());
+    }
+
+    private void setBackground(int encodedValue) {
+        pushMatrix();
+        resetMatrix();
+        gc.save();
+        gc.setFill(encodedValue);
+        gc.fillRect(AppState.offsetW(), AppState.offsetH(), width, height);
+        gc.restore();
+        popMatrix();
+    }
 
     ///////////
     // Image //
@@ -304,7 +363,36 @@ public class AppBase {
     }
 
     public void rect(double x, double y, double w, double h) {
-        gc.fillRect(x, y, w, h);
+
+        double nx = x;
+        double ny = y;
+        double nw = w;
+        double nh = h;
+
+        // switch (rectMode) {
+        //     case CORNERS: {
+        //         nw /= 2;
+        //         nh /= 2;
+        //         break;
+        //     }
+        //     case RADIUS: {
+        //         nw *= 2;
+        //         nh *= 2;
+        //         nx -= nw / 2;
+        //         ny -= nh / 2;
+        //         break;
+        //     }
+        //     case CENTER: {
+        //         nx -= nw / 2;
+        //         ny -= nh / 2;
+        //     }
+        // }
+
+        nx += AppState.offsetW();
+        ny += AppState.offsetH();
+
+        if (hasFill) gc.fillRect(nx, ny, nw, nh);
+        if (hasStroke) gc.strokeRect(nx, ny, nw, nh);
     }
 
     public void handleSettings() {
@@ -323,6 +411,20 @@ public class AppBase {
 
     private void render() {
         draw();
+        coverEdges();
+    }
+
+    private void coverEdges() {
+        pushMatrix();
+        resetMatrix();
+        gc.save();
+        gc.setFill(new Colour(40, 40, 40, 255));
+        gc.fillRect(0, 0, AppState.screenW(), AppState.offsetH());                            // Top
+        gc.fillRect(0, AppState.offsetH() + height, AppState.screenW(), AppState.offsetH()); // Bottom
+        gc.fillRect(0, 0, AppState.offsetW(), AppState.screenH());                            // Left
+        gc.fillRect(AppState.offsetW() + width, 0, AppState.offsetW(), AppState.screenH());  // Right
+        gc.restore();
+        popMatrix();
     }
     
 }
