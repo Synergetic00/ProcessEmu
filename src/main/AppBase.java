@@ -2,6 +2,7 @@ package main;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Calendar;
 
 import jgraphics.canvas.Graphics;
 import jgraphics.utils.Colour;
@@ -9,22 +10,51 @@ import ptypes.PImage;
 import ptypes.PSurface;
 
 import static utils.Maths.*;
+import static utils.Constants.*;
 
 @SuppressWarnings("unused")
 public class AppBase {
 
     private Graphics gc;
+    private Calendar date;
     private boolean looping;
-    private PSurface surface;
+
+    public PSurface surface;
 
     private boolean hasFill;
     private boolean hasStroke;
 
+    public int rectMode;
+    public int ellipseMode;
+    public int colorMode;
+
     public AppBase(Graphics gc) {
         this.gc = gc;
-        this.looping = true;
-        this.hasFill = true;
-        this.hasStroke = true;
+        this.date = new Calendar.Builder().build();
+        this.surface = new PSurface();
+        defaultSettings();
+    }
+
+    // Initial internal variables in Processing
+    private void defaultSettings() {
+        frameCount = 0;
+        focused = true;
+        resetMatrix();
+        updateTime();
+        frameRate(60);
+        size(100, 100);
+        // colorMode(RGB, 255, 255, 255, 255);
+        background(204);
+        // fill(255);
+        // stroke(0);
+        // strokeWeight(1);
+        // strokeCap(ROUND);
+        // strokeJoin(MITER);
+        // textAlign(LEFT, BASELINE);
+        looping = true;
+        rectMode = CORNER;
+        ellipseMode = CENTER;
+        surface.reset();
     }
 
     ///////////////
@@ -369,24 +399,24 @@ public class AppBase {
         double nw = w;
         double nh = h;
 
-        // switch (rectMode) {
-        //     case CORNERS: {
-        //         nw /= 2;
-        //         nh /= 2;
-        //         break;
-        //     }
-        //     case RADIUS: {
-        //         nw *= 2;
-        //         nh *= 2;
-        //         nx -= nw / 2;
-        //         ny -= nh / 2;
-        //         break;
-        //     }
-        //     case CENTER: {
-        //         nx -= nw / 2;
-        //         ny -= nh / 2;
-        //     }
-        // }
+        switch (rectMode) {
+            case CORNERS: {
+                nw /= 2;
+                nh /= 2;
+                break;
+            }
+            case RADIUS: {
+                nw *= 2;
+                nh *= 2;
+                nx -= nw / 2;
+                ny -= nh / 2;
+                break;
+            }
+            case CENTER: {
+                nx -= nw / 2;
+                ny -= nh / 2;
+            }
+        }
 
         nx += AppState.offsetW();
         ny += AppState.offsetH();
@@ -405,13 +435,27 @@ public class AppBase {
     }
 
     public void handleDraw() {
-        //updateTime();
-        render();
+        updateTime();
+
+        //if (Main.scaled) {
+        //    double scaleAmount = min(AppState.screenW() / width, AppState.screenH() / height);
+        //    scale(scaleAmount);
+        //}
+
+        if (looping) {
+            render();
+        }
+
+        frameCount++;
     }
 
     private void render() {
         draw();
         coverEdges();
+    }
+
+    private void updateTime() {
+        date.setTimeInMillis(System.currentTimeMillis());
     }
 
     private void coverEdges() {

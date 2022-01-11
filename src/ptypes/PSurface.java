@@ -17,5 +17,9 @@ public class PSurface {
     public void hideCursor() {
         
     }
+
+    public void reset() {
+        
+    }
     
 }
