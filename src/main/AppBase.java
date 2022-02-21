@@ -39,6 +39,8 @@ public class AppBase {
     private void defaultSettings() {
         frameCount = 0;
         focused = true;
+        hasFill = true;
+        hasStroke = true;
         resetMatrix();
         updateTime();
         frameRate(60);
